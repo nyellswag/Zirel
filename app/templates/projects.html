@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Projects - Zirel{% endblock %}
+
+{% block content %}
+  <div class="app-workspace workspace-shell">
+    <header class="workspace-header">
+      <div><div class="workspace-eyebrow">World workspace</div><h1>Your <span>worlds</span></h1><p>Create, manage, import, and continue working on your fictional worlds.</p></div>
+      <div class="workspace-actions"><a class="btn btn-workspace-secondary" href="{{ url_for('main.import_project') }}">Import Project</a><a class="btn btn-workspace-primary" href="{{ url_for('main.create_project') }}">New Project <span aria-hidden="true">&rarr;</span></a></div>
+    </header>
+
+    <div class="stat-grid project-stat-grid">
+      <article class="stat-card"><span class="stat-card-icon stat-worlds"></span><div><span>Total worlds</span><strong>{{ project_stats.worlds }}</strong></div></article>
+      <article class="stat-card"><span class="stat-card-icon stat-characters"></span><div><span>Total characters</span><strong>{{ project_stats.characters }}</strong></div></article>
+      <article class="stat-card"><span class="stat-card-icon stat-relations"></span><div><span>Total relations</span><strong>{{ project_stats.relations }}</strong></div></article>
+      <article class="stat-card"><span class="stat-card-icon stat-events"></span><div><span>Total events</span><strong>{{ project_stats.events }}</strong></div></article>
+    </div>
+
+    {% if projects %}
+      <div class="project-list-filter" data-filter-list data-list-label="worlds">
+      <div class="workspace-toolbar">
+        <div class="workspace-search"><input type="search" data-list-search placeholder="Search worlds..." aria-label="Search worlds"><span aria-hidden="true"></span></div>
+        <p class="workspace-list-count" data-list-count></p>
+        <a class="btn btn-workspace-primary btn-sm" href="{{ url_for('main.create_project') }}">New Project</a>
+      </div>
+      <div class="project-grid">
+        {% for project in projects %}
+          <article class="project-card" data-list-item data-search-text="{{ project.name }} {{ project.description or '' }}">
+            <div class="project-card-top"><span class="project-card-mark"></span><span class="neon-badge">World</span></div>
+            <h2><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a></h2>
+            <p>{{ project.description or "No description yet. Start with a few key people, places, and events." }}</p>
+            <div class="project-entity-counts"><span><b>{{ project.characters|length }}</b> Characters</span><span><b>{{ project.factions|length }}</b> Factions</span><span><b>{{ project.events|length }}</b> Events</span><span><b>{{ project.relations|length }}</b> Relations</span></div>
+            <div class="project-card-footer"><span>Created {{ project.created_at.strftime("%b %d, %Y") }}</span><div><a class="btn btn-workspace-primary btn-sm" href="{{ url_for('main.project_detail', project_id=project.id) }}">Open</a><a class="btn btn-workspace-secondary btn-sm" href="{{ url_for('main.edit_project', project_id=project.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_project', project_id=project.id) }}" onsubmit="return confirm('Delete this project and all related characters, factions, events, and relations?');"><button type="submit" class="btn btn-workspace-danger btn-sm">Delete</button></form></div></div>
+          </article>
+        {% endfor %}
+      </div>
+      <div class="empty-state workspace-empty-state" data-list-empty hidden><h2>No matching worlds.</h2><p>Try another search or create a new world.</p></div>
+      </div>
+    {% else %}
+      <div class="empty-state workspace-empty-state text-center"><span class="empty-world-mark"></span><h2>No worlds yet.</h2><p>Create your first world and start mapping characters, factions, events, and relationships.</p><a class="btn btn-workspace-primary" href="{{ url_for('main.create_project') }}">Create Project <span aria-hidden="true">&rarr;</span></a></div>
+    {% endif %}
+
+    <section class="quick-actions-card"><div><div class="workspace-eyebrow">Quick actions</div><h2>Keep building your world.</h2><p>Start fresh, bring an export back in, or help shape the beta.</p></div><div class="quick-action-links"><a href="{{ url_for('main.create_project') }}"><span class="quick-action-icon quick-new"></span><div><b>New blank world</b><small>Start from scratch</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.import_project') }}"><span class="quick-action-icon quick-import"></span><div><b>Import from JSON</b><small>Restore a Zirel export</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.beta') }}"><span class="quick-action-icon quick-beta"></span><div><b>Join Beta</b><small>See the guided test flow</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.feedback') }}"><span class="quick-action-icon quick-feedback"></span><div><b>Send Feedback</b><small>Help improve Zirel</small></div><i aria-hidden="true">&rarr;</i></a></div></section>
+  </div>
+{% endblock %}

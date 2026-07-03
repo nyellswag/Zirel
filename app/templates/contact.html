@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Contact - Zirel{% endblock %}
+
+{% block content %}
+  <div class="public-page feedback-panel">
+    <div class="public-hero page-header mb-4">
+      <div>
+        <div class="eyebrow mb-2">Get in touch</div>
+        <h1 class="h3 mb-1">Contact Zirel</h1>
+        <p class="text-secondary mb-0">Questions, bug reports, beta access, and collaboration ideas are all welcome.</p>
+      </div>
+    </div>
+
+    <div class="public-use-cases"><span>Beta access</span><span>Bug report</span><span>Collaboration</span><span>Business / partnership</span><span>General question</span></div>
+    <form method="post" class="public-form-card form-panel">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" for="name">Name <span class="text-secondary">(optional)</span></label>
+          <input class="form-control" type="text" id="name" name="name" value="{{ request.form.get('name', '') }}">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="email">Email</label>
+          <input class="form-control" type="email" id="email" name="email" value="{{ request.form.get('email', '') }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="reason">Reason</label>
+          <select class="form-select" id="reason" name="reason">
+            {% for option in ["General question", "Beta access", "Bug report", "Collaboration", "Business / partnership", "Other"] %}
+              <option value="{{ option }}" {% if request.form.get('reason') == option %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="subject">Subject <span class="text-secondary">(optional)</span></label>
+          <input class="form-control" type="text" id="subject" name="subject" value="{{ request.form.get('subject', '') }}">
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="message">Message</label>
+          <textarea class="form-control" id="message" name="message" required placeholder="How can we help?">{{ request.form.get('message', '') }}</textarea>
+        </div>
+      </div>
+      <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-primary" type="submit">Send Message</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('main.index') }}">Back to Home</a>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Faction - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace form-shell workspace-shell">
+    <div class="form-shell-inner">
+      <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.factions', project_id=project.id) }}">Factions</a><span>/</span><span>Edit</span></nav>
+      <div class="form-shell-heading"><div><div class="workspace-eyebrow">World entity</div><h1>Edit Faction</h1><p>Refine this organization's place in {{ project.name }}.</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.factions', project_id=project.id) }}">Back to Factions</a></div>
+      <form method="post" class="form-card">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ faction.name }}" required autofocus>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="4">{{ faction.description or "" }}</textarea>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="created_year" class="form-label">Created Year</label>
+            <input type="number" class="form-control" id="created_year" name="created_year" value="{{ faction.created_year if faction.created_year is not none else '' }}">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="destroyed_year" class="form-label">Destroyed Year</label>
+            <input type="number" class="form-control" id="destroyed_year" name="destroyed_year" value="{{ faction.destroyed_year if faction.destroyed_year is not none else '' }}">
+          </div>
+        </div>
+        <div class="form-card-actions">
+          <button type="submit" class="btn-workspace-primary">Save Changes</button>
+          <a class="btn-workspace-secondary" href="{{ url_for('main.factions', project_id=project.id) }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

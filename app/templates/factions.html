@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Factions - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace entity-page workspace-shell">
+    <header class="workspace-header entity-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span>Factions</span></nav><div class="workspace-eyebrow">World entities</div><h1>Factions</h1><p>Track houses, guilds, kingdoms, orders, and organizations in {{ project.name }}.</p></div><div class="workspace-actions entity-actions"><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a><a class="btn-workspace-secondary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace</a><a class="btn-workspace-primary" href="{{ url_for('main.create_faction', project_id=project.id) }}">Add Faction</a></div></header>
+    <div class="entity-stat-grid faction-stat-grid"><article class="entity-stat-card"><span class="entity-stat-icon stat-factions"></span><div><span>Total factions</span><strong>{{ faction_stats.total }}</strong></div></article><article class="entity-stat-card"><span class="entity-stat-icon stat-active"></span><div><span>Active</span><strong>{{ faction_stats.active }}</strong></div></article><article class="entity-stat-card"><span class="entity-stat-icon stat-destroyed"></span><div><span>Destroyed</span><strong>{{ faction_stats.destroyed }}</strong></div></article></div>
+    {% if factions %}
+      <div class="entity-list" data-filter-list data-list-label="factions">
+        <form id="faction-bulk-form" method="post" action="{{ url_for('main.bulk_delete_factions', project_id=project.id) }}"></form>
+        <div class="entity-search-row"><div class="workspace-search"><input type="search" placeholder="Search factions..." data-list-search aria-label="Search factions"><span aria-hidden="true"></span></div><p class="workspace-list-count" data-list-count>Showing {{ factions|length }} of {{ factions|length }} factions</p></div>
+        <div class="bulk-actions-bar"><span>Select factions to manage them in one pass.</span><div><button class="btn-workspace-danger" type="submit" form="faction-bulk-form" onclick="return confirm('Delete selected factions?');">Delete selected</button><form method="post" action="{{ url_for('main.delete_all_factions', project_id=project.id) }}" onsubmit="return confirm('Delete ALL factions in this project? This will also delete related relations.');"><button class="btn-workspace-danger" type="submit">Delete all</button></form></div></div>
+        <div class="empty-state entity-empty-match" data-list-empty hidden><h2>No matching factions found.</h2><p>Try a different name or year.</p></div>
+        <div class="entity-grid">
+          {% for faction in factions %}
+            <article class="entity-card" data-list-item data-search-text="{{ faction.name }} {{ faction.description or '' }} {{ faction.created_year if faction.created_year is not none else '' }} {{ faction.destroyed_year if faction.destroyed_year is not none else '' }}">
+              <header class="entity-card-header"><label class="entity-select" for="faction-{{ faction.id }}"><input type="checkbox" form="faction-bulk-form" name="faction_ids" value="{{ faction.id }}" id="faction-{{ faction.id }}"><span>Select</span></label><span class="entity-badge {% if faction.destroyed_year is none %}status-active{% else %}status-destroyed{% endif %}">{% if faction.destroyed_year is none %}Active{% else %}Destroyed{% endif %}</span></header>
+              <h2>{{ faction.name }}</h2><p class="entity-description">{{ faction.description or "No description yet." }}</p><div class="entity-meta"><span>Founded <b>{{ faction.created_year if faction.created_year is not none else "Unknown" }}</b></span><span>Destroyed <b>{{ faction.destroyed_year if faction.destroyed_year is not none else "-" }}</b></span></div>
+              <footer class="entity-card-footer"><a class="btn-workspace-secondary" href="{{ url_for('main.edit_faction', project_id=project.id, faction_id=faction.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_faction', project_id=project.id, faction_id=faction.id) }}" onsubmit="return confirm('Delete this faction?');"><button class="btn-workspace-danger" type="submit">Delete</button></form></footer>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="workspace-empty-state entity-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No factions yet.</h2><p>Add the forces, organizations, and institutions shaping this world.</p><a class="btn-workspace-primary" href="{{ url_for('main.create_faction', project_id=project.id) }}">Add your first faction</a></div>
+    {% endif %}
+  </section>
+{% endblock %}

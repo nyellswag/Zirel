@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Zirel{% endblock %}
+
+{% block content %}
+  <div class="auth-page">
+    <a class="auth-brand" href="{{ url_for('main.index') }}"><span class="auth-brand-mark" aria-hidden="true"></span>Zirel</a>
+    <div class="auth-orbit auth-orbit-one"></div><div class="auth-orbit auth-orbit-two"></div>
+    <section class="auth-card auth-card-login">
+      <nav class="auth-mode-switcher" aria-label="Authentication pages"><a class="active" href="{{ url_for('main.login') }}">Log in</a><a href="{{ url_for('main.register') }}">Register</a></nav>
+      <div class="auth-icon auth-icon-login" aria-hidden="true"><span></span></div>
+      <div class="auth-heading"><h1>Welcome <span>back</span></h1><p>Log in to continue building and testing your worlds.</p></div>
+      <form method="post" class="auth-form">
+        <div class="auth-field"><label for="email">Email</label><input type="email" id="email" name="email" value="{{ request.form.get('email', '') }}" placeholder="you@example.com" required autofocus></div>
+        <div class="auth-field"><label for="password">Password</label><input type="password" id="password" name="password" placeholder="Enter your password" required></div>
+        <button class="btn auth-submit" type="submit">Log in <span aria-hidden="true">&rarr;</span></button>
+      </form>
+    </section>
+    <div class="auth-trust-row"><article><span class="trust-mark trust-private"></span><div><h2>Private workspace</h2><p>Your projects stay in your account.</p></div></article><article><span class="trust-mark trust-portable"></span><div><h2>Data portability</h2><p>Export and import your worlds as JSON.</p></div></article><article><span class="trust-mark trust-creators"></span><div><h2>Built for creators</h2><p>Designed for writers, game masters, and worldbuilders.</p></div></article></div>
+  </div>
+{% endblock %}

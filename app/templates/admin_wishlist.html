@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Wishlist - Zirel{% endblock %}
+
+{% block content %}
+  <section class="app-workspace admin-page workspace-shell">
+    <header class="workspace-header admin-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a><span>/</span><span>Wishlist</span></nav><div class="workspace-eyebrow">Pre-launch management</div><h1>Wishlist</h1><p>Review early access requests and the creators waiting for Zirel.</p></div></header>
+    <nav class="admin-nav" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users</a><a href="{{ url_for('main.admin_feedback') }}">Feedback</a><a href="{{ url_for('main.admin_contact') }}">Contact Messages</a><a class="active" href="{{ url_for('main.admin_wishlist') }}">Wishlist</a></nav>
+
+    <div class="admin-stat-grid admin-wishlist-stat-grid"><article class="admin-stat-card admin-stat-wishlist"><span class="admin-stat-icon"></span><div><span>Total wishlist entries</span><strong>{{ wishlist_entries|length }}</strong></div></article></div>
+
+    {% if wishlist_entries %}
+      <div class="admin-list" data-filter-list data-list-label="wishlist entries">
+        <div class="admin-toolbar"><div class="workspace-search"><input type="search" placeholder="Search wishlist..." data-list-search aria-label="Search wishlist"><span aria-hidden="true"></span></div><select class="admin-filter-select" data-list-role-filter aria-label="Filter wishlist role"><option value="">All roles</option>{% for role in ['Writer', 'Game Master', 'Worldbuilder', 'Screenwriter', 'Game Developer', 'Narrative Designer', 'Other'] %}<option value="{{ role }}">{{ role }}</option>{% endfor %}</select><p class="workspace-list-count" data-list-count>Showing {{ wishlist_entries|length }} of {{ wishlist_entries|length }} wishlist entries</p></div>
+        <div class="admin-empty-state" data-list-empty hidden><h2>No wishlist entries match your filters.</h2><p>Try another name, email, role, or message.</p></div>
+        <div class="admin-message-list">{% for entry in wishlist_entries %}<article class="admin-message-card wishlist-entry-card" data-list-item data-role="{{ entry.role or '' }}" data-search-text="{{ entry.email }} {{ entry.name or '' }} {{ entry.role or '' }} {{ entry.message or '' }}"><header><div><span class="admin-badge">{{ entry.role or "No role" }}</span><h2>{{ entry.name or "Anonymous creator" }}</h2><a href="mailto:{{ entry.email }}">{{ entry.email }}</a></div><div class="admin-card-actions"><time>{{ entry.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</time><form method="post" action="{{ url_for('main.admin_delete_wishlist_entry', entry_id=entry.id) }}" onsubmit="return confirm('Delete this wishlist entry?');"><button class="admin-delete-x" type="submit" aria-label="Delete wishlist entry">&times;</button></form></div></header>{% if entry.message %}<p>{{ entry.message }}</p>{% else %}<p class="wishlist-entry-empty-message">No message provided.</p>{% endif %}</article>{% endfor %}</div>
+      </div>
+    {% else %}
+      <div class="workspace-empty-state admin-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No wishlist entries yet.</h2><p>New early access requests will appear here.</p></div>
+    {% endif %}
+  </section>
+{% endblock %}

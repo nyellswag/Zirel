@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Zirel Wishlist{% endblock %}
+
+{% block content %}
+  <div class="wishlist-atmosphere" aria-hidden="true">
+    <div class="wishlist-radial wishlist-radial-warm"></div>
+    <div class="wishlist-radial wishlist-radial-cool"></div>
+    <div class="wishlist-dotgrid"></div>
+    <div class="wishlist-vignette"></div>
+    <div class="wishlist-grain"></div>
+  </div>
+
+  <div class="wishlist-page">
+    <header class="wishlist-topbar">
+      <a class="wishlist-wordmark" href="{{ url_for('main.wishlist') }}" aria-label="Zirel">
+        <span class="wishlist-wordmark-glyph" aria-hidden="true"></span>
+        <span>Zirel</span>
+      </a>
+      <div class="wishlist-topbar-note">v0.1 &mdash; inviting early access</div>
+    </header>
+
+    {% if joined_entry %}
+    <main class="wishlist-confirm-main">
+      <section class="wishlist-confirm-card" role="main" aria-labelledby="wishlist-confirm-title">
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+          <defs>
+            <linearGradient id="wishlistCheckGrad" x1="0" y1="0" x2="24" y2="28" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#8B5CF6"/>
+              <stop offset="50%" stop-color="#6366F1"/>
+              <stop offset="100%" stop-color="#38BDF8"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div class="wishlist-confirm-icon" aria-hidden="true">
+          <span></span>
+          <svg width="24" height="28" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="wishlist-confirm-check" d="M4 14.5L10 21L20 8"/>
+          </svg>
+        </div>
+
+        <p class="wishlist-confirm-eyebrow">Confirmed &middot; Welcome to Zirel</p>
+        <h1 id="wishlist-confirm-title" class="wishlist-confirm-title">You're on the <em>wishlist.</em></h1>
+        <p class="wishlist-confirm-note">Early access begins soon. You'll be among the first creators to hear when Zirel opens for beta testing.</p>
+        <hr class="wishlist-confirm-divider">
+        <p class="wishlist-confirm-detail">We'll send launch updates to <span>{{ joined_entry.email }}</span><b>&middot;</b>No spam, ever</p>
+        <div class="wishlist-confirm-badge" aria-label="Wishlist position and reference code">
+          <span></span>
+          POSITION #{{ wishlist_position }} &middot; REF {{ wishlist_reference }}
+        </div>
+        <a class="wishlist-confirm-back" href="{{ url_for('main.wishlist') }}">Back to wishlist page</a>
+      </section>
+    </main>
+    {% else %}
+    <main class="wishlist-main">
+      <div class="wishlist-content-col">
+        <div class="wishlist-pill" role="note"><span></span>Wishlist &middot; Early beta</div>
+
+        <h1 class="wishlist-headline">
+          The <span>quiet</span> logic layer
+          <strong>for fictional worlds.</strong>
+        </h1>
+
+        <p class="wishlist-desc">
+          Zirel helps writers, game masters, and storytellers organize worlds, map relationships, and catch contradictions before they become canon.
+        </p>
+
+        <section class="wishlist-glass-card" aria-label="Wishlist signup">
+          <form method="post" class="wishlist-simple-form">
+            <div class="wishlist-form-row">
+              <input class="wishlist-email-input" type="email" id="email" name="email" value="{{ request.form.get('email', '') }}" placeholder="you@example.com" autocomplete="email" required autofocus>
+              <button class="wishlist-simple-submit" type="submit">Join Wishlist</button>
+            </div>
+            <p class="wishlist-reassurance">No spam. One launch note, beta updates, and the option to unsubscribe anytime.</p>
+          </form>
+
+          <div class="wishlist-social-row" aria-label="Wishlist activity">
+            <div class="wishlist-social-count">
+              <span class="wishlist-social-icon" aria-hidden="true"></span>
+              {% if wishlist_count %}
+                <span><strong>{{ "{:,}".format(wishlist_count) }}</strong> creator{% if wishlist_count != 1 %}s{% endif %} already waiting</span>
+              {% else %}
+                <span>Be among the first creators waiting</span>
+              {% endif %}
+            </div>
+            <div class="wishlist-avatar-stack" aria-label="Recent wishlist signups">
+              {% if recent_wishlist_entries %}
+                {% for entry in recent_wishlist_entries %}
+                  {% set initials_source = entry.name or entry.email.split('@')[0] %}
+                  <span class="wishlist-avatar" title="{{ entry.email }}">{{ initials_source[:2]|upper }}</span>
+                {% endfor %}
+              {% else %}
+                <span class="wishlist-avatar">LC</span>
+                <span class="wishlist-avatar">GM</span>
+                <span class="wishlist-avatar">WR</span>
+              {% endif %}
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    {% endif %}
+
+    <footer class="wishlist-bottom">
+      <span>&copy; {{ now().year if now is defined else '2026' }} Zirel</span>
+      <span>Built for connected worlds</span>
+    </footer>
+  </div>
+{% endblock %}

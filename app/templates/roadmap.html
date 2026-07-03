@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Zirel Roadmap{% endblock %}
+
+{% block content %}
+  <div class="public-page roadmap-page">
+    <div class="public-hero legal-hero">
+      <div class="eyebrow mb-2">Product direction</div>
+      <h1>Zirel Roadmap</h1>
+      <p class="text-secondary mb-3">A high-level development plan for building Zirel from MVP to public beta and beyond.</p>
+      <p class="legal-note">This roadmap is directional and may change as the product evolves.</p>
+    </div>
+
+    <div class="roadmap-grid public-section-grid">
+      <section class="roadmap-quarter public-card">
+        <span class="roadmap-status roadmap-status-progress">Mostly completed / in progress</span>
+        <h2>Q1 — MVP Foundation</h2>
+        <p>Build the core product foundation and validate the basic worldbuilding workflow.</p>
+        <ul>
+          <li>Project creation and management</li>
+          <li>Characters, factions, and events</li>
+          <li>Relationship builder</li>
+          <li>Logic warnings</li>
+          <li>Graph workspace</li>
+          <li>Export and import JSON</li>
+          <li>User accounts and protected projects</li>
+          <li>Admin dashboard</li>
+          <li>Legal, FAQ, beta, and feedback pages</li>
+        </ul>
+      </section>
+
+      <section class="roadmap-quarter public-card">
+        <span class="roadmap-status roadmap-status-planned">Planned</span>
+        <h2>Q2 — Beta Testing &amp; UX Improvements</h2>
+        <p>Prepare Zirel for early testers and improve the core user experience.</p>
+        <ul>
+          <li>Closed beta testing</li>
+          <li>Better onboarding</li>
+          <li>Improved project dashboard</li>
+          <li>More polished graph workspace</li>
+          <li>Better warning explanations</li>
+          <li>Search and filter improvements</li>
+          <li>Data deletion tools</li>
+          <li>User settings</li>
+          <li>Style system and full redesign pass</li>
+        </ul>
+      </section>
+
+      <section class="roadmap-quarter public-card">
+        <span class="roadmap-status roadmap-status-exploration">Exploration</span>
+        <h2>Q3 — AI Assistance &amp; Advanced World Tools</h2>
+        <p>Explore AI-assisted workflows and deeper worldbuilding analysis.</p>
+        <ul>
+          <li>AI scene analysis prototype</li>
+          <li>Extract possible facts from text</li>
+          <li>Suggest characters, events, and relations</li>
+          <li>User review before saving AI suggestions</li>
+          <li>Advanced consistency checks</li>
+          <li>Warning overlays on graph</li>
+          <li>Export improvements</li>
+          <li>Collaboration prototype</li>
+        </ul>
+      </section>
+
+      <section class="roadmap-quarter public-card">
+        <span class="roadmap-status roadmap-status-future">Future direction</span>
+        <h2>Q4 — Public Launch &amp; Monetization Research</h2>
+        <p>Prepare Zirel for a broader public release and evaluate sustainable support models.</p>
+        <ul>
+          <li>Public beta or launch preparation</li>
+          <li>Pricing experiments</li>
+          <li>Support or donation options</li>
+          <li>Possible paid plans</li>
+          <li>Team workspace research</li>
+          <li>Community launch planning</li>
+          <li>Product Hunt and writing community outreach</li>
+          <li>Trademark and IP review</li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="roadmap-note info-callout">
+      <h2 class="h5 mb-2">What May Change</h2>
+      <p>Roadmap items may move, be removed, or be replaced based on beta feedback, technical constraints, and user needs. The roadmap is a guide to current priorities, not a guarantee of delivery dates or specific features.</p>
+    </section>
+
+    <section class="cta-panel whitepaper-cta text-center mt-3">
+      <h2 class="h4 mb-2">Help Shape the Next Quarter</h2>
+      <p class="text-secondary mb-3">Try the beta, read the product direction, and share what would make Zirel more useful for your world.</p>
+      <div class="d-flex justify-content-center flex-wrap gap-2">
+        <a class="btn btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('main.whitepaper') }}">Read Whitepaper</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('main.contact') }}">Contact</a>
+      </div>
+    </section>
+  </div>
+{% endblock %}

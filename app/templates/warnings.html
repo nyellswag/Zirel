@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Logic Warnings - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace warnings-page workspace-shell">
+    <header class="workspace-header warnings-header">
+      <div>
+        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span>Warnings</span></nav>
+        <div class="workspace-eyebrow">Consistency analysis</div>
+        <h1>Logic Warnings</h1>
+        <p>Review possible contradictions, timeline conflicts, and relationship issues in your world.</p>
+      </div>
+      <div class="workspace-actions"><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a><a class="btn-workspace-secondary" href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a><a class="btn-workspace-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace</a></div>
+    </header>
+
+    <div class="warning-summary-grid">
+      <article class="warning-summary-card warning-summary-total"><span class="warning-icon" aria-hidden="true"></span><div><span>Total warnings</span><strong>{{ warning_summary.total }}</strong><small>{{ warning_summary.status }}</small></div></article>
+      <article class="warning-summary-card warning-summary-high"><span class="warning-icon" aria-hidden="true"></span><div><span>High severity</span><strong>{{ warning_summary.high }}</strong><small>Needs attention</small></div></article>
+      <article class="warning-summary-card warning-summary-medium"><span class="warning-icon" aria-hidden="true"></span><div><span>Medium severity</span><strong>{{ warning_summary.medium }}</strong><small>Review context</small></div></article>
+      <article class="warning-summary-card warning-summary-low"><span class="warning-icon" aria-hidden="true"></span><div><span>Low severity</span><strong>{{ warning_summary.low }}</strong><small>Keep in view</small></div></article>
+    </div>
+
+    {% if warnings %}
+      {% if warning_summary.high %}
+        <section class="warnings-overview warnings-overview-high"><div><h2>High-priority warnings</h2><p>{{ warning_summary.high }} high-severity issue{% if warning_summary.high != 1 %}s{% endif %} may need attention.</p></div><span>Needs attention</span></section>
+      {% else %}
+        <section class="warnings-overview"><div><h2>Review recommended</h2><p>These findings may be intentional, but they are worth reviewing as your world grows.</p></div><span>Consistency review</span></section>
+      {% endif %}
+
+      <div class="warning-list" data-filter-list data-list-label="warnings">
+        <div class="warnings-toolbar">
+          <div class="workspace-search"><input type="search" placeholder="Search warnings..." data-list-search aria-label="Search warnings"><span aria-hidden="true"></span></div>
+          <select class="warning-filter-select" data-list-severity-filter aria-label="Filter severity"><option value="">All severities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
+          <select class="warning-filter-select" data-list-category-filter aria-label="Filter category"><option value="">All categories</option><option value="Timeline">Timeline</option><option value="Relationship">Relationship</option><option value="Faction">Faction</option><option value="Logic">Logic</option><option value="Other">Other</option></select>
+          <p class="workspace-list-count" data-list-count>Showing {{ warning_summary.total }} of {{ warning_summary.total }} warnings</p>
+        </div>
+        <div class="empty-state warnings-filter-empty" data-list-empty hidden><h2>No warnings match your filters.</h2><p>Try another phrase, severity, or category.</p></div>
+        <div class="warning-list-grid">
+          {% for warning in warnings %}
+            {% set severity = warning.severity|default('low', true) %}
+            {% set category = warning.category|default('Logic', true) %}
+            {% if category == 'Timeline' %}{% set filter_category = 'Timeline' %}{% elif category == 'Relationships' %}{% set filter_category = 'Relationship' %}{% elif category == 'Politics' %}{% set filter_category = 'Faction' %}{% elif category == 'Logic' %}{% set filter_category = 'Logic' %}{% else %}{% set filter_category = 'Other' %}{% endif %}
+            <article class="warning-card warning-card-{{ severity }}" data-list-item data-severity="{{ severity }}" data-category="{{ filter_category }}" data-search-text="{{ warning.title }} {{ warning.message }} {{ warning.explanation }} {{ category }} {% for suggestion in warning.suggestions|default([], true) %}{{ suggestion }} {% endfor %}">
+              <div class="warning-card-top"><span class="warning-icon" aria-hidden="true"></span><div class="warning-card-heading"><div class="warning-card-meta"><span class="warning-badge">{{ severity|capitalize }}</span><span class="warning-category-chip">{{ category }}</span></div><h2>{{ warning.title }}</h2></div></div>
+              <p class="warning-message">{{ warning.message }}</p>
+              {% if warning.explanation or warning.suggestions %}
+                <details class="warning-details"><summary class="warning-details-toggle">Review details</summary><div class="warning-details-content">{% if warning.explanation %}<p>{{ warning.explanation }}</p>{% endif %}{% if warning.suggestions|default([], true) %}<h3>Suggestions</h3><ul class="warning-suggestions">{% for suggestion in warning.suggestions %}<li>{{ suggestion }}</li>{% endfor %}</ul>{% endif %}</div></details>
+              {% endif %}
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="workspace-empty-state warnings-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No logic warnings found.</h2><p>Your world looks consistent for now. Keep building, connecting, and reviewing as your story grows.</p><div><a class="btn-workspace-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Open Graph Workspace</a><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a></div></div>
+    {% endif %}
+  </section>
+{% endblock %}

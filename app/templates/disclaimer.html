@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Disclaimer - Zirel{% endblock %}
+
+{% block content %}
+  <div class="public-page legal-page legal-document-page">
+    <header class="public-hero legal-hero">
+      <div class="eyebrow mb-2">Legal Foundation v1</div>
+      <h1>Disclaimer</h1>
+      <p class="text-secondary mb-3">What Zirel can and cannot promise as a creative consistency tool.</p>
+      <p class="legal-note">This is an early MVP draft and not legal advice.</p>
+    </header>
+
+    <article class="legal-document-card">
+      <section class="legal-section">
+        <h2>Creative Assistance Only</h2>
+        <ul class="legal-dash-list">
+          <li>Zirel is a creative organization and review tool.</li>
+          <li>It is intended to help writers and world-builders think through fictional projects, not to make final creative decisions for them.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Logic Warnings Are Suggestions</h2>
+        <ul class="legal-dash-list">
+          <li>Zirel helps identify possible logic issues, but it does not guarantee that a fictional world, book, game, or screenplay is error-free.</li>
+          <li>Warnings should be reviewed as suggestions and may reflect incomplete data, intentional story choices, or limitations in the rule-based checks.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>No Publishing or Legal Guarantee</h2>
+        <ul class="legal-dash-list">
+          <li>Zirel does not guarantee publishing success, marketability, legal clearance, originality, copyright status, or compliance with platform, publisher, or production requirements.</li>
+          <li>Users should seek appropriate professional guidance for legal, publishing, business, or commercial decisions.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>User Responsibility</h2>
+        <ul class="legal-dash-list">
+          <li>Users are responsible for final creative, legal, publishing, and commercial decisions.</li>
+          <li>Review your own work carefully and do not rely on Zirel as the only source of truth for your project.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Future AI Features</h2>
+        <ul class="legal-dash-list">
+          <li>If AI features are added later, AI outputs may be inaccurate, incomplete, or unsuitable for your project.</li>
+          <li>Any AI-generated output should be reviewed and edited by the user before being saved or used creatively.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Limitation of Liability</h2>
+        <ul class="legal-dash-list">
+          <li>Zirel is provided as an early MVP.</li>
+          <li>To the extent permitted by law, the project owner or maintainer is not responsible for losses arising from reliance on app output, warnings, exports, imports, or future AI features.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Contact</h2>
+        <ul class="legal-dash-list">
+          <li>For questions about this disclaimer, contact the Zirel project owner or maintainer through the <a href="{{ url_for('main.contact') }}">Contact page</a>.</li>
+        </ul>
+      </section>
+    </article>
+
+    <div class="legal-page-links">
+      <a class="btn btn-primary" href="{{ url_for('main.legal') }}">View Legal Center</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.terms') }}">Terms of Service</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.privacy') }}">Privacy Policy</a>
+    </div>
+  </div>
+{% endblock %}

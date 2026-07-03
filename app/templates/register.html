@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - Zirel{% endblock %}
+
+{% block content %}
+  <div class="auth-page auth-register-page">
+    <a class="auth-brand" href="{{ url_for('main.index') }}"><span class="auth-brand-mark" aria-hidden="true"></span>Zirel</a>
+    <div class="auth-orbit auth-orbit-one"></div><div class="auth-orbit auth-orbit-two"></div>
+    <section class="auth-card auth-card-register">
+      <nav class="auth-mode-switcher" aria-label="Authentication pages"><a href="{{ url_for('main.login') }}">Log in</a><a class="active" href="{{ url_for('main.register') }}">Register</a></nav>
+      <div class="auth-icon auth-icon-register" aria-hidden="true"><span></span></div>
+      <div class="auth-heading"><h1>Create your <span>account</span></h1><p>Join Zirel and start mapping consistent worlds.</p></div>
+      <form method="post" class="auth-form">
+        <div class="auth-field"><label for="username">Username</label><input type="text" id="username" name="username" value="{{ request.form.get('username', '') }}" placeholder="Choose a username" required autofocus></div>
+        <div class="auth-field"><label for="email">Email</label><input type="email" id="email" name="email" value="{{ request.form.get('email', '') }}" placeholder="you@example.com" required></div>
+        <div class="auth-field"><label for="role">What describes you best?</label><select id="role" name="role" required><option value="" disabled {% if not request.form.get('role') %}selected{% endif %}>Select your role</option>{% for option in ["Writer", "Game Master", "Worldbuilder", "Screenwriter", "Game Developer", "Narrative Designer", "Other"] %}<option value="{{ option }}" {% if request.form.get('role') == option %}selected{% endif %}>{{ option }}</option>{% endfor %}</select></div>
+        <div class="auth-field"><label for="password">Password</label><input type="password" id="password" name="password" placeholder="Create a password" required></div>
+        <div class="password-strength" data-password-strength>
+          <div class="password-strength-heading"><span>Password strength</span><span class="strength-label" data-strength-label>Enter password</span></div>
+          <div class="strength-bars" aria-hidden="true"><span class="strength-bar"></span><span class="strength-bar"></span><span class="strength-bar"></span><span class="strength-bar"></span></div>
+        </div>
+        <div class="auth-field"><label for="confirm_password">Confirm password</label><input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" required></div>
+        <label class="auth-agreement"><input type="checkbox" name="terms_agreed" value="accepted" {% if request.form.get('terms_agreed') %}checked{% endif %} required><span>I agree to the <a href="{{ url_for('main.terms') }}">Terms of Service</a> and <a href="{{ url_for('main.privacy') }}">Privacy Policy</a></span></label>
+        <button class="btn auth-submit" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
+      </form>
+    </section>
+    <div class="auth-trust-row"><article><span class="trust-mark trust-private"></span><div><h2>Private workspace</h2><p>Your projects stay in your account.</p></div></article><article><span class="trust-mark trust-portable"></span><div><h2>Data portability</h2><p>Export and import your worlds as JSON.</p></div></article><article><span class="trust-mark trust-creators"></span><div><h2>Built for creators</h2><p>Designed for writers, game masters, and worldbuilders.</p></div></article></div>
+  </div>
+  <script src="{{ url_for('static', filename='auth.js') }}"></script>
+{% endblock %}

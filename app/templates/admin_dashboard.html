@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Zirel{% endblock %}
+
+{% block content %}
+  <section class="app-workspace admin-page workspace-shell">
+    <header class="workspace-header admin-header">
+      <div>
+        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><span>Admin</span><span>/</span><span>Dashboard</span></nav>
+        <div class="workspace-eyebrow">Beta management</div>
+        <h1>Admin Dashboard</h1>
+        <p>Monitor beta activity, users, projects, feedback, and contact messages.</p>
+      </div>
+    </header>
+
+    <nav class="admin-nav" aria-label="Admin navigation">
+      <a class="active" href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_users') }}">Users</a>
+      <a href="{{ url_for('main.admin_feedback') }}">Feedback</a>
+      <a href="{{ url_for('main.admin_contact') }}">Contact Messages</a>
+      <a href="{{ url_for('main.admin_wishlist') }}">Wishlist</a>
+    </nav>
+
+    <div class="admin-stat-grid">
+      <article class="admin-stat-card admin-stat-users"><span class="admin-stat-icon"></span><div><span>Total users</span><strong>{{ stats.users }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-projects"><span class="admin-stat-icon"></span><div><span>Total projects</span><strong>{{ stats.projects }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-characters"><span class="admin-stat-icon"></span><div><span>Characters</span><strong>{{ stats.characters }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-factions"><span class="admin-stat-icon"></span><div><span>Factions</span><strong>{{ stats.factions }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-events"><span class="admin-stat-icon"></span><div><span>Events</span><strong>{{ stats.events }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-relations"><span class="admin-stat-icon"></span><div><span>Relations</span><strong>{{ stats.relations }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-feedback"><span class="admin-stat-icon"></span><div><span>Feedback messages</span><strong>{{ stats.feedback }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-contact"><span class="admin-stat-icon"></span><div><span>Contact messages</span><strong>{{ stats.contact }}</strong></div></article>
+      <article class="admin-stat-card admin-stat-wishlist"><span class="admin-stat-icon"></span><div><span>Wishlist entries</span><strong>{{ stats.wishlist }}</strong></div></article>
+    </div>
+
+    <div class="admin-section-grid">
+      <section class="admin-panel">
+        <header><div><div class="workspace-eyebrow">Latest</div><h2>Users</h2></div><a class="btn-workspace-secondary" href="{{ url_for('main.admin_users') }}">View all users</a></header>
+        {% if users %}<div class="admin-mini-list">{% for user in users %}<article><div><strong>{{ user.username }}</strong><span>{{ user.email }}</span></div><div><span class="admin-badge {% if user.is_admin %}admin-badge-admin{% endif %}">{% if user.is_admin %}Admin{% else %}User{% endif %}</span><small>{{ user.created_at.strftime("%b %d, %Y") }}</small></div></article>{% endfor %}</div>{% else %}<p class="admin-panel-empty">No users registered yet.</p>{% endif %}
+      </section>
+
+      <section class="admin-panel">
+        <header><div><div class="workspace-eyebrow">Latest</div><h2>Feedback</h2></div><a class="btn-workspace-secondary" href="{{ url_for('main.admin_feedback') }}">View all feedback</a></header>
+        {% if feedback_entries %}<div class="admin-mini-list">{% for entry in feedback_entries %}<article><div><strong>{{ entry.name or "Anonymous tester" }}</strong><span>{{ entry.role or "No role" }}{% if entry.email %} &middot; {{ entry.email }}{% endif %}</span><p>{{ entry.message[:130] }}{% if entry.message|length > 130 %}...{% endif %}</p></div><small>{{ entry.created_at.strftime("%b %d, %H:%M") }} UTC</small></article>{% endfor %}</div>{% else %}<p class="admin-panel-empty">No feedback submitted yet.</p>{% endif %}
+      </section>
+
+      <section class="admin-panel">
+        <header><div><div class="workspace-eyebrow">Latest</div><h2>Contact Messages</h2></div><a class="btn-workspace-secondary" href="{{ url_for('main.admin_contact') }}">View all messages</a></header>
+        {% if contact_messages %}<div class="admin-mini-list">{% for contact_message in contact_messages %}<article><div><strong>{{ contact_message.name or "Anonymous visitor" }}</strong><span>{{ contact_message.reason or "Other" }} &middot; {{ contact_message.email }}</span>{% if contact_message.subject %}<b>{{ contact_message.subject }}</b>{% endif %}<p>{{ contact_message.message[:130] }}{% if contact_message.message|length > 130 %}...{% endif %}</p></div><small>{{ contact_message.created_at.strftime("%b %d, %H:%M") }} UTC</small></article>{% endfor %}</div>{% else %}<p class="admin-panel-empty">No contact messages yet.</p>{% endif %}
+      </section>
+    </div>
+  </section>
+{% endblock %}

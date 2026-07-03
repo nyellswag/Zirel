@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Terms of Service - Zirel{% endblock %}
+
+{% block content %}
+  <div class="public-page legal-page legal-document-page">
+    <header class="public-hero legal-hero">
+      <div class="eyebrow mb-2">Legal Foundation v1</div>
+      <h1>Terms of Service</h1>
+      <p class="text-secondary mb-3">The basic rules for using Zirel during the MVP and beta stage.</p>
+      <p class="legal-note">This is an early MVP draft and not legal advice.</p>
+    </header>
+
+    <article class="legal-document-card">
+      <section class="legal-section">
+        <h2>Introduction</h2>
+        <ul class="legal-dash-list">
+          <li>These Terms of Service describe the basic rules for using Zirel, an early MVP workspace for writers, game masters, and world-builders.</li>
+          <li>By using Zirel, you agree to use the service responsibly and understand that the product is still evolving.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Use of the Service</h2>
+        <ul class="legal-dash-list">
+          <li>You may use Zirel to create projects, organize fictional entities, connect relationships, review logic warnings, explore graph views, and export project data.</li>
+          <li>You are responsible for the information you enter and for how you use the output of the app.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>User Content</h2>
+        <ul class="legal-dash-list">
+          <li>User content includes the fictional worlds, characters, factions, events, stories, notes, descriptions, relationships, and other material you enter into Zirel.</li>
+          <li>You should avoid adding highly sensitive, confidential, or irreplaceable writing material during the early beta stage.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Content Ownership</h2>
+        <ul class="legal-dash-list">
+          <li>You keep ownership of your fictional worlds, characters, factions, events, stories, notes, and relationships.</li>
+          <li>Zirel does not claim ownership over user-created content.</li>
+          <li>By using the service, you grant Zirel limited permission to store, display, process, analyze, and export your content only as needed to provide the service.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Prohibited Use</h2>
+        <ul class="legal-dash-list">
+          <li>You should not use Zirel to store unlawful material, infringe on others' rights, attack the service, interfere with other users, or attempt to misuse the app or its data.</li>
+          <li>You should not attempt to bypass route protection, access another user's private data, or disrupt the service.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Beta / MVP Notice</h2>
+        <ul class="legal-dash-list">
+          <li>Zirel is an early MVP. Features may change, break, be removed, or behave unexpectedly while the product is being developed.</li>
+          <li>Users should keep backups of important projects by using JSON export.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>No Guarantee of Perfect Accuracy</h2>
+        <ul class="legal-dash-list">
+          <li>Zirel may help identify possible contradictions, but it does not guarantee that a fictional world, story, book, game, or screenplay is complete, accurate, or error-free.</li>
+          <li>Logic warnings are suggestions for review and may miss issues or flag intentional story choices.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Changes to the Service</h2>
+        <ul class="legal-dash-list">
+          <li>We may update, change, or discontinue parts of Zirel as the MVP evolves.</li>
+          <li>Future versions may include new features, notices, or terms.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>Contact</h2>
+        <ul class="legal-dash-list">
+          <li>For questions about these terms, contact the Zirel project owner or maintainer through the <a href="{{ url_for('main.contact') }}">Contact page</a>.</li>
+        </ul>
+      </section>
+    </article>
+
+    <div class="legal-page-links">
+      <a class="btn btn-primary" href="{{ url_for('main.legal') }}">View Legal Center</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.privacy') }}">Privacy Policy</a>
+      <a class="btn btn-outline-secondary" href="{{ url_for('main.disclaimer') }}">Disclaimer</a>
+    </div>
+  </div>
+{% endblock %}

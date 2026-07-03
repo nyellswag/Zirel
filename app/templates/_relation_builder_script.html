@@ -1,0 +1,84 @@
+<script>
+  (() => {
+    const sourceSelect = document.getElementById("source_entity");
+    const relationSelect = document.getElementById("relation_type");
+    const targetSelect = document.getElementById("target_entity");
+    const preview = document.getElementById("relation-preview");
+    const helper = document.getElementById("relation-helper");
+    const tip = document.getElementById("relation-tip");
+
+    const relationLabels = {
+      hates: "Hates",
+      allied_with: "Allied with",
+      member_of: "Member of",
+      loyal_to: "Loyal to",
+      participated_in: "Participated in",
+      rules: "Rules",
+      located_in: "Located in"
+    };
+
+    function selectedLabel(select) {
+      if (!select.value) {
+        return "";
+      }
+      return select.options[select.selectedIndex].text.trim();
+    }
+
+    function selectedType(select) {
+      if (!select.value || !select.value.includes(":")) {
+        return "";
+      }
+      return select.value.split(":")[0];
+    }
+
+    function updateRelationBuilder() {
+      const sourceLabel = selectedLabel(sourceSelect);
+      const relationType = relationSelect.value;
+      const targetLabel = selectedLabel(targetSelect);
+      const targetType = selectedType(targetSelect);
+      const selectedRelationOption = relationSelect.options[relationSelect.selectedIndex];
+
+      helper.textContent = selectedRelationOption?.dataset.helper || "Choose a relation type to see guidance.";
+
+      if (sourceLabel && relationType && targetLabel) {
+        const source = document.createElement("span");
+        source.className = "relation-preview-node";
+        source.textContent = sourceLabel;
+        const relation = document.createElement("span");
+        relation.className = "relation-preview-type";
+        relation.textContent = relationLabels[relationType];
+        const target = document.createElement("span");
+        target.className = "relation-preview-node";
+        target.textContent = targetLabel;
+        const arrowOne = document.createElement("span");
+        arrowOne.className = "relation-preview-arrow";
+        arrowOne.textContent = "->";
+        const arrowTwo = arrowOne.cloneNode(true);
+
+        preview.replaceChildren(source, arrowOne, relation, arrowTwo, target);
+      } else {
+        preview.textContent = "Select a source, relation type, and target to preview the connection.";
+      }
+
+      let tipText = "";
+      if (relationType === "member_of" && targetType && targetType !== "faction") {
+        tipText = "Tip: member_of usually points to a faction.";
+      }
+      if (relationType === "participated_in" && targetType && targetType !== "event") {
+        tipText = "Tip: participated_in usually points to an event.";
+      }
+      if (relationType === "hates" && targetType && targetType !== "character") {
+        tipText = "Tip: hates usually connects a character to another character.";
+      }
+
+      tip.textContent = tipText;
+      tip.hidden = !tipText;
+    }
+
+    [sourceSelect, relationSelect, targetSelect].forEach((select) => {
+      select.addEventListener("change", updateRelationBuilder);
+    });
+
+    updateRelationBuilder();
+  })();
+</script>

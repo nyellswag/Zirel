@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Import Project - Zirel{% endblock %}
+
+{% block content %}
+  <section class="app-workspace project-form-page workspace-shell">
+    <header class="workspace-header project-form-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><span>Import</span></nav><div class="workspace-eyebrow">Project portability</div><h1>Import a Zirel project</h1><p>Upload a JSON export file to restore or duplicate a world.</p></div></header>
+    <div class="project-form-shell">
+      <form class="project-form-card import-panel" method="post" enctype="multipart/form-data">
+        <div class="form-callout"><strong>Import creates a new project.</strong><span>Existing projects will not be overwritten.</span></div>
+        <label class="form-label" for="import_file">Zirel JSON export</label>
+        <label class="import-dropzone" for="import_file"><span class="import-dropzone-mark" aria-hidden="true"></span><strong>Choose a JSON export file</strong><small>Accepted format: Zirel JSON export.</small><input type="file" id="import_file" name="import_file" accept=".json,application/json" required></label>
+        <p class="project-form-field-help">Warnings are not imported. Zirel will regenerate them from the imported project data.</p>
+        <div class="form-actions"><button class="btn-workspace-primary" type="submit">Import Project</button><a class="btn-workspace-secondary" href="{{ url_for('main.projects') }}">Back to Projects</a></div>
+      </form>
+      <aside class="project-helper-card"><div class="workspace-eyebrow">Before you import</div><h2>Bring a world back into the workspace.</h2><p>Exports contain project details, characters, factions, events, and relations. Import uses them to create a separate project you can safely explore or edit.</p></aside>
+    </div>
+  </section>
+{% endblock %}

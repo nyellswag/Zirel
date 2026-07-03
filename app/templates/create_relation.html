@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Create Relation - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace relation-builder-shell workspace-shell">
+    <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a><span>/</span><span>New</span></nav>
+    <header class="form-shell-heading relation-builder-header"><div><div class="workspace-eyebrow">Relationship builder</div><h1>Create Relation</h1><p>Choose the entities and the connection that gives their story meaning.</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.relations', project_id=project.id) }}">Back to Relations</a></header>
+    <form method="post" class="relation-builder form-card">
+      <div class="relation-builder-grid">
+        <div class="relation-field relation-builder-node">
+          <label for="source_entity" class="form-label">Source entity</label>
+          <select class="form-select relation-watch" id="source_entity" name="source_entity" required>
+            <option value="">Choose source</option>
+            {% for group_label, choices in grouped_entity_choices.items() %}
+              {% if choices %}
+                <optgroup label="{{ group_label }}">
+                  {% for choice in choices %}
+                    <option value="{{ choice.value }}">{{ choice.label }}</option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="relation-arrow relation-arrow-one" aria-hidden="true">&rarr;</div>
+
+        <div class="relation-field relation-builder-type">
+          <label for="relation_type" class="form-label">Relation type</label>
+          <select class="form-select relation-watch" id="relation_type" name="relation_type" required>
+            <option value="">Choose relation type</option>
+            {% for relation_type in relation_types %}
+              <option value="{{ relation_type }}" data-helper="{{ relation_type_helpers[relation_type] }}">
+                {{ relation_type_labels[relation_type] }}
+              </option>
+            {% endfor %}
+          </select>
+          <div class="relation-helper" id="relation-helper">Choose a relation type to see guidance.</div>
+        </div>
+
+        <div class="relation-arrow relation-arrow-two" aria-hidden="true">&rarr;</div>
+
+        <div class="relation-field relation-builder-node">
+          <label for="target_entity" class="form-label">Target entity</label>
+          <select class="form-select relation-watch" id="target_entity" name="target_entity" required>
+            <option value="">Choose target</option>
+            {% for group_label, choices in grouped_entity_choices.items() %}
+              {% if choices %}
+                <optgroup label="{{ group_label }}">
+                  {% for choice in choices %}
+                    <option value="{{ choice.value }}">{{ choice.label }}</option>
+                  {% endfor %}
+                </optgroup>
+              {% endif %}
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="relation-preview-box relation-preview">
+        <div class="relation-preview-label">Live preview</div>
+        <div class="relation-preview-content" id="relation-preview">Select a source, relation type, and target to preview the connection.</div>
+        <div class="relation-tip" id="relation-tip"></div>
+      </div>
+
+      <div class="relation-notes">
+        <label for="description" class="form-label">Relation notes</label>
+        <p>Add context, motive, or story explanation for this connection.</p>
+        <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+      </div>
+
+      <aside class="common-patterns"><h2>Common patterns</h2><ul><li>Character &rarr; member_of &rarr; Faction</li><li>Character &rarr; participated_in &rarr; Event</li><li>Faction &rarr; loyal_to &rarr; Character</li><li>Character &rarr; hates &rarr; Character</li></ul></aside>
+
+      <div class="form-card-actions">
+        <button type="submit" class="btn-workspace-primary" {% if not entity_choices %}disabled{% endif %}>Create Relation</button>
+        <a class="btn-workspace-secondary" href="{{ url_for('main.relations', project_id=project.id) }}">Cancel</a>
+      </div>
+    </form>
+  </section>
+
+  {% include "_relation_builder_script.html" %}
+{% endblock %}

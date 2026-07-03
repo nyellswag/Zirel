@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Events - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace entity-page workspace-shell">
+    <header class="workspace-header entity-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span>Events</span></nav><div class="workspace-eyebrow">World entities</div><h1>Events</h1><p>Build the timeline of battles, rituals, discoveries, and turning points in {{ project.name }}.</p></div><div class="workspace-actions entity-actions"><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a><a class="btn-workspace-secondary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace</a><a class="btn-workspace-primary" href="{{ url_for('main.create_event', project_id=project.id) }}">Add Event</a></div></header>
+    <div class="entity-stat-grid event-stat-grid"><article class="entity-stat-card"><span class="entity-stat-icon stat-events"></span><div><span>Total events</span><strong>{{ event_stats.total }}</strong></div></article><article class="entity-stat-card"><span class="entity-stat-icon stat-earliest"></span><div><span>Earliest recorded</span><strong>{{ event_stats.earliest if event_stats.earliest is not none else "-" }}</strong></div></article><article class="entity-stat-card"><span class="entity-stat-icon stat-latest"></span><div><span>Latest recorded</span><strong>{{ event_stats.latest if event_stats.latest is not none else "-" }}</strong></div></article></div>
+    {% if events %}
+      <div class="entity-list" data-filter-list data-list-label="events">
+        <form id="event-bulk-form" method="post" action="{{ url_for('main.bulk_delete_events', project_id=project.id) }}"></form>
+        <div class="entity-search-row"><div class="workspace-search"><input type="search" placeholder="Search events..." data-list-search aria-label="Search events"><span aria-hidden="true"></span></div><p class="workspace-list-count" data-list-count>Showing {{ events|length }} of {{ events|length }} events</p></div>
+        <div class="bulk-actions-bar"><span>Select events to manage them in one pass.</span><div><button class="btn-workspace-danger" type="submit" form="event-bulk-form" onclick="return confirm('Delete selected events?');">Delete selected</button><form method="post" action="{{ url_for('main.delete_all_events', project_id=project.id) }}" onsubmit="return confirm('Delete ALL events in this project? This will also delete related relations.');"><button class="btn-workspace-danger" type="submit">Delete all</button></form></div></div>
+        <div class="empty-state entity-empty-match" data-list-empty hidden><h2>No matching events found.</h2><p>Try a different name, place, or year.</p></div>
+        <div class="entity-grid">
+          {% for event in events %}
+            <article class="entity-card" data-list-item data-search-text="{{ event.name }} {{ event.description or '' }} {{ event.year if event.year is not none else '' }} {{ event.location or '' }}">
+              <header class="entity-card-header"><label class="entity-select" for="event-{{ event.id }}"><input type="checkbox" form="event-bulk-form" name="event_ids" value="{{ event.id }}" id="event-{{ event.id }}"><span>Select</span></label><span class="entity-badge status-event">Event</span></header>
+              <h2>{{ event.name }}</h2><p class="entity-description">{{ event.description or "No description yet." }}</p><div class="entity-meta"><span>Year <b>{{ event.year if event.year is not none else "Unknown" }}</b></span><span>Location <b>{{ event.location or "Unknown" }}</b></span></div>
+              <footer class="entity-card-footer"><a class="btn-workspace-secondary" href="{{ url_for('main.edit_event', project_id=project.id, event_id=event.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_event', project_id=project.id, event_id=event.id) }}" onsubmit="return confirm('Delete this event?');"><button class="btn-workspace-danger" type="submit">Delete</button></form></footer>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="workspace-empty-state entity-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No events yet.</h2><p>Start a timeline with the moments that change your world.</p><a class="btn-workspace-primary" href="{{ url_for('main.create_event', project_id=project.id) }}">Add your first event</a></div>
+    {% endif %}
+  </section>
+{% endblock %}

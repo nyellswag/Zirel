@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Legal Center - Zirel{% endblock %}
+
+{% block content %}
+  <div class="public-page legal-center document-layout">
+    <div class="public-hero legal-hero">
+      <div class="eyebrow mb-2">Legal Foundation v1</div>
+      <h1>Legal Center</h1>
+      <p class="text-secondary mb-3">These documents explain how Zirel handles user content, privacy, beta usage, and responsibility.</p>
+      <p class="legal-note">This is an early MVP legal draft and not legal advice.</p>
+    </div>
+
+    <div class="legal-center-layout document-layout">
+      <nav class="legal-center-nav document-sidebar" aria-label="Legal Center sections">
+        <a href="#terms">Terms of Service</a>
+        <a href="#privacy">Privacy Policy</a>
+        <a href="#disclaimer">Disclaimer</a>
+        <a href="#ownership">Content Ownership</a>
+        <a href="#data">Data Export &amp; Deletion</a>
+        <a href="#beta-notice">Beta Notice</a>
+        <a href="#ai-policy">Future AI Policy</a>
+        <a href="#refund-policy">Future Refund Policy</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="document-content legal-center-document">
+        <section class="legal-document-section document-section" id="terms">
+          <h2>Terms of Service</h2>
+          <ul class="legal-dash-list">
+            <li><strong>Use of the service:</strong> You may use Zirel to organize fictional worlds, entities, timelines, and relationships, review logic warnings, explore graph views, and export project data.</li>
+            <li><strong>User responsibility:</strong> You are responsible for the content you enter and for the final creative, legal, publishing, and commercial decisions connected to your work.</li>
+            <li><strong>Prohibited use:</strong> Do not use Zirel to store unlawful material, infringe others' rights, interfere with the service, or attempt to misuse app data or accounts.</li>
+            <li><strong>MVP and beta status:</strong> Zirel is an early MVP. Features may change, break, be removed, or behave unexpectedly while the product evolves.</li>
+            <li><strong>Changes to the service:</strong> We may update, change, or discontinue parts of Zirel and these draft policies as the beta develops.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="privacy">
+          <h2>Privacy Policy</h2>
+          <ul class="legal-dash-list">
+            <li><strong>Data we may store:</strong> The MVP may store account information, project names and descriptions, and the entities and relationships you create.</li>
+            <li><strong>Project content:</strong> Project content can include characters, factions, events, descriptions, relations, and dynamically generated logic warnings.</li>
+            <li><strong>Feedback and contact messages:</strong> Feedback and contact forms may store the name, email address, selected category, and message you submit.</li>
+            <li><strong>Account data:</strong> Accounts store a username, email address, password hash, role, admin status, and account creation date. Passwords are not stored in plain text.</li>
+            <li><strong>Data export:</strong> You can export project data as JSON. Exports help you keep a local copy and move your project data between supported Zirel workflows.</li>
+            <li><strong>Future AI data notice:</strong> Any future AI feature will include clearer information about what text is processed and how that processing works.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="disclaimer">
+          <h2>Disclaimer</h2>
+          <ul class="legal-dash-list">
+            <li><strong>Creative assistance only:</strong> Zirel is a creative organization and review tool. It does not make final creative decisions for you.</li>
+            <li><strong>Logic warnings are suggestions:</strong> Warnings identify possible inconsistencies based on recorded project data. They are prompts for review, not definitive conclusions.</li>
+            <li><strong>No guarantee of perfect accuracy:</strong> Zirel does not guarantee that a world, book, game, or screenplay is complete, accurate, publishable, or error-free.</li>
+            <li><strong>Your decisions remain yours:</strong> You remain responsible for creative, legal, publishing, and commercial decisions. Seek appropriate professional advice when needed.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="ownership">
+          <h2>Content Ownership</h2>
+          <ul class="legal-dash-list">
+            <li>Users keep ownership of their fictional worlds, characters, factions, events, stories, notes, relationships, and other creative content.</li>
+            <li>Zirel does not claim ownership over user-created content.</li>
+            <li>Users grant Zirel limited permission to store, display, process, analyze, and export their content only to provide the service.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="data">
+          <h2>Data Export &amp; Deletion</h2>
+          <ul class="legal-dash-list">
+            <li>Projects can be exported as JSON, helping with backups and portability.</li>
+            <li>Import and export are intended to give users more control over their work.</li>
+            <li>Future account and data deletion tools may be added.</li>
+            <li>During beta, users may contact the project owner with a deletion request.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="beta-notice">
+          <h2>Beta Notice</h2>
+          <ul class="legal-dash-list">
+            <li>Zirel is an early MVP/beta.</li>
+            <li>Features may change, and bugs or data loss are possible in early testing.</li>
+            <li>Users should avoid adding highly sensitive, confidential, or irreplaceable material during beta.</li>
+            <li>Users should export backups of projects they want to keep.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="ai-policy">
+          <h2>Future AI Policy</h2>
+          <ul class="legal-dash-list">
+            <li>AI features are not active unless they are clearly added in a future release.</li>
+            <li>If introduced, users will receive clearer information about how text is processed.</li>
+            <li>AI outputs may be inaccurate and should always be reviewed by the user.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="refund-policy">
+          <h2>Future Refund Policy</h2>
+          <ul class="legal-dash-list">
+            <li>Zirel is not currently accepting payments through this site.</li>
+            <li>If paid features, donations, or subscriptions are added later, clear payment and refund terms will be provided before they take effect.</li>
+          </ul>
+        </section>
+
+        <section class="legal-document-section document-section" id="contact">
+          <h2>Contact</h2>
+          <ul class="legal-dash-list">
+            <li>Questions about these draft policies or a beta deletion request can be sent through the <a href="{{ url_for('main.contact') }}">Contact page</a>.</li>
+          </ul>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock %}

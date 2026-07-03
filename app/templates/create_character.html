@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{% if is_edit %}Edit Character{% else %}Create Character{% endif %} - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace form-shell workspace-shell">
+    <div class="form-shell-inner">
+      <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.characters', project_id=project.id) }}">Characters</a><span>/</span><span>{% if is_edit %}Edit{% else %}New{% endif %}</span></nav>
+      <div class="form-shell-heading"><div><div class="workspace-eyebrow">World entity</div><h1>{% if is_edit %}Edit Character{% else %}Create Character{% endif %}</h1><p>{% if is_edit %}Refine this character's role in the world.{% else %}Add a person, creature, or key figure to {{ project.name }}.{% endif %}</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.characters', project_id=project.id) }}">Back to Characters</a></div>
+      <form method="post" class="form-card">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ character.name if character else '' }}" required autofocus>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="4">{{ character.description if character else '' }}</textarea>
+        </div>
+        <div class="mb-3">
+          <label for="status" class="form-label">Status</label>
+          <select class="form-select" id="status" name="status">
+            <option value="alive" {% if character and character.status == "alive" %}selected{% endif %}>Alive</option>
+            <option value="dead" {% if character and character.status == "dead" %}selected{% endif %}>Dead</option>
+            <option value="unknown" {% if not character or character.status == "unknown" %}selected{% endif %}>Unknown</option>
+          </select>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="birth_year" class="form-label">Birth Year</label>
+            <input type="number" class="form-control" id="birth_year" name="birth_year" value="{{ character.birth_year if character and character.birth_year is not none else '' }}">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="death_year" class="form-label">Death Year</label>
+            <input type="number" class="form-control" id="death_year" name="death_year" value="{{ character.death_year if character and character.death_year is not none else '' }}">
+          </div>
+        </div>
+        <div class="form-card-actions">
+          <button type="submit" class="btn-workspace-primary">{% if is_edit %}Save Changes{% else %}Create Character{% endif %}</button>
+          <a class="btn-workspace-secondary" href="{{ url_for('main.characters', project_id=project.id) }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Feedback - Zirel{% endblock %}
+
+{% block content %}
+  <section class="app-workspace admin-page workspace-shell">
+    <header class="workspace-header admin-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a><span>/</span><span>Feedback</span></nav><div class="workspace-eyebrow">Beta management</div><h1>Feedback</h1><p>Review beta tester feedback and product suggestions.</p></div></header>
+    <nav class="admin-nav" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users</a><a class="active" href="{{ url_for('main.admin_feedback') }}">Feedback</a><a href="{{ url_for('main.admin_contact') }}">Contact Messages</a><a href="{{ url_for('main.admin_wishlist') }}">Wishlist</a></nav>
+    {% if feedback_entries %}
+      <div class="admin-list" data-filter-list data-list-label="feedback messages">
+        <div class="admin-toolbar"><div class="workspace-search"><input type="search" placeholder="Search feedback..." data-list-search aria-label="Search feedback"><span aria-hidden="true"></span></div><select class="admin-filter-select" data-list-role-filter aria-label="Filter feedback role"><option value="">All roles</option><option value="Writer">Writer</option><option value="Game Master">Game Master</option><option value="Worldbuilder">World-builder</option><option value="Game Developer">Game Developer</option><option value="Screenwriter">Screenwriter</option><option value="Narrative Designer">Narrative Designer</option><option value="Other">Other</option></select><p class="workspace-list-count" data-list-count>Showing {{ feedback_entries|length }} of {{ feedback_entries|length }} feedback messages</p></div>
+        <div class="admin-empty-state" data-list-empty hidden><h2>No feedback matches your filters.</h2><p>Try another phrase or participant role.</p></div>
+        <div class="admin-message-list">{% for entry in feedback_entries %}<article class="admin-message-card" data-list-item data-role="{{ entry.role or '' }}" data-search-text="{{ entry.name or '' }} {{ entry.email or '' }} {{ entry.role or '' }} {{ entry.message }}"><header><div><span class="admin-badge">{{ entry.role or "No role" }}</span><h2>{{ entry.name or "Anonymous tester" }}</h2><a href="mailto:{{ entry.email }}">{{ entry.email or "No email provided" }}</a></div><div class="admin-card-actions"><time>{{ entry.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</time><form method="post" action="{{ url_for('main.admin_delete_feedback', feedback_id=entry.id) }}" onsubmit="return confirm('Delete this feedback message?');"><button class="admin-delete-x" type="submit" aria-label="Delete feedback">&times;</button></form></div></header><p>{{ entry.message }}</p></article>{% endfor %}</div>
+      </div>
+    {% else %}
+      <div class="workspace-empty-state admin-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No feedback submitted yet.</h2><p>New beta feedback will appear here.</p></div>
+    {% endif %}
+  </section>
+{% endblock %}

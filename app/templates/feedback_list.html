@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback Submissions - Zirel{% endblock %}
+
+{% block content %}
+  <div class="page-header d-flex justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <div class="eyebrow mb-2">Local MVP</div>
+      <h1 class="h3 mb-1">Feedback submissions</h1>
+      <p class="text-secondary mb-0">{{ feedback_entries|length }} submitted responses.</p>
+    </div>
+    <a class="btn btn-outline-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
+  </div>
+
+  {% if feedback_entries %}
+    <div class="feedback-list">
+      {% for entry in feedback_entries %}
+        <article class="feedback-entry">
+          <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-2">
+            <div>
+              <h2 class="h6 mb-1">{{ entry.name or "Anonymous tester" }}</h2>
+              <div class="feedback-entry-meta">
+                {{ entry.role or "No role provided" }}{% if entry.email %} · {{ entry.email }}{% endif %}
+              </div>
+            </div>
+            <time class="feedback-entry-meta" datetime="{{ entry.created_at.isoformat() }}">
+              {{ entry.created_at.strftime("%Y-%m-%d %H:%M") }} UTC
+            </time>
+          </div>
+          <p class="mb-0">{{ entry.message }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state p-4 text-center">
+      <h2 class="h5">No feedback submitted yet.</h2>
+      <p class="text-secondary mb-3">Early tester notes will appear here.</p>
+      <a class="btn btn-primary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
+    </div>
+  {% endif %}
+{% endblock %}

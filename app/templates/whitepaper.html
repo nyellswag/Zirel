@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Zirel Whitepaper{% endblock %}
+
+{% block content %}
+  <div class="public-page whitepaper-page document-layout">
+    <div class="public-hero legal-hero">
+      <div class="eyebrow mb-2">Product vision</div>
+      <h1>Zirel Whitepaper</h1>
+      <p class="text-secondary mb-0">A product vision for graph-based worldbuilding, relationship mapping, and logic consistency checks.</p>
+      <div class="whitepaper-mvp-note">Zirel is currently an early MVP. This document describes the product direction and may change as the project evolves.</div>
+    </div>
+
+    <div class="whitepaper-layout document-layout">
+      <nav class="whitepaper-nav document-sidebar" aria-label="Whitepaper sections">
+        <a href="#introduction">Introduction</a>
+        <a href="#problem">The Problem</a>
+        <a href="#users">Target Users</a>
+        <a href="#concept">Product Concept</a>
+        <a href="#data-model">Core Data Model</a>
+        <a href="#logic-engine">Logic Engine</a>
+        <a href="#graph">Graph Workspace</a>
+        <a href="#ownership">Data Ownership</a>
+        <a href="#mvp">Current MVP</a>
+        <a href="#ai">Future AI Direction</a>
+        <a href="#roadmap">Roadmap Summary</a>
+        <a href="#beta">Beta Status</a>
+      </nav>
+
+      <div class="document-content">
+        <section class="whitepaper-section document-section" id="introduction">
+          <h2>1. Introduction</h2>
+          <p>Zirel is a worldbuilding logic workspace for writers, game masters, screenwriters, and creators of fictional universes. It gives creative teams and solo creators a structured place to map the people, groups, events, and relationships that make a setting feel alive.</p>
+        </section>
+
+        <section class="whitepaper-section document-section" id="problem">
+          <h2>2. The Problem</h2>
+          <p>As a fictional world grows, its characters, factions, events, timelines, and relationships become difficult to keep consistent. Notes can spread across documents, and a small change to one character may quietly affect a battle, an alliance, or an entire timeline. Zirel is intended to make those connections visible and easier to review.</p>
+        </section>
+
+        <section class="whitepaper-section document-section" id="users">
+          <h2>3. Target Users</h2>
+          <ul class="whitepaper-list">
+            <li>Writers</li>
+            <li>Game masters</li>
+            <li>Screenwriters</li>
+            <li>Indie game developers</li>
+            <li>Narrative designers</li>
+            <li>World-builders</li>
+          </ul>
+        </section>
+
+        <section class="whitepaper-section document-section" id="concept">
+          <h2>4. Product Concept</h2>
+          <p>Zirel lets users structure worlds through projects, entities, typed relationships, logic warnings, and graph visualization. The goal is not to replace creative writing tools, but to provide a dedicated layer for examining how the moving parts of a fictional universe fit together.</p>
+        </section>
+
+        <section class="whitepaper-section document-section" id="data-model">
+          <h2>5. Core Data Model</h2>
+          <p>The current MVP is built around a small set of connected entities:</p>
+          <ul class="whitepaper-list">
+            <li><strong>Projects:</strong> private worldbuilding workspaces.</li>
+            <li><strong>Characters:</strong> named figures with descriptions, status, and timeline details.</li>
+            <li><strong>Factions:</strong> groups, orders, governments, guilds, or alliances.</li>
+            <li><strong>Events:</strong> story moments, battles, discoveries, and timeline points.</li>
+            <li><strong>Relations:</strong> typed links between entities, such as member_of, hates, or participated_in.</li>
+          </ul>
+        </section>
+
+        <section class="whitepaper-section document-section" id="logic-engine">
+          <h2>6. Logic Engine</h2>
+          <p>The current logic engine is rule-based. It provides early consistency checks rather than claiming to understand a story completely. Current checks can identify potential issues such as:</p>
+          <ul class="whitepaper-list">
+            <li>Dead characters appearing in events after their recorded death.</li>
+            <li>Characters participating in events before their recorded birth.</li>
+            <li>Destroyed factions appearing in later events.</li>
+            <li>One-sided hostility between characters.</li>
+            <li>Internal faction conflicts involving membership, loyalty, and hostility.</li>
+          </ul>
+        </section>
+
+        <section class="whitepaper-section document-section" id="graph">
+          <h2>7. Graph Workspace</h2>
+          <p>The Graph Workspace visualizes a project as an interactive network. Nodes represent characters, factions, and events; relation lines show how they connect. The current workspace includes filters, search, selected-node focus, connected-node exploration, and a details panel for inspected nodes and relations.</p>
+        </section>
+
+        <section class="whitepaper-section document-section" id="ownership">
+          <h2>8. Data Ownership and Portability</h2>
+          <p>Users own their creative content. Zirel does not claim ownership over fictional worlds, notes, characters, or story ideas. JSON export and import support portability and backups, so project data is not locked into a single workflow.</p>
+        </section>
+
+        <section class="whitepaper-section document-section" id="mvp">
+          <h2>9. Current MVP</h2>
+          <p>What exists today:</p>
+          <ul class="whitepaper-list">
+            <li>User accounts and protected user projects.</li>
+            <li>CRUD for projects, characters, factions, events, and relations.</li>
+            <li>A relationship builder and bulk management actions.</li>
+            <li>Logic warnings and the Graph Workspace.</li>
+            <li>JSON export and import.</li>
+            <li>Feedback and contact forms.</li>
+            <li>An admin dashboard for beta management.</li>
+          </ul>
+        </section>
+
+        <section class="whitepaper-section document-section" id="ai">
+          <h2>10. Future AI Direction</h2>
+          <p>Future AI-assisted workflows may analyze scenes, extract possible facts from text, suggest relations, or help flag potential inconsistencies. Any AI suggestion should remain reviewable by the user before it is saved. AI features are not active unless clearly added in a future release.</p>
+        </section>
+
+        <section class="whitepaper-section document-section" id="roadmap">
+          <h2>11. Roadmap Summary</h2>
+          <ul class="whitepaper-list">
+            <li>Stronger graph tools.</li>
+            <li>A better warning system.</li>
+            <li>Collaboration.</li>
+            <li>User settings and cloud sync.</li>
+            <li>Export improvements.</li>
+            <li>Possible paid plans later, with clear terms if introduced.</li>
+          </ul>
+        </section>
+
+        <section class="whitepaper-section document-section" id="beta">
+          <h2>12. Beta Status</h2>
+          <p>Zirel is in early beta. Testers should avoid highly sensitive or irreplaceable content, export backups of important projects, and expect features to evolve. Feedback is especially valuable now because it helps decide what becomes more reliable, more useful, and more focused next.</p>
+        </section>
+
+        <section class="cta-panel whitepaper-cta text-center" id="cta">
+          <h2 class="h4 mb-2">Help Shape Zirel</h2>
+          <p class="text-secondary mb-3">Explore the MVP, test a small world, and share what makes the workflow clearer or more useful.</p>
+          <div class="d-flex justify-content-center flex-wrap gap-2">
+            <a class="btn btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
+            <a class="btn btn-outline-secondary" href="{{ url_for('main.projects') }}">Open Zirel</a>
+            <a class="btn btn-outline-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
+            <a class="btn btn-outline-secondary" href="{{ url_for('main.contact') }}">Contact</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock %}

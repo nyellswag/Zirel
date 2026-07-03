@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Event - {{ project.name }}{% endblock %}
+
+{% block content %}
+  <section class="app-workspace form-shell workspace-shell">
+    <div class="form-shell-inner">
+      <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.events', project_id=project.id) }}">Events</a><span>/</span><span>Edit</span></nav>
+      <div class="form-shell-heading"><div><div class="workspace-eyebrow">World entity</div><h1>Edit Event</h1><p>Refine this moment in the timeline of {{ project.name }}.</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.events', project_id=project.id) }}">Back to Events</a></div>
+      <form method="post" class="form-card">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ event.name }}" required autofocus>
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="4">{{ event.description or "" }}</textarea>
+        </div>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="year" class="form-label">Year</label>
+            <input type="number" class="form-control" id="year" name="year" value="{{ event.year if event.year is not none else '' }}">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="location" class="form-label">Location</label>
+            <input type="text" class="form-control" id="location" name="location" value="{{ event.location or '' }}">
+          </div>
+        </div>
+        <div class="form-card-actions">
+          <button type="submit" class="btn-workspace-primary">Save Changes</button>
+          <a class="btn-workspace-secondary" href="{{ url_for('main.events', project_id=project.id) }}">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

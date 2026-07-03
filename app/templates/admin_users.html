@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Users - Zirel{% endblock %}
+
+{% block content %}
+  <section class="app-workspace admin-page workspace-shell">
+    <header class="workspace-header admin-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a><span>/</span><span>Users</span></nav><div class="workspace-eyebrow">Beta management</div><h1>Users</h1><p>View registered users and beta participants.</p></div></header>
+    <nav class="admin-nav" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a class="active" href="{{ url_for('main.admin_users') }}">Users</a><a href="{{ url_for('main.admin_feedback') }}">Feedback</a><a href="{{ url_for('main.admin_contact') }}">Contact Messages</a><a href="{{ url_for('main.admin_wishlist') }}">Wishlist</a></nav>
+    {% if users %}
+      <div class="admin-list" data-filter-list data-list-label="users">
+        <div class="admin-toolbar"><div class="workspace-search"><input type="search" placeholder="Search users..." data-list-search aria-label="Search users"><span aria-hidden="true"></span></div><p class="workspace-list-count" data-list-count>Showing {{ users|length }} of {{ users|length }} users</p></div>
+        <div class="admin-empty-state" data-list-empty hidden><h2>No users match your search.</h2><p>Try a username, email, role, or account type.</p></div>
+        <div class="admin-table-wrap"><table class="table admin-table mb-0 align-middle"><thead><tr><th>ID</th><th>Created</th><th>Username</th><th>Email</th><th>Role</th><th>Access</th><th>Projects</th><th></th></tr></thead><tbody>{% for user in users %}<tr data-list-item data-search-text="{{ user.id }} {{ user.created_at.strftime('%Y-%m-%d %H:%M') }} {{ user.username }} {{ user.email }} {{ user.role or 'Not specified' }} {% if user.is_admin %}Admin{% else %}User{% endif %} {{ user.projects|length }}"><td>#{{ user.id }}</td><td>{{ user.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</td><td><strong>{{ user.username }}</strong></td><td>{{ user.email }}</td><td>{{ user.role or "Not specified" }}</td><td><span class="admin-badge {% if user.is_admin %}admin-badge-admin{% endif %}">{% if user.is_admin %}Admin{% else %}User{% endif %}</span></td><td>{{ user.projects|length }}</td><td class="text-end">{% if user.id != current_user.id %}<form method="post" action="{{ url_for('main.admin_delete_user', user_id=user.id) }}" onsubmit="return confirm('Delete this user account and all of their projects?');"><button class="admin-delete-x" type="submit" aria-label="Delete user">&times;</button></form>{% endif %}</td></tr>{% endfor %}</tbody></table></div>
+      </div>
+    {% else %}
+      <div class="workspace-empty-state admin-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No users registered yet.</h2><p>Registered beta participants will appear here.</p></div>
+    {% endif %}
+  </section>
+{% endblock %}

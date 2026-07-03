@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Zirel{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,200;1,9..144,300&family=Share+Tech&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260703-wishlist-confirmation') }}">
+  </head>
+  {% set public_endpoints = ['main.index', 'main.beta', 'main.faq', 'main.legal', 'main.whitepaper', 'main.roadmap', 'main.feedback', 'main.contact', 'main.terms', 'main.privacy', 'main.disclaimer'] %}
+  {% set wishlist_page = request.endpoint == 'main.wishlist' %}
+  <body class="{% if wishlist_page %}wishlist-body{% elif request.endpoint in public_endpoints %}public-body{% if request.endpoint == 'main.index' %} landing-body{% endif %}{% elif request.endpoint in ['main.login', 'main.register'] %}auth-body{% else %}app-body{% endif %}">
+    {% if not wishlist_page and request.endpoint not in ['main.login', 'main.register'] %}
+    <nav class="navbar navbar-expand-lg navbar-dark app-navbar {% if request.endpoint in public_endpoints %}landing-navbar public-navbar{% endif %}">
+      <div class="container">
+        <a class="navbar-brand fw-semibold {% if request.endpoint in public_endpoints %}landing-brand{% else %}app-brand{% endif %}" href="{{ url_for('main.index') }}">
+          {% if request.endpoint in public_endpoints %}<span class="landing-brand-mark" aria-hidden="true"></span>{% else %}<span class="app-brand-mark" aria-hidden="true"></span>{% endif %}Zirel
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            {% if current_user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.projects') }}">Projects</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.feedback') }}">Feedback</a>
+              </li>
+              {% if current_user.is_admin %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>
+                </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.logout') }}">Logout</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary btn-sm" href="{{ url_for('main.create_project') }}">New Project</a>
+              </li>
+            {% elif request.endpoint in public_endpoints %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.index') }}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.beta') }}">Beta</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.roadmap') }}">Roadmap</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.whitepaper') }}">Whitepaper</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.faq') }}">FAQ</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.legal') }}">Legal</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-landing-login btn-sm" href="{{ url_for('main.login') }}">Log in</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-landing-primary btn-sm" href="{{ url_for('main.beta') }}">Join Beta</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.feedback') }}">Feedback</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-primary btn-sm" href="{{ url_for('main.register') }}">Register</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {% endif %}
+
+    <main class="{% if wishlist_page %}wishlist-shell{% elif request.endpoint == 'main.index' %}landing-shell{% elif request.endpoint in public_endpoints %}public-shell{% elif request.endpoint in ['main.login', 'main.register'] %}auth-shell{% else %}container app-shell py-4{% endif %}">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-stack">
+            {% for category, message in messages %}
+              <div class="alert app-alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+
+    {% if wishlist_page or request.endpoint in ['main.login', 'main.register'] %}
+    {% elif request.endpoint in public_endpoints %}
+      <footer class="landing-footer">
+        <div class="landing-page-container landing-footer-grid">
+          <div class="landing-footer-brand">
+            <a class="landing-brand footer-brand-lockup" href="{{ url_for('main.index') }}"><span class="landing-brand-mark" aria-hidden="true"></span>Zirel</a>
+            <p>A lore consistency workspace for writers, game creators, and worldbuilders.</p>
+          </div>
+          <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
+          <div><h2>Legal</h2><a href="{{ url_for('main.legal') }}">Legal Center</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a></div>
+          <div><h2>Contact</h2><a href="{{ url_for('main.contact') }}">Contact</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
+        </div>
+        <div class="landing-page-container landing-footer-bottom">Early MVP. Product direction may change with beta feedback.</div>
+      </footer>
+    {% else %}
+      <footer class="landing-footer app-workspace-footer">
+        <div class="landing-page-container landing-footer-grid">
+          <div class="landing-footer-brand">
+            <a class="landing-brand footer-brand-lockup" href="{{ url_for('main.index') }}"><span class="landing-brand-mark" aria-hidden="true"></span>Zirel</a>
+            <p>A lore consistency workspace for writers, game creators, and worldbuilders.</p>
+          </div>
+          <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
+          <div><h2>Legal</h2><a href="{{ url_for('main.legal') }}">Legal Center</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a></div>
+          <div><h2>Contact</h2><a href="{{ url_for('main.contact') }}">Contact</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
+        </div>
+        <div class="landing-page-container landing-footer-bottom">Early MVP. Product direction may change with beta feedback.</div>
+      </footer>
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='list_filters.js') }}"></script>
+  </body>
+</html>
