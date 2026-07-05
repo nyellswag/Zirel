@@ -81,8 +81,12 @@ def restrict_routes_during_wishlist_mode():
     if endpoint in {"static", "main.index", "main.wishlist", "main.login", "main.logout"}:
         return None
 
-    if endpoint.startswith("main.admin_") and current_user.is_authenticated and current_user.is_admin:
-        return None
+    if endpoint.startswith("main.admin_"):
+        if current_user.is_authenticated and current_user.is_admin:
+            return None
+        if not current_user.is_authenticated:
+            next_url = request.full_path if request.query_string else request.path
+            return redirect(url_for("main.login", next=next_url))
 
     return redirect(url_for("main.wishlist"))
 
@@ -271,6 +275,9 @@ def login():
     if current_user.is_authenticated:
         if current_app.config.get("WISHLIST_MODE", False):
             if current_user.is_admin:
+                next_url = request.args.get("next", "")
+                if next_url.startswith("/") and not next_url.startswith("//"):
+                    return redirect(next_url)
                 return redirect(url_for("main.admin_dashboard"))
             return redirect(url_for("main.wishlist"))
         return redirect(url_for("main.projects"))
@@ -278,6 +285,7 @@ def login():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
+        next_url = request.form.get("next", "")
         user = User.query.filter_by(email=email).first()
 
         if not user or not user.check_password(password):
@@ -288,8 +296,12 @@ def login():
         flash("Welcome back.", "success")
         if current_app.config.get("WISHLIST_MODE", False):
             if user.is_admin:
+                if next_url.startswith("/") and not next_url.startswith("//"):
+                    return redirect(next_url)
                 return redirect(url_for("main.admin_dashboard"))
             return redirect(url_for("main.wishlist"))
+        if next_url.startswith("/") and not next_url.startswith("//"):
+            return redirect(next_url)
         return redirect(url_for("main.projects"))
 
     return render_template("login.html")
