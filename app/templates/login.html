@@ -3,20 +3,85 @@
 {% block title %}Login - Zirel{% endblock %}
 
 {% block content %}
-  <div class="auth-page">
-    <a class="auth-brand" href="{{ url_for('main.index') }}"><span class="auth-brand-mark" aria-hidden="true"></span>Zirel</a>
-    <div class="auth-orbit auth-orbit-one"></div><div class="auth-orbit auth-orbit-two"></div>
-    <section class="auth-card auth-card-login">
-      <nav class="auth-mode-switcher" aria-label="Authentication pages"><a class="active" href="{{ url_for('main.login') }}">Log in</a><a href="{{ url_for('main.register') }}">Register</a></nav>
-      <div class="auth-icon auth-icon-login" aria-hidden="true"><span></span></div>
-      <div class="auth-heading"><h1>Welcome <span>back</span></h1><p>Log in to continue building and testing your worlds.</p></div>
-      <form method="post" class="auth-form">
+  <div class="auth-page auth-modal-page">
+    <div class="auth-bg-scene" aria-hidden="true">
+      <div class="auth-bg-gradient"></div>
+      <div class="auth-bg-dots"></div>
+      <div class="auth-bg-grain"></div>
+      <div class="auth-bg-vignette"></div>
+      <div class="auth-context">
+        <div class="auth-context-nav">
+          <span class="auth-context-brand"><span class="auth-context-diamond"></span>Zirel</span>
+          <span>Worldbuilding Logic Workspace</span>
+        </div>
+        <div class="auth-context-hero">
+          <span>Private narrative systems</span>
+          <strong>Map every thread<br>of your world's logic.</strong>
+        </div>
+      </div>
+    </div>
+
+    <a class="auth-brand auth-brand-floating" href="{{ url_for('main.index') }}"><span class="auth-brand-mark" aria-hidden="true"></span>Zirel</a>
+    <section class="auth-card auth-card-login auth-modal-card">
+      <a class="auth-close-btn" href="{{ url_for('main.index') }}" aria-label="Close sign in">
+        <span aria-hidden="true"></span>
+      </a>
+      <div class="auth-modal-header">
+        <svg class="auth-header-diamond" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="loginDiamond" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#8B5CF6"/>
+              <stop offset="50%" stop-color="#6366F1"/>
+              <stop offset="100%" stop-color="#38BDF8"/>
+            </linearGradient>
+          </defs>
+          <path d="M11 2 L20 11 L11 20 L2 11 Z" stroke="url(#loginDiamond)" stroke-width="1.4" fill="none"/>
+          <path d="M11 6 L16 11 L11 16 L6 11 Z" fill="url(#loginDiamond)" opacity="0.35"/>
+        </svg>
+        <span class="auth-eyebrow">Welcome Back</span>
+        <h1>Sign in to<br><em>your workspace.</em></h1>
+        <p>Pick up where you left off. Your world graph is waiting.</p>
+      </div>
+
+      <div class="auth-divider" aria-hidden="true">
+        <span></span>
+        <strong>Use email</strong>
+        <span></span>
+      </div>
+
+      <form method="post" class="auth-form auth-modal-form">
         <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
-        <div class="auth-field"><label for="email">Email</label><input type="email" id="email" name="email" value="{{ request.form.get('email', '') }}" placeholder="you@example.com" required autofocus></div>
-        <div class="auth-field"><label for="password">Password</label><input type="password" id="password" name="password" placeholder="Enter your password" required></div>
-        <button class="btn auth-submit" type="submit">Log in <span aria-hidden="true">&rarr;</span></button>
+        <div class="auth-field">
+          <label for="email">Email</label>
+          <div class="auth-input-wrap">
+            <input type="email" id="email" name="email" value="{{ request.form.get('email', '') }}" placeholder="you@zirel.app" required autofocus>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label for="password">Password</label>
+          <div class="auth-input-wrap auth-password-control">
+            <input type="password" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+            <button class="auth-eye-btn" type="button" data-password-toggle="#password" aria-label="Show password" aria-pressed="false">
+              <svg class="auth-eye-open" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <ellipse cx="8" cy="8" rx="6.5" ry="4.2" stroke="currentColor" stroke-width="1.2"/>
+                <circle cx="8" cy="8" r="1.8" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+              <svg class="auth-eye-closed" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M2 2l12 12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M6.55 3.9A7.7 7.7 0 018 3.75c4.2 0 6.5 4.25 6.5 4.25a9.2 9.2 0 01-2 2.45M9.1 9.1A1.8 1.8 0 016.9 6.9M4.55 5.15A9.6 9.6 0 001.5 8S3.8 12.25 8 12.25c.82 0 1.56-.16 2.22-.42" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button class="btn auth-submit" type="submit">Sign in <span aria-hidden="true">&rarr;</span></button>
       </form>
+      <div class="auth-modal-footer">
+        <p>New to Zirel? <a href="{{ url_for('main.register') }}">Create an account &rarr;</a></p>
+        <div class="auth-security-line">
+          Protected workspace &middot; private projects &middot; export-ready data
+        </div>
+      </div>
     </section>
-    <div class="auth-trust-row"><article><span class="trust-mark trust-private"></span><div><h2>Private workspace</h2><p>Your projects stay in your account.</p></div></article><article><span class="trust-mark trust-portable"></span><div><h2>Data portability</h2><p>Export and import your worlds as JSON.</p></div></article><article><span class="trust-mark trust-creators"></span><div><h2>Built for creators</h2><p>Designed for writers, game masters, and worldbuilders.</p></div></article></div>
   </div>
+  <script src="{{ url_for('static', filename='auth.js', v='20260705-auth-modal-v4') }}"></script>
 {% endblock %}
