@@ -1,103 +1,87 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Privacy Policy - Zirel{% endblock %}
 
 {% block content %}
-  <div class="public-page legal-page legal-document-page">
-    <header class="public-hero legal-hero">
-      <div class="eyebrow mb-2">Legal Foundation v1</div>
-      <h1>Privacy Policy</h1>
-      <p class="text-secondary mb-3">How Zirel may store, process, export, and protect project data during the MVP stage.</p>
-      <p class="legal-note">This is an early MVP draft and not legal advice.</p>
+  <div class="zirel-legal-doc" data-legal-doc>
+    <div class="legal-grain" aria-hidden="true"></div>
+    <div class="legal-dot-grid" aria-hidden="true"></div>
+    <div class="legal-progress" data-legal-progress aria-hidden="true"></div>
+
+    <nav class="legal-top-nav" aria-label="Privacy navigation">
+      <a class="legal-nav-logo" href="{{ url_for('main.index') }}"><span class="legal-nav-glyph" aria-hidden="true"></span><span>Zirel</span></a>
+      <span class="legal-nav-breadcrumb">Privacy Policy</span>
+      <div class="legal-nav-actions">
+        <a href="{{ url_for('main.register') }}">Back to signup &rarr;</a>
+        <button type="button" class="legal-print-btn" onclick="window.print()" aria-label="Print Privacy Policy">
+          <span class="legal-print-label">Print</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="legal-mobile-toc" aria-label="Privacy sections">
+      <a href="#privacy-1" data-legal-anchor="privacy-1">01</a><a href="#privacy-2" data-legal-anchor="privacy-2">02</a><a href="#privacy-3" data-legal-anchor="privacy-3">03</a><a href="#privacy-4" data-legal-anchor="privacy-4">04</a><a href="#privacy-5" data-legal-anchor="privacy-5">05</a><a href="#privacy-6" data-legal-anchor="privacy-6">06</a><a href="#privacy-7" data-legal-anchor="privacy-7">07</a><a href="#privacy-8" data-legal-anchor="privacy-8">08</a><a href="#privacy-9" data-legal-anchor="privacy-9">09</a><a href="#privacy-10" data-legal-anchor="privacy-10">10</a>
+    </div>
+
+    <header class="legal-doc-header">
+      <div class="legal-eyebrow"><span></span> Policy</div>
+      <h1>Privacy / <em>Policy.</em></h1>
+      <p>How Zirel may store, process, export, and protect project data during the MVP stage.</p>
+      <div class="legal-meta-row"><span>EARLY MVP DRAFT</span><span>NOT LEGAL ADVICE</span><span>DATA PORTABILITY</span></div>
     </header>
 
-    <article class="legal-document-card">
-      <section class="legal-section">
-        <h2>Introduction</h2>
-        <ul class="legal-dash-list">
-          <li>This Privacy Policy explains the basic types of data Zirel may store or process while helping users organize fictional worldbuilding projects.</li>
-          <li>The policy may change as hosting, accounts, collaboration, payments, or AI features are added later.</li>
-        </ul>
-      </section>
+    <div class="legal-doc-layout">
+      <aside class="legal-mini-toc" aria-label="On this page"><div class="legal-toc-inner">
+        <span class="legal-toc-label">On this page</span>
+        <a href="#privacy-1" data-legal-anchor="privacy-1">1. Introduction<span></span></a>
+        <a href="#privacy-2" data-legal-anchor="privacy-2">2. Data We May Store<span></span></a>
+        <a href="#privacy-3" data-legal-anchor="privacy-3">3. Project Content<span></span></a>
+        <a href="#privacy-4" data-legal-anchor="privacy-4">4. Usage Data<span></span></a>
+        <a href="#privacy-5" data-legal-anchor="privacy-5">5. Data Export<span></span></a>
+        <a href="#privacy-6" data-legal-anchor="privacy-6">6. Data Deletion<span></span></a>
+        <a href="#privacy-7" data-legal-anchor="privacy-7">7. Future AI Notice<span></span></a>
+        <a href="#privacy-8" data-legal-anchor="privacy-8">8. Security<span></span></a>
+        <a href="#privacy-9" data-legal-anchor="privacy-9">9. Changes<span></span></a>
+        <a href="#privacy-10" data-legal-anchor="privacy-10">10. Contact<span></span></a>
+        <a class="legal-toc-back" href="{{ url_for('main.terms') }}">Read Terms of Service &rarr;</a>
+      </div></aside>
 
-      <section class="legal-section">
-        <h2>Data We May Store</h2>
-        <ul class="legal-dash-list">
-          <li>The current MVP may store project data locally or in the app database.</li>
-          <li>This may include project names, descriptions, characters, factions, events, relations, and related notes.</li>
-          <li>Account data may include username, email address, password hash, role, admin status, and creation date.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Project Content</h2>
-        <ul class="legal-dash-list">
-          <li>Project data may include characters, factions, events, relations, descriptions, and dynamically generated logic warnings.</li>
-          <li>Logic warnings are generated from your project content when viewed or exported and are not currently stored as separate warning records.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Usage Data</h2>
-        <ul class="legal-dash-list">
-          <li>Future versions may collect limited usage information to understand which features are used and to improve reliability.</li>
-          <li>This MVP does not currently include payments or payment-processing data.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Data Export</h2>
-        <ul class="legal-dash-list">
-          <li>You can export project data using the JSON export feature.</li>
-          <li>Exports may include project details, entities, relations, and current logic warnings.</li>
-          <li>Export/import is intended to support backups and portability.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Data Deletion</h2>
-        <ul class="legal-dash-list">
-          <li>You can delete projects and related project data from within the app.</li>
-          <li>Deleting a project removes its associated characters, factions, events, and relations from the app database.</li>
-          <li>During beta, you may contact the project owner for broader deletion questions or requests.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>AI Features Notice for the Future</h2>
-        <ul class="legal-dash-list">
-          <li>Zirel does not add AI functionality in this MVP unless clearly enabled in a later release.</li>
-          <li>Future AI features may require a separate AI data notice explaining what content is sent to AI systems and how it is processed.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Data Security</h2>
-        <ul class="legal-dash-list">
-          <li>We aim to handle project data responsibly, but this is an early MVP and no system can be guaranteed perfectly secure.</li>
-          <li>Avoid storing highly sensitive personal information or irreplaceable writing material in Zirel during beta.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Changes to this Policy</h2>
-        <ul class="legal-dash-list">
-          <li>This policy may be updated as Zirel grows, especially if hosting, accounts, collaboration, payments, or AI features are added.</li>
-        </ul>
-      </section>
-
-      <section class="legal-section">
-        <h2>Contact</h2>
-        <ul class="legal-dash-list">
-          <li>For questions about privacy, contact the Zirel project owner or maintainer through the <a href="{{ url_for('main.contact') }}">Contact page</a>.</li>
-        </ul>
-      </section>
-    </article>
-
-    <div class="legal-page-links">
-      <a class="btn btn-primary" href="{{ url_for('main.legal') }}">View Legal Center</a>
-      <a class="btn btn-outline-secondary" href="{{ url_for('main.terms') }}">Terms of Service</a>
-      <a class="btn btn-outline-secondary" href="{{ url_for('main.disclaimer') }}">Disclaimer</a>
+      <article class="legal-document">
+        <section id="privacy-1" class="legal-doc-section"><div class="legal-section-heading"><span>01</span><h2>Introduction</h2></div><p>This Privacy Policy explains the basic types of data Zirel may store or process while helping users organize fictional worldbuilding projects.</p><p>The policy may change as hosting, accounts, collaboration, payments, or AI features are added later.</p><div class="legal-callout"><strong>Early MVP draft</strong><p>This page is a plain-language draft for beta use and is not legal advice.</p></div></section>
+        <section id="privacy-2" class="legal-doc-section"><div class="legal-section-heading"><span>02</span><h2>Data We May Store</h2></div><p>The current MVP may store project data locally or in the app database.</p><p>This may include project names, descriptions, characters, factions, events, relations, and related notes.</p><p>Account data may include username, email address, password hash, role, admin status, and creation date.</p></section>
+        <section id="privacy-3" class="legal-doc-section"><div class="legal-section-heading"><span>03</span><h2>Project Content</h2></div><p>Project data may include characters, factions, events, relations, descriptions, and dynamically generated logic warnings.</p><p>Logic warnings are generated from your project content when viewed or exported and are not currently stored as separate warning records.</p></section>
+        <section id="privacy-4" class="legal-doc-section"><div class="legal-section-heading"><span>04</span><h2>Usage Data</h2></div><p>Future versions may collect limited usage information to understand which features are used and to improve reliability.</p><p>This MVP does not currently include payments or payment-processing data.</p></section>
+        <section id="privacy-5" class="legal-doc-section"><div class="legal-section-heading"><span>05</span><h2>Data Export</h2></div><p>You can export project data using the JSON export feature.</p><p>Exports may include project details, entities, relations, and current logic warnings.</p><p>Export/import is intended to support backups and portability.</p></section>
+        <section id="privacy-6" class="legal-doc-section"><div class="legal-section-heading"><span>06</span><h2>Data Deletion</h2></div><p>You can delete projects and related project data from within the app.</p><p>Deleting a project removes its associated characters, factions, events, and relations from the app database.</p><p>During beta, you may contact the project owner for broader deletion questions or requests.</p></section>
+        <section id="privacy-7" class="legal-doc-section"><div class="legal-section-heading"><span>07</span><h2>AI Features Notice for the Future</h2></div><p>Zirel does not add AI functionality in this MVP unless clearly enabled in a later release.</p><p>Future AI features may require a separate AI data notice explaining what content is sent to AI systems and how it is processed.</p></section>
+        <section id="privacy-8" class="legal-doc-section"><div class="legal-section-heading"><span>08</span><h2>Data Security</h2></div><p>We aim to handle project data responsibly, but this is an early MVP and no system can be guaranteed perfectly secure.</p><p>Avoid storing highly sensitive personal information or irreplaceable writing material in Zirel during beta.</p></section>
+        <section id="privacy-9" class="legal-doc-section"><div class="legal-section-heading"><span>09</span><h2>Changes to this Policy</h2></div><p>This policy may be updated as Zirel grows, especially if hosting, accounts, collaboration, payments, or AI features are added.</p></section>
+        <section id="privacy-10" class="legal-doc-section"><div class="legal-section-heading"><span>10</span><h2>Contact</h2></div><p>For questions about privacy, contact the Zirel project owner or maintainer through the <a href="{{ url_for('main.contact') }}">Contact page</a>.</p><div class="legal-bottom-actions"><a href="{{ url_for('main.register') }}">Back to signup</a><a href="{{ url_for('main.terms') }}">Terms of Service</a></div></section>
+      </article>
     </div>
+
+    <button class="legal-back-top" type="button" data-legal-top aria-label="Back to top">&uarr;</button>
   </div>
+
+  <script>
+    (function () {
+      const progress = document.querySelector("[data-legal-progress]");
+      const links = Array.from(document.querySelectorAll("[data-legal-anchor]"));
+      const sections = links.map((link) => document.getElementById(link.dataset.legalAnchor)).filter(Boolean);
+      const backTop = document.querySelector("[data-legal-top]");
+      function updateLegalNav() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        if (progress) progress.style.transform = "scaleX(" + (max > 0 ? scrollTop / max : 0) + ")";
+        if (backTop) backTop.classList.toggle("visible", scrollTop > 500);
+        let active = sections[0] && sections[0].id;
+        sections.forEach((section) => { if (section.getBoundingClientRect().top <= 150) active = section.id; });
+        links.forEach((link) => link.classList.toggle("active", link.dataset.legalAnchor === active));
+      }
+      window.addEventListener("scroll", updateLegalNav, { passive: true });
+      window.addEventListener("resize", updateLegalNav);
+      if (backTop) backTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      updateLegalNav();
+    })();
+  </script>
 {% endblock %}

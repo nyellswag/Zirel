@@ -8,12 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,200;1,9..144,300&family=Share+Tech&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260705-auth-modal-v4') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260706-graph-workspace') }}">
   </head>
-  {% set public_endpoints = ['main.index', 'main.beta', 'main.faq', 'main.legal', 'main.whitepaper', 'main.roadmap', 'main.feedback', 'main.contact', 'main.terms', 'main.privacy', 'main.disclaimer'] %}
+  {% set public_endpoints = ['main.index', 'main.beta', 'main.faq', 'main.whitepaper', 'main.roadmap', 'main.feedback', 'main.contact', 'main.terms', 'main.privacy'] %}
+  {% set legal_document_endpoints = ['main.terms', 'main.privacy'] %}
   {% set wishlist_page = request.endpoint == 'main.wishlist' %}
-  <body class="{% if wishlist_page %}wishlist-body{% elif request.endpoint in public_endpoints %}public-body{% if request.endpoint == 'main.index' %} landing-body{% endif %}{% elif request.endpoint in ['main.login', 'main.register'] %}auth-body{% else %}app-body{% endif %}">
-    {% if not wishlist_page and request.endpoint not in ['main.login', 'main.register'] %}
+  {% set graph_workspace_page = request.endpoint == 'main.graph' %}
+  <body class="{% if wishlist_page %}wishlist-body{% elif graph_workspace_page %}graph-body{% elif request.endpoint in legal_document_endpoints %}legal-doc-body{% elif request.endpoint in public_endpoints %}public-body{% if request.endpoint == 'main.index' %} landing-body{% endif %}{% elif request.endpoint in ['main.login', 'main.register'] %}auth-body{% else %}app-body{% endif %}">
+    {% if not wishlist_page and not graph_workspace_page and request.endpoint not in ['main.login', 'main.register'] and request.endpoint not in legal_document_endpoints %}
     <nav class="navbar navbar-expand-lg navbar-dark app-navbar {% if request.endpoint in public_endpoints %}landing-navbar public-navbar{% endif %}">
       <div class="container">
         <a class="navbar-brand fw-semibold {% if request.endpoint in public_endpoints %}landing-brand{% else %}app-brand{% endif %}" href="{{ url_for('main.index') }}">
@@ -59,9 +61,6 @@
                 <a class="nav-link" href="{{ url_for('main.faq') }}">FAQ</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('main.legal') }}">Legal</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a>
               </li>
               <li class="nav-item">
@@ -87,7 +86,7 @@
     </nav>
     {% endif %}
 
-    <main class="{% if wishlist_page %}wishlist-shell{% elif request.endpoint == 'main.index' %}landing-shell{% elif request.endpoint in public_endpoints %}public-shell{% elif request.endpoint in ['main.login', 'main.register'] %}auth-shell{% else %}container app-shell py-4{% endif %}">
+    <main class="{% if wishlist_page %}wishlist-shell{% elif graph_workspace_page %}graph-shell{% elif request.endpoint in legal_document_endpoints %}legal-doc-shell{% elif request.endpoint == 'main.index' %}landing-shell{% elif request.endpoint in public_endpoints %}public-shell{% elif request.endpoint in ['main.login', 'main.register'] %}auth-shell{% else %}container app-shell py-4{% endif %}">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
           <div class="flash-stack">
@@ -104,7 +103,7 @@
       {% block content %}{% endblock %}
     </main>
 
-    {% if wishlist_page or request.endpoint in ['main.login', 'main.register'] %}
+    {% if wishlist_page or graph_workspace_page or request.endpoint in ['main.login', 'main.register'] or request.endpoint in legal_document_endpoints %}
     {% elif request.endpoint in public_endpoints %}
       <footer class="landing-footer">
         <div class="landing-page-container landing-footer-grid">
@@ -113,7 +112,7 @@
             <p>A lore consistency workspace for writers, game creators, and worldbuilders.</p>
           </div>
           <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
-          <div><h2>Legal</h2><a href="{{ url_for('main.legal') }}">Legal Center</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a></div>
+          <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a></div>
           <div><h2>Contact</h2><a href="{{ url_for('main.contact') }}">Contact</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
         </div>
         <div class="landing-page-container landing-footer-bottom">Early MVP. Product direction may change with beta feedback.</div>
@@ -126,7 +125,7 @@
             <p>A lore consistency workspace for writers, game creators, and worldbuilders.</p>
           </div>
           <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
-          <div><h2>Legal</h2><a href="{{ url_for('main.legal') }}">Legal Center</a><a href="/terms">Terms</a><a href="/privacy">Privacy</a><a href="/disclaimer">Disclaimer</a></div>
+          <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a></div>
           <div><h2>Contact</h2><a href="{{ url_for('main.contact') }}">Contact</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
         </div>
         <div class="landing-page-container landing-footer-bottom">Early MVP. Product direction may change with beta feedback.</div>

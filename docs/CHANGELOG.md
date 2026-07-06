@@ -45,9 +45,14 @@
 - Страница FAQ.
 - Страница Whitepaper.
 - Страница Roadmap.
-- Legal Center.
-- Страницы Terms, Privacy и Disclaimer.
+- Страницы Terms и Privacy.
 - Темный футуристичный SaaS-стиль на публичных и внутренних страницах.
 - Базовая документация проекта в `docs/`.
 - Переработанные страницы Sign In / Sign Up в стиле modal-референсов.
 - Кнопка-глаз для показа и скрытия пароля на auth-страницах.
+- Переработанные страницы Terms и Privacy в отдельном темном legal-document стиле.
+- Центрированная верхняя подпись на Terms и Privacy.
+- Текстовая кнопка `Print` на Terms и Privacy.
+- Старое hex-мини-лого заменено на минималистичный ромбовый знак в стиле Wishlist.
+- Общий Legal Center и Disclaimer удалены; в интерфейсе оставлены отдельные Terms и Privacy.
+- Graph Workspace переработан в полноэкранный fixed-layout по HTML-референсу с собственным topbar, sidebars, inspector и status bar.

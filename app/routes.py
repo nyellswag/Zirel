@@ -196,16 +196,6 @@ def privacy():
     return render_template("privacy.html")
 
 
-@main.route("/disclaimer")
-def disclaimer():
-    return render_template("disclaimer.html")
-
-
-@main.route("/legal")
-def legal():
-    return render_template("legal.html")
-
-
 @main.route("/faq")
 def faq():
     return render_template("faq.html")
@@ -626,7 +616,15 @@ def warnings(project_id):
 @project_access_required
 def graph(project_id):
     project = Project.query.get_or_404(project_id)
-    return render_template("graph.html", project=project)
+    warning_count = len(analyze_project(project))
+    graph_summary = {
+        "characters": len(project.characters),
+        "factions": len(project.factions),
+        "events": len(project.events),
+        "relations": len(project.relations),
+        "warnings": warning_count,
+    }
+    return render_template("graph.html", project=project, graph_summary=graph_summary)
 
 
 @main.route("/projects/<int:project_id>/graph/data")

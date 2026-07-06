@@ -93,8 +93,6 @@ Zirel — Flask-монолит.
 - `/roadmap`
 - `/terms`
 - `/privacy`
-- `/disclaimer`
-- `/legal`
 - `/feedback`
 - `/contact`
 - `/login`
@@ -163,6 +161,14 @@ Zirel — Flask-монолит.
 - связи с отсутствующими сущностями пропускаются.
 
 Поведение графа реализовано во frontend-части шаблона `graph.html` с использованием Cytoscape.js и JavaScript.
+
+Текущий Graph Workspace использует fixed-layout:
+
+- верхняя панель проекта;
+- левый sidebar с поиском, фильтрами, легендой и поиском пути;
+- центральный Cytoscape canvas;
+- правый inspector;
+- нижняя status bar.
 
 ## Интерфейс
 

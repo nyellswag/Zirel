@@ -48,7 +48,7 @@ Zirel — веб-продукт для писателей, гейм-мастер
 - Фильтры, поиск, инспектор, прямые связи и поиск пути в графе.
 - Экспорт и импорт проекта в JSON.
 - Формы обратной связи и контакта.
-- Публичные страницы: Beta, FAQ, Roadmap, Whitepaper, Legal Center, Terms, Privacy, Disclaimer.
+- Публичные страницы: Beta, FAQ, Roadmap, Whitepaper, Terms, Privacy.
 
 ## Официальное название
 
