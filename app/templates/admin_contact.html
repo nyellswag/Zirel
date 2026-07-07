@@ -3,17 +3,41 @@
 {% block title %}Admin Contact - Zirel{% endblock %}
 
 {% block content %}
-  <section class="app-workspace admin-page workspace-shell">
-    <header class="workspace-header admin-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.admin_dashboard') }}">Admin</a><span>/</span><span>Contact Messages</span></nav><div class="workspace-eyebrow">Beta management</div><h1>Contact Messages</h1><p>Review contact requests, bug reports, collaboration messages, and business inquiries.</p></div></header>
-    <nav class="admin-nav" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users</a><a href="{{ url_for('main.admin_feedback') }}">Feedback</a><a class="active" href="{{ url_for('main.admin_contact') }}">Contact Messages</a><a href="{{ url_for('main.admin_wishlist') }}">Wishlist</a></nav>
+<section class="zadmin-page">
+  <div class="zadmin-atmo" aria-hidden="true"><span></span><span></span><i></i></div>
+  <header class="zadmin-topbar">
+    <a class="zadmin-brand" href="{{ url_for('main.index') }}"><span class="zirel-public-brand-mark zadmin-brand-mark" aria-hidden="true"></span><strong>Zirel</strong><em>staff console</em></a>
+    <div class="zadmin-topbar-center">Admin / Contact</div>
+    <div class="zadmin-topbar-actions"><span class="zadmin-live"><i></i>{{ contact_messages|length }} messages</span><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.logout') }}">Logout</a><span class="zadmin-avatar">{{ current_user.username[:2]|upper }}</span></div>
+  </header>
+  <nav class="zadmin-tabbar" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a class="active" href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a href="{{ url_for('main.admin_wishlist') }}">Wishlist <span>{{ stats.wishlist }}</span></a></nav>
+
+  <div class="zadmin-main">
+    <section class="zadmin-hero zadmin-hero-row"><div><span>Inbound messages</span><h1>Contact Messages</h1><p>Review contact requests, bug reports, collaboration messages, and partnership inquiries.</p></div><p class="zadmin-count" data-list-count>Showing {{ contact_messages|length }} of {{ contact_messages|length }} contact messages</p></section>
+
     {% if contact_messages %}
-      <div class="admin-list" data-filter-list data-list-label="contact messages">
-        <div class="admin-toolbar"><div class="workspace-search"><input type="search" placeholder="Search contact messages..." data-list-search aria-label="Search contact messages"><span aria-hidden="true"></span></div><select class="admin-filter-select" data-list-reason-filter aria-label="Filter contact reason"><option value="">All reasons</option><option value="General question">General question</option><option value="Beta access">Beta access</option><option value="Bug report">Bug report</option><option value="Collaboration">Collaboration</option><option value="Business / partnership">Business / partnership</option><option value="Other">Other</option></select><p class="workspace-list-count" data-list-count>Showing {{ contact_messages|length }} of {{ contact_messages|length }} contact messages</p></div>
-        <div class="admin-empty-state" data-list-empty hidden><h2>No contact messages match your filters.</h2><p>Try another phrase or message reason.</p></div>
-        <div class="admin-message-list">{% for contact_message in contact_messages %}<article class="admin-message-card" data-list-item data-reason="{{ contact_message.reason or 'Other' }}" data-search-text="{{ contact_message.name or '' }} {{ contact_message.email }} {{ contact_message.reason or '' }} {{ contact_message.subject or '' }} {{ contact_message.message }}"><header><div><span class="admin-badge">{{ contact_message.reason or "Other" }}</span><h2>{{ contact_message.name or "Anonymous visitor" }}</h2><a href="mailto:{{ contact_message.email }}">{{ contact_message.email }}</a></div><div class="admin-card-actions"><time>{{ contact_message.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</time><form method="post" action="{{ url_for('main.admin_delete_contact_message', message_id=contact_message.id) }}" onsubmit="return confirm('Delete this contact message?');"><button class="admin-delete-x" type="submit" aria-label="Delete contact message">&times;</button></form></div></header>{% if contact_message.subject %}<h3>{{ contact_message.subject }}</h3>{% endif %}<p>{{ contact_message.message }}</p></article>{% endfor %}</div>
-      </div>
+      <section class="zadmin-list-shell" data-filter-list data-list-label="contact messages">
+        <div class="zadmin-filter-row"><input class="zadmin-search" type="search" placeholder="Search contact messages..." data-list-search aria-label="Search contact messages"><p class="zadmin-count" data-list-count>Showing {{ contact_messages|length }} of {{ contact_messages|length }} contact messages</p></div>
+        <div class="zadmin-empty" data-list-empty hidden>No contact messages match your filters.</div>
+        <div class="zadmin-message-grid">
+          {% for contact_message in contact_messages %}
+            <article class="zadmin-message-card" data-list-item data-reason="{{ contact_message.reason or 'Other' }}" data-search-text="{{ contact_message.name or '' }} {{ contact_message.email }} {{ contact_message.reason or '' }} {{ contact_message.subject or '' }} {{ contact_message.message }}">
+              <button class="zadmin-message-main zadmin-detail-trigger" type="button" data-title="{{ contact_message.subject or contact_message.reason or 'Contact message' }}" data-meta="{{ contact_message.name or 'Anonymous visitor' }} · {{ contact_message.email }}" data-body="Submitted: {{ contact_message.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Name: {{ contact_message.name or 'Anonymous visitor' }} | Email: {{ contact_message.email }} | Reason: {{ contact_message.reason or 'Other' }} | Subject: {{ contact_message.subject or 'No subject' }} | Message: {{ contact_message.message }}">
+                <header><span class="zadmin-badge">{{ contact_message.reason or "Other" }}</span><time>{{ contact_message.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</time></header>
+                <h2>{{ contact_message.subject or contact_message.name or "Contact message" }}</h2>
+                <p>{{ contact_message.message }}</p>
+                <small>{{ contact_message.email }}</small>
+              </button>
+              <form method="post" action="{{ url_for('main.admin_delete_contact_message', message_id=contact_message.id) }}" onsubmit="return confirm('Delete this contact message?');"><button class="zadmin-delete floating" type="submit" aria-label="Delete contact message">×</button></form>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
     {% else %}
-      <div class="workspace-empty-state admin-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No contact messages yet.</h2><p>New contact messages will appear here.</p></div>
+      <div class="zadmin-empty big">No contact messages yet.</div>
     {% endif %}
-  </section>
+  </div>
+
+  <aside class="zadmin-drawer" id="zadminDrawer" aria-hidden="true"><button type="button" class="zadmin-drawer-close" data-zadmin-close aria-label="Close inspector">&times;</button><span>Inspector</span><h2 data-zadmin-title>Select a contact message</h2><p data-zadmin-meta>Click a message to inspect details.</p><div data-zadmin-body></div></aside>
+</section>
 {% endblock %}

@@ -1,58 +1,394 @@
 {% extends "base.html" %}
 
-{% block title %}Logic Warnings - {{ project.name }}{% endblock %}
+{% block title %}Warnings - {{ project.name }}{% endblock %}
 
 {% block content %}
-  <section class="app-workspace warnings-page workspace-shell">
-    <header class="workspace-header warnings-header">
-      <div>
-        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span>Warnings</span></nav>
-        <div class="workspace-eyebrow">Consistency analysis</div>
-        <h1>Logic Warnings</h1>
-        <p>Review possible contradictions, timeline conflicts, and relationship issues in your world.</p>
-      </div>
-      <div class="workspace-actions"><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a><a class="btn-workspace-secondary" href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a><a class="btn-workspace-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace</a></div>
-    </header>
-
-    <div class="warning-summary-grid">
-      <article class="warning-summary-card warning-summary-total"><span class="warning-icon" aria-hidden="true"></span><div><span>Total warnings</span><strong>{{ warning_summary.total }}</strong><small>{{ warning_summary.status }}</small></div></article>
-      <article class="warning-summary-card warning-summary-high"><span class="warning-icon" aria-hidden="true"></span><div><span>High severity</span><strong>{{ warning_summary.high }}</strong><small>Needs attention</small></div></article>
-      <article class="warning-summary-card warning-summary-medium"><span class="warning-icon" aria-hidden="true"></span><div><span>Medium severity</span><strong>{{ warning_summary.medium }}</strong><small>Review context</small></div></article>
-      <article class="warning-summary-card warning-summary-low"><span class="warning-icon" aria-hidden="true"></span><div><span>Low severity</span><strong>{{ warning_summary.low }}</strong><small>Keep in view</small></div></article>
+  <section class="zirel-warnings-workspace" data-warnings-workspace>
+    <div class="zww-bg" aria-hidden="true">
+      <div class="zww-bg-grad zww-bg-grad-one"></div>
+      <div class="zww-bg-grad zww-bg-grad-two"></div>
+      <div class="zww-bg-grid"></div>
+      <div class="zww-bg-noise"></div>
+      <div class="zww-bg-vignette"></div>
     </div>
 
-    {% if warnings %}
-      {% if warning_summary.high %}
-        <section class="warnings-overview warnings-overview-high"><div><h2>High-priority warnings</h2><p>{{ warning_summary.high }} high-severity issue{% if warning_summary.high != 1 %}s{% endif %} may need attention.</p></div><span>Needs attention</span></section>
-      {% else %}
-        <section class="warnings-overview"><div><h2>Review recommended</h2><p>These findings may be intentional, but they are worth reviewing as your world grows.</p></div><span>Consistency review</span></section>
-      {% endif %}
+    <header class="zww-topbar zww-glass">
+      <a class="zww-brand" href="{{ url_for('main.project_detail', project_id=project.id) }}" aria-label="Back to {{ project.name }}">
+        <span class="zww-brand-mark" aria-hidden="true"></span>
+        <span class="zww-wordmark">Zirel</span>
+        <span class="zww-sub-label">Warnings</span>
+      </a>
+      <nav class="zww-breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ url_for('main.projects') }}">Projects</a>
+        <span>/</span>
+        <a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a>
+        <span>/</span>
+        <span class="active">Warnings</span>
+      </nav>
+      <div class="zww-topbar-right">
+        <span class="zww-open-badge" id="zww-visible-count">{{ warning_summary.total }} visible</span>
+        <a class="zww-btn-mono" href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a>
+        <a class="zww-btn-mono" href="{{ url_for('main.graph', project_id=project.id) }}">Graph</a>
+        <a class="zww-back-link" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back</a>
+      </div>
+    </header>
 
-      <div class="warning-list" data-filter-list data-list-label="warnings">
-        <div class="warnings-toolbar">
-          <div class="workspace-search"><input type="search" placeholder="Search warnings..." data-list-search aria-label="Search warnings"><span aria-hidden="true"></span></div>
-          <select class="warning-filter-select" data-list-severity-filter aria-label="Filter severity"><option value="">All severities</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option></select>
-          <select class="warning-filter-select" data-list-category-filter aria-label="Filter category"><option value="">All categories</option><option value="Timeline">Timeline</option><option value="Relationship">Relationship</option><option value="Faction">Faction</option><option value="Logic">Logic</option><option value="Other">Other</option></select>
-          <p class="workspace-list-count" data-list-count>Showing {{ warning_summary.total }} of {{ warning_summary.total }} warnings</p>
+    <aside class="zww-sidebar zww-glass">
+      <section class="zww-section">
+        <div class="zww-section-label"><span class="pulse-dot"></span>Search</div>
+        <input id="zww-search" class="zww-search-input" type="search" placeholder="Search warnings..." aria-label="Search warnings">
+      </section>
+
+      <section class="zww-section">
+        <div class="zww-section-label">Severity</div>
+        <label class="zww-filter-row" data-filter-kind="severity" data-filter-value="high">
+          <input type="checkbox" checked>
+          <span class="zww-sev-dot zww-sev-high"></span>
+          <span>High</span>
+          <strong>{{ warning_summary.high }}</strong>
+        </label>
+        <label class="zww-filter-row" data-filter-kind="severity" data-filter-value="medium">
+          <input type="checkbox" checked>
+          <span class="zww-sev-dot zww-sev-medium"></span>
+          <span>Medium</span>
+          <strong>{{ warning_summary.medium }}</strong>
+        </label>
+        <label class="zww-filter-row" data-filter-kind="severity" data-filter-value="low">
+          <input type="checkbox" checked>
+          <span class="zww-sev-dot zww-sev-low"></span>
+          <span>Low</span>
+          <strong>{{ warning_summary.low }}</strong>
+        </label>
+      </section>
+
+      <section class="zww-section">
+        <div class="zww-section-label">Category</div>
+        {% for category_value, category_label in [
+          ("Timeline", "Timeline"),
+          ("Relationships", "Relationships"),
+          ("Politics", "Politics"),
+          ("Logic", "Logic"),
+          ("Other", "Other")
+        ] %}
+          <label class="zww-filter-row" data-filter-kind="category" data-filter-value="{{ category_value }}">
+            <input type="checkbox" checked>
+            <span class="zww-type-dot zww-type-{{ category_value|lower }}"></span>
+            <span>{{ category_label }}</span>
+            <strong data-count-category="{{ category_value }}">0</strong>
+          </label>
+        {% endfor %}
+      </section>
+
+      <section class="zww-section">
+        <div class="zww-section-label">Warning Type</div>
+        {% for type_value, type_label in [
+          ("dead_character_after_death", "Dead after death"),
+          ("character_before_birth", "Before birth"),
+          ("destroyed_faction_after_destruction", "Faction after destruction"),
+          ("one_sided_hostility", "One-sided hostility"),
+          ("internal_faction_conflict", "Internal faction conflict")
+        ] %}
+          <label class="zww-filter-row" data-filter-kind="type" data-filter-value="{{ type_value }}">
+            <input type="checkbox" checked>
+            <span class="zww-type-dot zww-type-generic"></span>
+            <span>{{ type_label }}</span>
+            <strong data-count-type="{{ type_value }}">0</strong>
+          </label>
+        {% endfor %}
+      </section>
+
+      <section class="zww-section">
+        <div class="zww-section-label">Actions</div>
+        <button class="zww-panel-btn" type="button" id="zww-reset-filters">Reset filters</button>
+        <button class="zww-panel-btn" type="button" id="zww-clear-selection">Clear selection</button>
+        <a class="zww-panel-link" href="{{ url_for('main.graph', project_id=project.id) }}">Open Graph Workspace</a>
+      </section>
+    </aside>
+
+    <main class="zww-main">
+      <div class="zww-main-header">
+        <div>
+          <span class="zww-kicker">World integrity</span>
+          <h1><em>{{ warning_summary.total }}</em> thing{% if warning_summary.total != 1 %}s{% endif %} to review before the canon is set.</h1>
+          <p>Warnings are dynamically generated from characters, factions, events, and relations. They are suggestions, not stored decisions.</p>
         </div>
-        <div class="empty-state warnings-filter-empty" data-list-empty hidden><h2>No warnings match your filters.</h2><p>Try another phrase, severity, or category.</p></div>
-        <div class="warning-list-grid">
+      </div>
+
+      <section class="zww-summary-grid" aria-label="Warning summary">
+        <article class="zww-summary-card">
+          <span class="zww-summary-icon zww-icon-total"></span>
+          <div><small>Total warnings</small><strong>{{ warning_summary.total }}</strong><p>{{ warning_summary.status }}</p></div>
+        </article>
+        <article class="zww-summary-card zww-card-high">
+          <span class="zww-summary-icon zww-icon-high"></span>
+          <div><small>High severity</small><strong>{{ warning_summary.high }}</strong><p>{% if warning_summary.high %}Needs attention{% else %}No urgent conflicts{% endif %}</p></div>
+        </article>
+        <article class="zww-summary-card zww-card-medium">
+          <span class="zww-summary-icon zww-icon-medium"></span>
+          <div><small>Medium severity</small><strong>{{ warning_summary.medium }}</strong><p>Review context</p></div>
+        </article>
+        <article class="zww-summary-card zww-card-low">
+          <span class="zww-summary-icon zww-icon-low"></span>
+          <div><small>Low severity</small><strong>{{ warning_summary.low }}</strong><p>Keep in view</p></div>
+        </article>
+      </section>
+
+      {% if warnings %}
+        {% if warning_summary.high %}
+          <section class="zww-attention zww-attention-high">
+            <div><span>Priority</span><h2>High-priority warnings</h2><p>{{ warning_summary.high }} high-severity issue{% if warning_summary.high != 1 %}s{% endif %} may need attention.</p></div>
+            <a href="#zww-list">Review now</a>
+          </section>
+        {% else %}
+          <section class="zww-attention">
+            <div><span>Review</span><h2>Review recommended</h2><p>No high-severity issues are currently visible, but these warnings may still reveal useful story tension.</p></div>
+            <a href="#zww-list">Open list</a>
+          </section>
+        {% endif %}
+
+        <div class="zww-list-toolbar">
+          <span id="zww-count-line">Showing {{ warning_summary.total }} of {{ warning_summary.total }} warnings</span>
+          <span>Click a warning to inspect details</span>
+        </div>
+
+        <div class="zww-warning-stream" id="zww-list">
           {% for warning in warnings %}
             {% set severity = warning.severity|default('low', true) %}
             {% set category = warning.category|default('Logic', true) %}
-            {% if category == 'Timeline' %}{% set filter_category = 'Timeline' %}{% elif category == 'Relationships' %}{% set filter_category = 'Relationship' %}{% elif category == 'Politics' %}{% set filter_category = 'Faction' %}{% elif category == 'Logic' %}{% set filter_category = 'Logic' %}{% else %}{% set filter_category = 'Other' %}{% endif %}
-            <article class="warning-card warning-card-{{ severity }}" data-list-item data-severity="{{ severity }}" data-category="{{ filter_category }}" data-search-text="{{ warning.title }} {{ warning.message }} {{ warning.explanation }} {{ category }} {% for suggestion in warning.suggestions|default([], true) %}{{ suggestion }} {% endfor %}">
-              <div class="warning-card-top"><span class="warning-icon" aria-hidden="true"></span><div class="warning-card-heading"><div class="warning-card-meta"><span class="warning-badge">{{ severity|capitalize }}</span><span class="warning-category-chip">{{ category }}</span></div><h2>{{ warning.title }}</h2></div></div>
-              <p class="warning-message">{{ warning.message }}</p>
-              {% if warning.explanation or warning.suggestions %}
-                <details class="warning-details"><summary class="warning-details-toggle">Review details</summary><div class="warning-details-content">{% if warning.explanation %}<p>{{ warning.explanation }}</p>{% endif %}{% if warning.suggestions|default([], true) %}<h3>Suggestions</h3><ul class="warning-suggestions">{% for suggestion in warning.suggestions %}<li>{{ suggestion }}</li>{% endfor %}</ul>{% endif %}</div></details>
-              {% endif %}
+            {% set filter_category = category if category in ["Timeline", "Relationships", "Politics", "Logic"] else "Other" %}
+            {% set warning_type = warning.type|default('logic', true) %}
+            <article class="zww-card zww-card-{{ severity }}"
+              tabindex="0"
+              data-warning-id="warning-{{ loop.index }}"
+              data-warning-index="{{ loop.index0 }}"
+              data-severity="{{ severity }}"
+              data-category="{{ filter_category }}"
+              data-type="{{ warning_type }}"
+              data-search-text="{{ warning.title }} {{ warning.message }} {{ warning.explanation }} {{ category }} {{ warning_type }} {% for suggestion in warning.suggestions|default([], true) %}{{ suggestion }} {% endfor %}">
+              <div class="zww-card-accent"></div>
+              <div class="zww-card-top">
+                <div class="zww-card-title">
+                  <span class="zww-alert-mark" aria-hidden="true"></span>
+                  <h2>{{ warning.title }}</h2>
+                </div>
+                <div class="zww-card-meta">
+                  <span class="zww-type-chip">{{ category }}</span>
+                  <span class="zww-severity-chip">{{ severity|capitalize }}</span>
+                </div>
+              </div>
+              <p>{{ warning.message }}</p>
+              <div class="zww-card-footer">
+                <span>{{ warning_type.replace('_', ' ') }}</span>
+                <button type="button" class="zww-review-btn">Inspect</button>
+              </div>
             </article>
           {% endfor %}
         </div>
+
+        <div class="zww-no-results" id="zww-no-results" hidden>
+          <h2>No warnings match your filters.</h2>
+          <p>Try another search phrase, severity, category, or type.</p>
+        </div>
+      {% else %}
+        <div class="zww-empty-state">
+          <span class="zww-empty-mark" aria-hidden="true"></span>
+          <h2>No logic warnings found.</h2>
+          <p>Your world looks consistent for now. Keep building, connecting, and reviewing as your story grows.</p>
+          <div>
+            <a class="zww-btn-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Open Graph Workspace</a>
+            <a class="zww-btn-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a>
+          </div>
+        </div>
+      {% endif %}
+    </main>
+
+    <aside class="zww-inspector zww-glass" aria-label="Warning inspector">
+      <div class="zww-inspector-empty" id="zww-inspector-empty">
+        <span>Inspector</span>
+        <p>Select a warning to inspect details, explanation, and suggested fixes.</p>
       </div>
-    {% else %}
-      <div class="workspace-empty-state warnings-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No logic warnings found.</h2><p>Your world looks consistent for now. Keep building, connecting, and reviewing as your story grows.</p><div><a class="btn-workspace-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Open Graph Workspace</a><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a></div></div>
-    {% endif %}
+      <div class="zww-inspector-content" id="zww-inspector-content" hidden>
+        <div class="zww-inspector-meta" id="zww-inspector-meta"></div>
+        <h2 id="zww-inspector-title"></h2>
+        <div class="zww-inspector-message" id="zww-inspector-message"></div>
+        <div class="zww-inspector-section">
+          <h3>Why it matters</h3>
+          <p id="zww-inspector-explanation"></p>
+        </div>
+        <div class="zww-inspector-section">
+          <h3>Suggested edits</h3>
+          <ul id="zww-inspector-suggestions"></ul>
+        </div>
+        <div class="zww-inspector-section">
+          <h3>Related visible warnings</h3>
+          <div class="zww-related-list" id="zww-related-list"></div>
+        </div>
+      </div>
+    </aside>
+
+    <footer class="zww-bottombar zww-glass">
+      <div><span>{{ warning_summary.total }}</span> warnings · <span>{{ warning_summary.high }}</span> high · <span>{{ warning_summary.medium }}</span> medium · <span>{{ warning_summary.low }}</span> low</div>
+      <div><span class="zww-status-dot"></span>Generated dynamically</div>
+      <div>{{ project.name }}</div>
+    </footer>
+
+    <script type="application/json" id="zww-warnings-data">{{ warnings|tojson }}</script>
   </section>
+
+  <script>
+    (function () {
+      const workspace = document.querySelector("[data-warnings-workspace]");
+      if (!workspace) return;
+
+      const warnings = JSON.parse(document.getElementById("zww-warnings-data").textContent || "[]");
+      const cards = Array.from(workspace.querySelectorAll(".zww-card"));
+      const searchInput = document.getElementById("zww-search");
+      const countLine = document.getElementById("zww-count-line");
+      const visibleBadge = document.getElementById("zww-visible-count");
+      const noResults = document.getElementById("zww-no-results");
+      const emptyInspector = document.getElementById("zww-inspector-empty");
+      const inspector = document.getElementById("zww-inspector-content");
+      let selectedIndex = null;
+
+      const normalize = (value) => (value || "").toString().trim().toLowerCase();
+      const activeValues = (kind) => Array.from(workspace.querySelectorAll(`[data-filter-kind="${kind}"]`))
+        .filter((row) => row.querySelector("input").checked)
+        .map((row) => row.dataset.filterValue);
+
+      function syncCounts() {
+        const categoryCounts = {};
+        const typeCounts = {};
+        cards.forEach((card) => {
+          categoryCounts[card.dataset.category] = (categoryCounts[card.dataset.category] || 0) + 1;
+          typeCounts[card.dataset.type] = (typeCounts[card.dataset.type] || 0) + 1;
+        });
+        workspace.querySelectorAll("[data-count-category]").forEach((el) => {
+          el.textContent = categoryCounts[el.dataset.countCategory] || 0;
+        });
+        workspace.querySelectorAll("[data-count-type]").forEach((el) => {
+          el.textContent = typeCounts[el.dataset.countType] || 0;
+        });
+      }
+
+      function applyFilters() {
+        const query = normalize(searchInput.value);
+        const severities = activeValues("severity");
+        const categories = activeValues("category");
+        const types = activeValues("type");
+        const knownTypes = Array.from(workspace.querySelectorAll('[data-filter-kind="type"]')).map((row) => row.dataset.filterValue);
+        let visible = 0;
+
+        cards.forEach((card) => {
+          const matchesSearch = !query || normalize(card.dataset.searchText).includes(query);
+          const matchesSeverity = severities.includes(card.dataset.severity);
+          const matchesCategory = categories.includes(card.dataset.category);
+          const matchesType = !knownTypes.includes(card.dataset.type) || types.includes(card.dataset.type);
+          const shouldShow = matchesSearch && matchesSeverity && matchesCategory && matchesType;
+          card.hidden = !shouldShow;
+          if (shouldShow) visible += 1;
+        });
+
+        if (countLine) countLine.textContent = `Showing ${visible} of ${cards.length} warnings`;
+        if (visibleBadge) visibleBadge.textContent = `${visible} visible`;
+        if (noResults) noResults.hidden = visible !== 0;
+      }
+
+      function severityLabel(severity) {
+        if (severity === "high") return "High";
+        if (severity === "medium") return "Medium";
+        return "Low";
+      }
+
+      function selectWarning(index) {
+        selectedIndex = index;
+        cards.forEach((card) => card.classList.toggle("is-selected", Number(card.dataset.warningIndex) === index));
+        const warning = warnings[index];
+        if (!warning) {
+          emptyInspector.hidden = false;
+          inspector.hidden = true;
+          return;
+        }
+
+        emptyInspector.hidden = true;
+        inspector.hidden = false;
+        document.getElementById("zww-inspector-meta").innerHTML = `
+          <span class="zww-type-chip">${warning.category || "Logic"}</span>
+          <span class="zww-severity-chip zww-inspector-severity-${warning.severity || "low"}">${severityLabel(warning.severity)}</span>
+          <span class="zww-code-chip">${(warning.type || "logic").replaceAll("_", " ")}</span>
+        `;
+        document.getElementById("zww-inspector-title").textContent = warning.title || "Logic warning";
+        document.getElementById("zww-inspector-message").textContent = warning.message || "";
+        document.getElementById("zww-inspector-explanation").textContent = warning.explanation || "No explanation provided yet.";
+
+        const suggestions = document.getElementById("zww-inspector-suggestions");
+        suggestions.innerHTML = "";
+        (warning.suggestions || []).forEach((suggestion) => {
+          const item = document.createElement("li");
+          item.textContent = suggestion;
+          suggestions.appendChild(item);
+        });
+        if (!suggestions.children.length) {
+          const item = document.createElement("li");
+          item.textContent = "Review the related entities and decide whether this is intentional.";
+          suggestions.appendChild(item);
+        }
+
+        renderRelatedWarnings(index, warning);
+      }
+
+      function renderRelatedWarnings(index, warning) {
+        const list = document.getElementById("zww-related-list");
+        list.innerHTML = "";
+        const related = warnings
+          .map((item, itemIndex) => ({ item, itemIndex }))
+          .filter(({ item, itemIndex }) => itemIndex !== index && (item.category === warning.category || item.severity === warning.severity))
+          .slice(0, 4);
+
+        if (!related.length) {
+          const empty = document.createElement("p");
+          empty.className = "zww-related-empty";
+          empty.textContent = "No related visible warnings.";
+          list.appendChild(empty);
+          return;
+        }
+
+        related.forEach(({ item, itemIndex }) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "zww-related-item";
+          button.innerHTML = `<span>${item.category || "Logic"} · ${severityLabel(item.severity)}</span><strong>${item.title || "Logic warning"}</strong>`;
+          button.addEventListener("click", () => selectWarning(itemIndex));
+          list.appendChild(button);
+        });
+      }
+
+      workspace.querySelectorAll(".zww-filter-row input").forEach((input) => {
+        input.addEventListener("change", applyFilters);
+      });
+      searchInput.addEventListener("input", applyFilters);
+      document.getElementById("zww-reset-filters").addEventListener("click", () => {
+        searchInput.value = "";
+        workspace.querySelectorAll(".zww-filter-row input").forEach((input) => { input.checked = true; });
+        applyFilters();
+      });
+      document.getElementById("zww-clear-selection").addEventListener("click", () => selectWarning(null));
+
+      cards.forEach((card) => {
+        card.addEventListener("click", () => selectWarning(Number(card.dataset.warningIndex)));
+        card.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectWarning(Number(card.dataset.warningIndex));
+          }
+        });
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && selectedIndex !== null) selectWarning(null);
+      });
+
+      syncCounts();
+      applyFilters();
+      if (cards.length) selectWarning(0);
+    })();
+  </script>
 {% endblock %}

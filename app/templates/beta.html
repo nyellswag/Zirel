@@ -3,141 +3,115 @@
 {% block title %}Join the Beta - Zirel{% endblock %}
 
 {% block content %}
-  <div class="public-page beta-page">
-    <section class="public-hero beta-hero mb-4">
-      <div class="eyebrow mb-2">Early access</div>
-      <h1 class="display-6 fw-bold mb-3">Join the Zirel Beta</h1>
-      <p class="landing-copy mb-4">Help test a worldbuilding logic tool for writers, game masters, and storytellers.</p>
-      <div class="d-flex flex-wrap gap-2">
-        <a class="btn btn-primary" href="{{ url_for('main.projects') }}">Open Zirel</a>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
+  <div class="zv2-page beta-page">
+    <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <section class="zv2-hero zv2-reveal">
+      <div>
+        <p class="zv2-kicker">Early access</p>
+        <h1>Join the <em>Zirel</em> beta.</h1>
+        <p>Help test a quiet worldbuilding logic workspace for writers, game masters, and storytellers.</p>
+      </div>
+      <div class="zv2-hero-actions">
+        <a class="zv2-btn-primary" href="{{ url_for('main.projects') }}">Open Zirel</a>
+        <a class="zv2-btn-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
       </div>
     </section>
 
-    <div class="row g-3 mb-3">
-      <div class="col-lg-6">
-        <section class="beta-section public-card">
-          <h2>What You Can Test</h2>
-          <ul class="beta-list">
-            <li>Create a fictional world project.</li>
-            <li>Add characters, factions, and events.</li>
-            <li>Connect entities with relationships.</li>
-            <li>Review logic warnings.</li>
-            <li>Explore the graph workspace.</li>
-            <li>Export and import project data.</li>
-          </ul>
-        </section>
-      </div>
-      <div class="col-lg-6">
-        <section class="beta-section public-card">
-          <h2>Test Zirel in 10 Minutes</h2>
-          <ol class="beta-list beta-step-list">
-            <li>Create a project.</li>
-            <li>Add two characters.</li>
-            <li>Add one faction.</li>
-            <li>Add one event.</li>
-            <li>Create three to five relationships.</li>
-            <li>Open Logic Warnings.</li>
-            <li>Open Graph View.</li>
-            <li>Export your project if you want a backup.</li>
-            <li>Submit feedback.</li>
-          </ol>
-        </section>
-      </div>
+    <div class="zv2-grid zv2-grid-2">
+      <section class="zv2-card zv2-reveal">
+        <span class="zv2-card-index">01</span>
+        <h2>What you can test</h2>
+        <ul class="zv2-list">
+          <li>Create a fictional world project.</li>
+          <li>Add characters, factions, and events.</li>
+          <li>Connect entities with relationships.</li>
+          <li>Review logic warnings.</li>
+          <li>Explore the graph workspace.</li>
+          <li>Export and import project data.</li>
+        </ul>
+      </section>
+
+      <section class="zv2-card zv2-reveal">
+        <span class="zv2-card-index">02</span>
+        <h2>Test Zirel in 10 minutes</h2>
+        <ol class="zv2-steps">
+          <li>Create a project.</li>
+          <li>Add two characters.</li>
+          <li>Add one faction.</li>
+          <li>Add one event.</li>
+          <li>Create three to five relationships.</li>
+          <li>Open Logic Warnings and Graph Workspace.</li>
+          <li>Export a backup and submit feedback.</li>
+        </ol>
+      </section>
     </div>
 
-    <section class="beta-section public-card mb-3">
-      <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
-        <div>
-          <h2 class="mb-1">Example Test World</h2>
-          <p class="text-secondary mb-0">Use this small setup to try the relation builder, warnings, and graph without inventing data first.</p>
-        </div>
-        <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('main.projects') }}">Create Test Project</a>
+    <section class="zv2-section zv2-reveal">
+      <div class="zv2-section-heading">
+        <p class="zv2-kicker">Starter world</p>
+        <h2>Use a small test universe first.</h2>
+        <p>Try the relation builder, warnings, and graph without inventing everything from scratch.</p>
       </div>
-      <div class="row g-3">
-        <div class="col-md-6 col-lg-3">
-          <div class="beta-example-card">
-            <div class="eyebrow mb-2">Characters</div>
-            <div>King Alfred</div>
-            <div>Duke Bors</div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="beta-example-card">
-            <div class="eyebrow mb-2">Faction</div>
-            <div>Order of Lion</div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="beta-example-card">
-            <div class="eyebrow mb-2">Event</div>
-            <div>Battle of Stone Bridge</div>
-            <div class="text-secondary small">Year 125</div>
-          </div>
-        </div>
-        <div class="col-md-6 col-lg-3">
-          <div class="beta-example-card">
-            <div class="eyebrow mb-2">Tip</div>
-            <div class="text-secondary small">Set Duke Bors's death year before 125 to see a timeline warning.</div>
-          </div>
-        </div>
+      <div class="zv2-grid zv2-grid-4">
+        <article class="zv2-mini-card"><span>Characters</span><strong>King Alfred<br>Duke Bors</strong></article>
+        <article class="zv2-mini-card"><span>Faction</span><strong>Order of Lion</strong></article>
+        <article class="zv2-mini-card"><span>Event</span><strong>Battle of Stone Bridge</strong><small>Year 125</small></article>
+        <article class="zv2-mini-card"><span>Timeline tip</span><strong>Set a conflicting death year to trigger a warning.</strong></article>
       </div>
-      <div class="beta-relation-examples mt-3">
-        <div>Duke Bors <span>→ member_of →</span> Order of Lion</div>
-        <div>Order of Lion <span>→ loyal_to →</span> King Alfred</div>
-        <div>Duke Bors <span>→ hates →</span> King Alfred</div>
-        <div>Duke Bors <span>→ participated_in →</span> Battle of Stone Bridge</div>
+      <div class="zv2-flow-list">
+        <div>Duke Bors <span>&rarr; member_of &rarr;</span> Order of Lion</div>
+        <div>Order of Lion <span>&rarr; loyal_to &rarr;</span> King Alfred</div>
+        <div>Duke Bors <span>&rarr; hates &rarr;</span> King Alfred</div>
+        <div>Duke Bors <span>&rarr; participated_in &rarr;</span> Battle of Stone Bridge</div>
       </div>
     </section>
 
-    <div class="row g-3 mb-3">
-      <div class="col-lg-6">
-        <section class="beta-section public-card">
-          <h2>Known Limitations</h2>
-          <ul class="beta-list">
-            <li>User accounts are still basic.</li>
-            <li>No cloud sync yet.</li>
-            <li>No AI analysis yet.</li>
-            <li>Logic warnings are rule-based and may miss issues.</li>
-            <li>Design and UX are still evolving.</li>
-          </ul>
-        </section>
-      </div>
-      <div class="col-lg-6">
-        <section class="beta-section public-card beta-safety-note info-callout">
-          <h2>Data Safety Note</h2>
-          <p class="text-secondary">This is an early MVP. Please do not add highly sensitive, confidential, or irreplaceable writing material yet.</p>
-          <p class="text-secondary">You can export your project data as JSON from the project dashboard to keep a local copy.</p>
-        </section>
-      </div>
+    <div class="zv2-grid zv2-grid-2">
+      <section class="zv2-card zv2-reveal">
+        <span class="zv2-card-index">03</span>
+        <h2>Known limitations</h2>
+        <ul class="zv2-list">
+          <li>User accounts are still basic.</li>
+          <li>No cloud sync yet.</li>
+          <li>No AI analysis yet.</li>
+          <li>Logic warnings are rule-based and may miss issues.</li>
+          <li>Design and UX are still evolving.</li>
+        </ul>
+      </section>
+      <section class="zv2-card zv2-callout zv2-reveal">
+        <span class="zv2-card-index">04</span>
+        <h2>Data safety note</h2>
+        <p>This is an early MVP. Please avoid highly sensitive, confidential, or irreplaceable writing material during beta testing.</p>
+        <p>You can export project data as JSON from the project dashboard.</p>
+      </section>
     </div>
 
-    <section class="beta-section public-card mb-3">
-      <h2>What We Want to Learn</h2>
-      <p class="text-secondary">Your answers help decide what Zirel should improve next.</p>
-      <ul class="beta-list beta-feedback-questions">
-        <li>Was the purpose of Zirel clear?</li>
-        <li>Was the relation builder understandable?</li>
-        <li>Was the graph useful?</li>
-        <li>Were logic warnings useful?</li>
-        <li>What confused you?</li>
-        <li>What would make this worth using regularly?</li>
-        <li>What would make this worth paying for later?</li>
-      </ul>
+    <section class="zv2-section zv2-reveal">
+      <div class="zv2-section-heading">
+        <p class="zv2-kicker">Feedback</p>
+        <h2>What we want to learn.</h2>
+        <p>Your answers decide what should become clearer, stronger, or simpler next.</p>
+      </div>
+      <div class="zv2-question-grid">
+        <span>Was the purpose of Zirel clear?</span>
+        <span>Was the relation builder understandable?</span>
+        <span>Was the graph useful?</span>
+        <span>Were logic warnings useful?</span>
+        <span>What confused you?</span>
+        <span>What would make this worth using regularly?</span>
+      </div>
     </section>
 
-    <section class="beta-section public-card mb-4">
-      <h2>Feedback Makes the Beta Better</h2>
-      <p class="text-secondary mb-3">Tell us about confusing flows, missing features, bugs, and whether the graph and logic warnings are genuinely useful in your creative process.</p>
-      <a class="btn btn-primary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
-    </section>
-
-    <section class="cta-panel beta-hero text-center mb-2">
-      <h2 class="h3 mb-3">Ready to map your world?</h2>
-      <div class="d-flex justify-content-center flex-wrap gap-2">
-        <a class="btn btn-primary" href="{{ url_for('main.projects') }}">Open Zirel</a>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.contact') }}">Contact</a>
+    <section class="zv2-cta zv2-reveal">
+      <div>
+        <p class="zv2-kicker">Next step</p>
+        <h2>Ready to map your world?</h2>
+      </div>
+      <div class="zv2-hero-actions">
+        <a class="zv2-btn-primary" href="{{ url_for('main.projects') }}">Open Zirel</a>
+        <a class="zv2-btn-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
+        <a class="zv2-btn-secondary" href="{{ url_for('main.contact') }}">Contact</a>
       </div>
     </section>
   </div>

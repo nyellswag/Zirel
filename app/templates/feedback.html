@@ -3,43 +3,66 @@
 {% block title %}Feedback - Zirel{% endblock %}
 
 {% block content %}
-  <div class="public-page feedback-panel">
-    <div class="public-hero page-header mb-4">
-      <div>
-        <div class="eyebrow mb-2">Beta feedback</div>
-        <h1 class="h3 mb-1">Help shape Zirel</h1>
-        <p class="text-secondary mb-0">Tell us what is useful, confusing, or missing from your worldbuilding workflow.</p>
-      </div>
-    </div>
+  <div class="zv2-page zv2-form-page">
+    <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
 
-    <form method="post" class="public-form-card form-panel">
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label class="form-label" for="name">Name <span class="text-secondary">(optional)</span></label>
-          <input class="form-control" type="text" id="name" name="name" value="{{ request.form.get('name', '') }}">
-        </div>
-        <div class="col-md-6">
-          <label class="form-label" for="email">Email <span class="text-secondary">(optional)</span></label>
-          <input class="form-control" type="email" id="email" name="email" value="{{ request.form.get('email', '') }}">
-        </div>
-        <div class="col-12">
-          <label class="form-label" for="role">I am a...</label>
-          <select class="form-select" id="role" name="role">
-            {% for option in ["Writer", "Game Master", "World-builder", "Game Developer", "Screenwriter", "Other"] %}
-              <option value="{{ option }}" {% if request.form.get('role') == option %}selected{% endif %}>{{ option }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-12">
-          <label class="form-label" for="message">Feedback</label>
-          <textarea class="form-control" id="message" name="message" required placeholder="What would make Zirel more useful for your world?">{{ request.form.get('message', '') }}</textarea>
-        </div>
+    <section class="zv2-hero zv2-reveal">
+      <div>
+        <p class="zv2-kicker">Beta feedback</p>
+        <h1>Help shape <em>Zirel</em>.</h1>
+        <p>Tell us what is useful, confusing, or missing from your worldbuilding workflow.</p>
       </div>
-      <div class="public-form-helper"><strong>Useful feedback:</strong> confusing flows, missing features, bugs, and whether the graph or warnings help your process.</div>
-      <div class="d-flex gap-2 mt-4">
-        <button class="btn btn-primary" type="submit">Send Feedback</button>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.projects') }}">Back to Projects</a>
-      </div>
-    </form>
+      <a class="zv2-btn-secondary" href="{{ url_for('main.beta') }}">Beta Guide</a>
+    </section>
+
+    <div class="zv2-form-layout">
+      <form method="post" class="zv2-form-card zv2-reveal">
+        <div class="zv2-form-grid">
+          <div>
+            <label class="form-label" for="name">Name <span>(optional)</span></label>
+            <input class="form-control" type="text" id="name" name="name" value="{{ request.form.get('name', '') }}">
+          </div>
+          <div>
+            <label class="form-label" for="email">Email <span>(optional)</span></label>
+            <input class="form-control" type="email" id="email" name="email" value="{{ request.form.get('email', '') }}">
+          </div>
+          <div class="zv2-form-wide">
+            <label class="form-label" for="role">I am a...</label>
+            <select class="form-select" id="role" name="role">
+              {% for option in ["Writer", "Game Master", "World-builder", "Game Developer", "Screenwriter", "Other"] %}
+                <option value="{{ option }}" {% if request.form.get('role') == option %}selected{% endif %}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="zv2-form-wide">
+            <label class="form-label" for="topic">Feedback topic</label>
+            <select class="form-select" id="topic" name="topic">
+              {% for option in feedback_topics or ["Other"] %}
+                <option value="{{ option }}" {% if request.form.get('topic') == option %}selected{% endif %}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="zv2-form-wide">
+            <label class="form-label" for="message">Feedback</label>
+            <textarea class="form-control" id="message" name="message" required placeholder="What would make Zirel more useful for your world?">{{ request.form.get('message', '') }}</textarea>
+          </div>
+        </div>
+        <div class="zv2-form-note"><strong>Useful feedback:</strong> confusing flows, missing features, bugs, and whether the graph or warnings help your process.</div>
+        <div class="zv2-form-actions">
+          <button class="zv2-btn-primary" type="submit">Send Feedback</button>
+          <a class="zv2-btn-secondary" href="{{ url_for('main.projects') }}">Back to Projects</a>
+        </div>
+      </form>
+
+      <aside class="zv2-side-card zv2-reveal">
+        <p class="zv2-kicker">What helps most</p>
+        <h2>Specific notes beat general praise.</h2>
+        <ul class="zv2-list">
+          <li>Where did you hesitate?</li>
+          <li>Which step felt too technical?</li>
+          <li>Did warnings or graph exploration change how you think about your world?</li>
+        </ul>
+      </aside>
+    </div>
   </div>
 {% endblock %}

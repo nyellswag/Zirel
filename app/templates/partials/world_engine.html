@@ -1,0 +1,306 @@
+<div class="engine zirel-engine-embed" id="engine">
+  <div class="engine-bg"></div>
+  <canvas id="starCanvas"></canvas>
+
+  <svg class="engine-svg" viewBox="0 0 600 600" id="svgLayer" aria-hidden="true">
+    <circle class="orbit-ring" cx="300" cy="300" r="105"/>
+    <circle class="orbit-ring" cx="300" cy="300" r="148" stroke-dasharray="3 6"/>
+    <circle class="orbit-ring" cx="300" cy="300" r="190" stroke-dasharray="1 8"/>
+
+    <g class="orbit-group orbit-group-1">
+      <circle class="sat" cx="300" cy="195" r="4" fill="#c4b5fd"/>
+    </g>
+    <g class="orbit-group orbit-group-2">
+      <circle class="sat" cx="448" cy="300" r="3" fill="#a78bfa"/>
+    </g>
+    <g class="orbit-group orbit-group-3">
+      <circle class="sat" cx="300" cy="490" r="2.5" fill="#7c3aed"/>
+    </g>
+
+    <path class="conn-path" id="line-rule" d=""/>
+    <path class="conn-path" id="line-event" d=""/>
+    <path class="conn-path" id="line-faction" d=""/>
+    <path class="conn-path" id="line-timeline" d=""/>
+    <path class="conn-path" id="line-conflict" d=""/>
+    <path class="conn-path" id="line-character" d=""/>
+  </svg>
+
+  <div class="core" id="core">
+    <div class="core-dot"></div>
+    <div class="core-label">WORLD<br>ENGINE</div>
+  </div>
+
+  <button class="node" id="node-rule" type="button"
+       data-key="rule"
+       data-query="rule where scope = 'world' and status = 'active'"
+       style="--dot-color:#f59e0b; --tx:0; --ty:0">
+    <span class="node-dot" style="background:#f59e0b;"></span>
+    <span class="node-glyph">§</span>
+    <span class="node-label">Rule</span>
+  </button>
+
+  <button class="node" id="node-event" type="button"
+       data-key="event"
+       data-query="event after timeline.year 1024 order by magnitude desc"
+       style="--dot-color:#34d399; --tx:0; --ty:0">
+    <span class="node-dot" style="background:#34d399;"></span>
+    <span class="node-glyph">&#9672;</span>
+    <span class="node-label">Event</span>
+  </button>
+
+  <button class="node" id="node-faction" type="button"
+       data-key="faction"
+       data-query="faction where alignment = 'shadow' include members"
+       style="--dot-color:#fb7185; --tx:0; --ty:0">
+    <span class="node-dot" style="background:#fb7185;"></span>
+    <span class="node-glyph">&#9873;</span>
+    <span class="node-label">Faction</span>
+  </button>
+
+  <button class="node" id="node-timeline" type="button"
+       data-key="timeline"
+       data-query="timeline between year 800 and 1200 with events"
+       style="--dot-color:#38bdf8; --tx:0; --ty:0">
+    <span class="node-dot" style="background:#38bdf8;"></span>
+    <span class="node-glyph">&#9719;</span>
+    <span class="node-label">Timeline</span>
+  </button>
+
+  <button class="node" id="node-conflict" type="button"
+       data-key="conflict"
+       data-query="conflict involving faction 'Iron Veil' unresolved"
+       style="--dot-color:#f87171; --tx:0; --ty:0">
+    <span class="node-dot" style="background:#f87171;"></span>
+    <span class="node-glyph">&#9876;</span>
+    <span class="node-label">Conflict</span>
+  </button>
+
+  <button class="node" id="node-character" type="button"
+       data-key="character"
+       data-query="character linked faction.rank = 'elder' with motivations"
+       style="--dot-color:#a78bfa; --tx:0; --ty:0">
+    <span class="node-dot" style="background:#a78bfa;"></span>
+    <span class="node-glyph">&#9735;</span>
+    <span class="node-label">Character</span>
+  </button>
+
+  <div class="query-wrap">
+    <span class="query-hint">tap a concept to query</span>
+    <div class="query-bar" id="queryBar">
+      <span class="query-prefix">&gt;</span>
+      <span class="query-text" id="queryText">select * from world where story = yours</span>
+      <span class="query-cursor" id="queryCursor"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  const CX = 300, CY = 300;
+  const RADIUS = 195;
+  const ANGLES = [-90, -30, 30, 90, 150, 210];
+  const KEYS = ["rule", "event", "faction", "timeline", "conflict", "character"];
+  const RELATIONS = {
+    character: ["faction", "event", "conflict"],
+    faction: ["character", "conflict", "rule"],
+    event: ["character", "timeline", "conflict"],
+    timeline: ["event", "rule"],
+    conflict: ["character", "faction", "event"],
+    rule: ["faction", "timeline"]
+  };
+  const DEFAULT_QUERY = "select * from world where story = yours";
+
+  const engine = document.getElementById("engine");
+  const canvas = document.getElementById("starCanvas");
+  if (!engine || !canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  let W, H, stars = [], mouse = { x: 0, y: 0 };
+  let activeKey = null;
+
+  function initCanvas() {
+    const rect = engine.getBoundingClientRect();
+    W = canvas.width = rect.width || 600;
+    H = canvas.height = rect.height || 600;
+    mouse.x = W / 2;
+    mouse.y = H / 2;
+  }
+
+  function createStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i += 1) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.4 + 0.3,
+        alpha: Math.random() * 0.6 + 0.2,
+        dx: (Math.random() - 0.5) * 0.18,
+        dy: (Math.random() - 0.5) * 0.12,
+        flicker: Math.random() * Math.PI * 2,
+        flickerSpeed: Math.random() * 0.025 + 0.008
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(W / 2, H / 2, W / 2, 0, Math.PI * 2);
+    ctx.clip();
+
+    const mx = (mouse.x / W - 0.5);
+    const my = (mouse.y / H - 0.5);
+
+    stars.forEach((s) => {
+      s.flicker += s.flickerSpeed;
+      const fade = s.alpha * (0.7 + 0.3 * Math.sin(s.flicker));
+      const px = s.x + mx * W * 0.015;
+      const py = s.y + my * H * 0.015;
+      ctx.beginPath();
+      ctx.arc(px, py, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 180, 255, ${fade})`;
+      ctx.fill();
+      s.x += s.dx;
+      s.y += s.dy;
+      if (s.x < -5) s.x = W + 5;
+      if (s.x > W + 5) s.x = -5;
+      if (s.y < -5) s.y = H + 5;
+      if (s.y > H + 5) s.y = -5;
+    });
+    ctx.restore();
+  }
+
+  function bezierPath(x1, y1, x2, y2) {
+    const mx = (x1 + x2) / 2;
+    const my = (y1 + y2) / 2;
+    const ox = mx + (my - CY) * 0.25;
+    const oy = my - (mx - CX) * 0.25;
+    return `M ${x1} ${y1} Q ${ox} ${oy} ${x2} ${y2}`;
+  }
+
+  function drawLines(key) {
+    KEYS.forEach((lineKey) => {
+      const node = document.getElementById("node-" + lineKey);
+      const path = document.getElementById("line-" + lineKey);
+      if (!node || !path) return;
+      path.setAttribute("d", bezierPath(node._svgX || CX, node._svgY || CY, CX, CY));
+      path.classList.remove("lit", "dim");
+      if (key === null) return;
+      const related = RELATIONS[key] || [];
+      if (lineKey === key || related.includes(lineKey)) {
+        path.classList.add("lit");
+      } else {
+        path.classList.add("dim");
+      }
+    });
+  }
+
+  function placeNodes() {
+    const rect = engine.getBoundingClientRect();
+    const scale = rect.width / 600;
+    KEYS.forEach((key, i) => {
+      const angle = ANGLES[i] * Math.PI / 180;
+      const nx = CX + RADIUS * Math.cos(angle);
+      const ny = CY + RADIUS * Math.sin(angle);
+      const node = document.getElementById("node-" + key);
+      if (!node) return;
+      const nw = node.offsetWidth || 100;
+      const nh = node.offsetHeight || 34;
+      node.style.left = ((nx * scale) - nw / 2) + "px";
+      node.style.top = ((ny * scale) - nh / 2) + "px";
+      node._svgX = nx;
+      node._svgY = ny;
+    });
+    drawLines(null);
+  }
+
+  function setQuery(text, active) {
+    const bar = document.getElementById("queryBar");
+    const label = document.getElementById("queryText");
+    const cursor = document.getElementById("queryCursor");
+    if (label) label.textContent = text;
+    if (!bar || !cursor) return;
+    bar.classList.toggle("active", active);
+    cursor.classList.toggle("hidden", !active);
+  }
+
+  function clearActive() {
+    if (activeKey) {
+      document.getElementById("node-" + activeKey)?.classList.remove("active");
+    }
+    activeKey = null;
+    drawLines(null);
+    setQuery(DEFAULT_QUERY, false);
+  }
+
+  function setActive(key) {
+    if (activeKey === key) {
+      clearActive();
+      return;
+    }
+    if (activeKey) {
+      document.getElementById("node-" + activeKey)?.classList.remove("active");
+    }
+    activeKey = key;
+    const node = document.getElementById("node-" + key);
+    node?.classList.add("active");
+    drawLines(key);
+    setQuery(node?.dataset.query || DEFAULT_QUERY, true);
+  }
+
+  KEYS.forEach((key) => {
+    const node = document.getElementById("node-" + key);
+    if (!node) return;
+    node.addEventListener("click", (event) => {
+      event.stopPropagation();
+      setActive(key);
+    });
+    node.addEventListener("mouseenter", () => {
+      if (!activeKey) drawLines(key);
+    });
+    node.addEventListener("mouseleave", () => {
+      if (!activeKey) drawLines(null);
+    });
+  });
+
+  engine.addEventListener("click", clearActive);
+  engine.addEventListener("mousemove", function(event) {
+    const rect = engine.getBoundingClientRect();
+    mouse.x = event.clientX - rect.left;
+    mouse.y = event.clientY - rect.top;
+  });
+  engine.addEventListener("mouseleave", function() {
+    mouse.x = W / 2;
+    mouse.y = H / 2;
+  });
+
+  function loop() {
+    drawStars();
+    requestAnimationFrame(loop);
+  }
+
+  function init() {
+    initCanvas();
+    createStars(130);
+    setTimeout(() => {
+      placeNodes();
+      setQuery(DEFAULT_QUERY, false);
+    }, 60);
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener("resize", () => {
+    initCanvas();
+    placeNodes();
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>

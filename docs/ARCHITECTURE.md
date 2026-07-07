@@ -1,4 +1,4 @@
-﻿# Zirel: архитектура
+# Zirel: архитектура
 
 ## Общая структура
 
@@ -22,36 +22,21 @@ Zirel — Flask-монолит.
 - Flask-SQLAlchemy;
 - Flask-Migrate;
 - Flask-Login;
-- SQLite по умолчанию локально;
+- SQLite локально;
 - PostgreSQL на деплое, если задан `DATABASE_URL`;
 - Gunicorn через `wsgi.py` для production-запуска.
 
 Фабрика приложения находится в `app/__init__.py`.
 
-Она:
-
-- создает Flask-приложение;
-- загружает `Config`;
-- инициализирует `db`, `migrate`, `login_manager`;
-- регистрирует основной blueprint;
-- регистрирует CLI-команды.
-
 ## Конфигурация
 
-`config.py`:
+`config.py` читает:
 
-- читает `SECRET_KEY`;
-- читает `WISHLIST_MODE`;
-- читает `DATABASE_URL`;
-- преобразует старый формат `postgres://` в `postgresql://`;
-- использует локальную SQLite-базу `zirel.db`, если `DATABASE_URL` не задан;
-- задает параметры подключения SQLite.
+- `SECRET_KEY`;
+- `WISHLIST_MODE`;
+- `DATABASE_URL`.
 
-`app/__init__.py` настраивает SQLite:
-
-- `journal_mode=TRUNCATE`;
-- `synchronous=NORMAL`;
-- `busy_timeout=15000`.
+Если `DATABASE_URL` не задан, используется локальная SQLite-база `zirel.db`.
 
 ## Модели базы данных
 
@@ -59,23 +44,15 @@ Zirel — Flask-монолит.
 
 Основные модели:
 
-- `User`
-  - имя пользователя, email, роль, хеш пароля, флаг администратора;
-  - владеет проектами.
-- `Project`
-  - принадлежит пользователю;
-  - содержит персонажей, фракции, события и связи.
-- `Character`
-  - имя, описание, статус, год рождения, год смерти.
-- `Faction`
-  - имя, описание, год создания, год уничтожения.
-- `Event`
-  - имя, описание, год, место.
-- `Relation`
-  - связь вида `source_type/source_id -> relation_type -> target_type/target_id`.
-- `Feedback`
-- `ContactMessage`
-- `WishlistEntry`
+- `User` — аккаунт пользователя, роль, email, хеш пароля, флаг администратора, проекты.
+- `Project` — пользовательский проект мира.
+- `Character` — персонаж проекта.
+- `Faction` — фракция проекта.
+- `Event` — событие проекта.
+- `Relation` — связь `source_type/source_id -> relation_type -> target_type/target_id`.
+- `Feedback` — сообщение обратной связи: имя, email, роль, тема, текст, дата создания.
+- `ContactMessage` — contact-сообщение: имя, email, причина, тема, текст, дата создания.
+- `WishlistEntry` — заявка списка ожидания.
 
 Связанные данные проекта удаляются каскадно вместе с проектом.
 
@@ -115,7 +92,7 @@ Zirel — Flask-монолит.
 - `/admin/feedback`
 - `/admin/contact`
 - `/admin/wishlist`
-- маршруты удаления пользователей, заявок списка ожидания, feedback-сообщений и contact-сообщений.
+- маршруты удаления пользователей, заявок wishlist, feedback-сообщений и contact-сообщений.
 
 ## Контроль доступа
 
@@ -154,21 +131,33 @@ Zirel — Flask-монолит.
 
 - `/projects/<project_id>/graph/data`
 
-Он возвращает JSON для Cytoscape.js:
+Он возвращает JSON для Graph Workspace:
 
 - узлы для персонажей, фракций и событий;
 - ребра на основе связей;
+- стабильные процентные позиции узлов;
+- визуальные данные для узлов и связей: цвет, подпись, знак;
 - связи с отсутствующими сущностями пропускаются.
 
-Поведение графа реализовано во frontend-части шаблона `graph.html` с использованием Cytoscape.js и JavaScript.
-
-Текущий Graph Workspace использует fixed-layout:
+Graph Workspace использует fullscreen constellation map:
 
 - верхняя панель проекта;
 - левый sidebar с поиском, фильтрами, легендой и поиском пути;
-- центральный Cytoscape canvas;
+- центральная HTML/SVG-карта с draggable-узлами;
+- SVG-слой связей;
+- canvas-слой звездного фона;
+- миникарта, которая строится из тех же позиций, что и основная карта;
 - правый inspector;
 - нижняя status bar.
+
+## Рабочие fullscreen-страницы
+
+Некоторые страницы используют отдельный fullscreen layout и отключают общий navbar/footer в `base.html`:
+
+- `/projects`;
+- `/projects/<project_id>/warnings`;
+- `/projects/<project_id>/graph`;
+- `/admin` и admin-подстраницы.
 
 ## Интерфейс
 
@@ -177,18 +166,17 @@ Zirel — Flask-монолит.
 - Jinja2 templates;
 - Bootstrap CDN;
 - основной CSS-файл `app/static/style.css`;
-- небольшие JS-файлы:
-  - `app/static/list_filters.js`;
-  - `app/static/auth.js`.
+- `app/static/list_filters.js`;
+- `app/static/auth.js`.
 
 Текущий визуальный стиль:
 
 - темный футуристичный SaaS;
 - почти черный / темно-синий фон;
-- синие и фиолетовые акценты;
+- фиолетовые и синие акценты;
 - стеклянные карточки;
 - светящиеся границы;
-- компактные dashboard-layouts.
+- fullscreen workspace-экраны для крупных рабочих разделов.
 
 ## Деплой
 

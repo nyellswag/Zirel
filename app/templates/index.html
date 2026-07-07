@@ -1,39 +1,89 @@
 {% extends "base.html" %}
 
-{% block title %}Zirel - Worldbuilding Logic Workspace{% endblock %}
+{% block title %}Zirel - A quiet logic layer for fictional worlds{% endblock %}
 
 {% block content %}
-  <section class="landing-hero-v2" id="hero">
-    <div class="landing-page-container landing-hero-grid">
-      <div class="landing-hero-copy">
-        <div class="landing-kicker">Verify. Connect. Refine.</div>
-        <h1>Build worlds.<br>Test logic.<br><span>Find contradictions.</span></h1>
-        <p>Zirel helps writers, game masters, and world-builders organize characters, factions, events, and relationships, then detect possible logic issues.</p>
-        <div class="landing-action-row"><a class="btn btn-landing-primary btn-lg" href="{{ url_for('main.beta') }}">Join Beta <span aria-hidden="true">&rarr;</span></a><a class="btn btn-landing-secondary btn-lg" href="#how-it-works">See how it works <span class="landing-play" aria-hidden="true">&#9654;</span></a></div>
-        <div class="landing-beta-signal"><span class="signal-dot"></span> Early beta for creators building connected worlds.</div>
-      </div>
-      <div class="landing-network-wrap" aria-label="Illustration of a Zirel worldbuilding network">
-        <div class="network-orbit orbit-a"></div><div class="network-orbit orbit-b"></div><div class="network-orbit orbit-c"></div>
-        <div class="network-plane network-plane-back"></div><div class="network-plane network-plane-mid"></div>
-        <div class="network-plane network-plane-front"><span class="network-line line-one"></span><span class="network-line line-two"></span><span class="network-line line-three"></span><span class="network-line line-four"></span><span class="network-line line-five"></span><span class="network-line line-six"></span><span class="network-core"><i></i></span><span class="network-dot dot-one"></span><span class="network-dot dot-two"></span><span class="network-dot dot-three"></span><span class="network-dot dot-four"></span><span class="network-dot dot-five"></span><span class="network-dot dot-six"></span><span class="network-label label-character">Character</span><span class="network-label label-faction">Faction</span><span class="network-label label-event">Event</span><span class="network-label label-rule">Rule</span><span class="network-label label-timeline">Timeline</span><span class="network-label label-conflict">Conflict</span><span class="network-label label-location">Location</span><span class="network-label label-outcome">Outcome</span></div>
-        <div class="network-readout readout-one"><b>Timeline</b><span>consistent</span></div><div class="network-readout readout-two"><b>Relations</b><span>mapped</span></div><div class="network-readout readout-three"><b>Warnings</b><span>reviewed</span></div>
-      </div>
+  <div class="zirel-homepage" data-homepage>
+    <div class="zhp-bg" aria-hidden="true">
+      <div class="zhp-radial zhp-radial-top"></div>
+      <div class="zhp-radial zhp-radial-right"></div>
+      <div class="zhp-dots"></div>
+      <div class="zhp-vignette"></div>
     </div>
-  </section>
 
-  <section class="landing-section-v2 landing-feature-zone" id="features">
-    <div class="landing-page-container"><div class="landing-section-heading split-heading"><div><div class="landing-kicker">Core workspace</div><h2>Everything you need to build <span>consistent worlds.</span></h2></div><p>Structure your lore, map how it connects, and surface the details that deserve a second look.</p></div>
-      <div class="landing-feature-grid">
-        <article class="landing-feature-card"><span class="landing-feature-icon icon-people"></span><h3>Characters &amp; Factions</h3><p>Keep people, powers, and groups in a focused world record.</p></article><article class="landing-feature-card"><span class="landing-feature-icon icon-timeline"></span><h3>Events &amp; Timelines</h3><p>Track turning points and the years that hold your canon together.</p></article><article class="landing-feature-card"><span class="landing-feature-icon icon-relations"></span><h3>Relationship Builder</h3><p>Connect entities with clear, typed relationships.</p></article><article class="landing-feature-card"><span class="landing-feature-icon icon-warning"></span><h3>Logic Warnings</h3><p>Review possible timeline conflicts and suspicious links.</p></article><article class="landing-feature-card"><span class="landing-feature-icon icon-graph"></span><h3>Graph Workspace</h3><p>Explore your world as an interactive relationship network.</p></article><article class="landing-feature-card"><span class="landing-feature-icon icon-export"></span><h3>Export &amp; Import</h3><p>Keep JSON backups and bring Zirel projects with you.</p></article>
+    <section class="zhp-hero" id="hero">
+      <div class="zhp-hero-copy zhp-reveal">
+        <span class="zhp-kicker">Quiet logic for fictional worlds</span>
+        <h1>Build worlds that hold together.</h1>
+        <p>Zirel helps writers, game masters, and world-builders structure characters, factions, events, and relationships, then review the logic that connects them.</p>
+        <div class="zhp-actions">
+          <a class="zhp-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
+          <a class="zhp-btn-secondary" href="#how-it-works">See how it works</a>
+        </div>
       </div>
-    </div>
-  </section>
 
-  <section class="landing-section-v2 landing-how-zone" id="how-it-works"><div class="landing-page-container"><div class="landing-section-heading center-heading"><div class="landing-kicker">How it works</div><h2>Four steps to a clearer world.</h2><p>Move from scattered ideas to connected, reviewable lore.</p></div><div class="landing-steps-grid"><article class="landing-step"><div class="step-number">1</div><h3>Create</h3><p>Start a project and add the building blocks of your setting.</p></article><article class="landing-step"><div class="step-number">2</div><h3>Connect</h3><p>Map factions, events, and characters through relationships.</p></article><article class="landing-step"><div class="step-number">3</div><h3>Analyze</h3><p>Use warnings and the graph to inspect potential conflicts.</p></article><article class="landing-step"><div class="step-number">4</div><h3>Refine</h3><p>Adjust your canon while the whole world stays in view.</p></article></div></div></section>
+      <div class="zhp-reveal" aria-label="Interactive Zirel world engine preview">
+        {% include "partials/world_engine.html" %}
+      </div>
+    </section>
 
-  <section class="landing-section-v2 landing-use-case-zone" id="use-cases"><div class="landing-page-container"><div class="landing-section-heading center-heading"><div class="landing-kicker">Use cases</div><h2>Built for every kind of <span>worldbuilder.</span></h2></div><div class="landing-use-case-grid"><article><span class="use-case-mark mark-writer"></span><h3>Writers</h3><p>Novels, series, and long-form fiction.</p></article><article><span class="use-case-mark mark-gm"></span><h3>Game Masters</h3><p>Campaigns, settings, and evolving tables.</p></article><article><span class="use-case-mark mark-world"></span><h3>Worldbuilders</h3><p>Histories, societies, and connected lore.</p></article><article><span class="use-case-mark mark-screen"></span><h3>Screenwriters</h3><p>Characters and continuity across scenes.</p></article><article><span class="use-case-mark mark-game"></span><h3>Indie Game Developers</h3><p>Systems, quests, and narrative state.</p></article><article><span class="use-case-mark mark-design"></span><h3>Narrative Designers</h3><p>Branching worlds with rules that hold up.</p></article></div></div></section>
+    <section class="zhp-section" id="features">
+      <div class="zhp-section-head zhp-reveal">
+        <span class="zhp-kicker">Core workspace</span>
+        <h2>What Zirel already gives you today.</h2>
+        <p>The MVP is usable now: create a private world, add entities, connect them, inspect warnings, and export your data.</p>
+      </div>
+      <div class="zhp-card-grid zhp-grid-3">
+        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Private projects</h3><p>Create protected worlds in your account and keep each universe separate.</p></article>
+        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Core entities</h3><p>Add characters, factions, and events with simple CRUD and bulk management.</p></article>
+        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Relation builder</h3><p>Build connections like member_of, loyal_to, hates, and participated_in with a visual preview.</p></article>
+        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Logic warnings</h3><p>Review rule-based timeline and relationship warnings generated from your project data.</p></article>
+        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Graph workspace</h3><p>Explore entities and relations through an interactive Cytoscape graph with filters and inspector.</p></article>
+        <article class="zhp-card zhp-reveal"><span>Live</span><h3>JSON portability</h3><p>Export and import projects so your world data can move with you.</p></article>
+      </div>
+    </section>
 
-  <section class="landing-section-v2 landing-beta-zone" id="roadmap"><div class="landing-page-container landing-beta-grid"><div><div class="landing-kicker">Built in the open</div><h2>Early beta, grounded in real creator feedback.</h2><p>Try the workflow with a small world, tell us what feels clear or clumsy, and help focus the next iteration.</p><a class="landing-text-link" href="{{ url_for('main.feedback') }}">Share beta feedback <span aria-hidden="true">&rarr;</span></a></div><div class="landing-beta-cards"><article><span class="beta-card-index">01</span><h3>Portable by default</h3><p>JSON export and import keep your work within reach.</p></article><article><span class="beta-card-index">02</span><h3>Designed for review</h3><p>Warnings are prompts to inspect, not verdicts on your story.</p></article><article><span class="beta-card-index">03</span><h3>Direction, not hype</h3><p>See the product vision and roadmap before you commit time.</p><a href="{{ url_for('main.roadmap') }}">Read roadmap</a></article></div></div></section>
+    <section class="zhp-section zhp-split" id="how-it-works">
+      <div class="zhp-section-head zhp-reveal">
+        <span class="zhp-kicker">How it works</span>
+        <h2>From scattered notes to reviewable structure.</h2>
+      </div>
+      <div class="zhp-steps">
+        <article class="zhp-step zhp-reveal"><span>1</span><h3>Create</h3><p>Start a project for a story, campaign, screenplay, or game world.</p></article>
+        <article class="zhp-step zhp-reveal"><span>2</span><h3>Connect</h3><p>Add entities and map the relationships that define the setting.</p></article>
+        <article class="zhp-step zhp-reveal"><span>3</span><h3>Analyze</h3><p>Review rule-based warnings and inspect the graph for hidden consequences.</p></article>
+        <article class="zhp-step zhp-reveal"><span>4</span><h3>Refine</h3><p>Adjust your canon while the broader network stays visible.</p></article>
+      </div>
+    </section>
 
-  <section class="landing-final-cta"><div class="landing-page-container landing-final-cta-inner"><div class="final-cta-glow"></div><div><div class="landing-kicker">Zirel beta</div><h2>Ready to build worlds that make sense?</h2></div><p>Map the people, powers, events, and rules that make your setting yours.</p><a class="btn btn-landing-primary btn-lg" href="{{ url_for('main.beta') }}">Join Beta <span aria-hidden="true">&rarr;</span></a></div></section>
+    <section class="zhp-section" id="use-cases">
+      <div class="zhp-section-head zhp-reveal">
+        <span class="zhp-kicker">For creators</span>
+        <h2>Built for worlds with moving parts.</h2>
+      </div>
+      <div class="zhp-pill-grid">
+        <span>Writers</span><span>Game Masters</span><span>Worldbuilders</span><span>Screenwriters</span><span>Indie Game Developers</span><span>Narrative Designers</span>
+      </div>
+    </section>
+
+    <section class="zhp-section zhp-beta-panel" id="roadmap">
+      <div class="zhp-reveal">
+        <span class="zhp-kicker">Current beta</span>
+        <h2>Use the working MVP and tell us what breaks the flow.</h2>
+        <p>Zirel already has accounts, protected projects, CRUD, warnings, graph view, export/import, feedback, and admin tools. The beta is about making that foundation clearer and stronger.</p>
+      </div>
+      <div class="zhp-beta-list zhp-reveal">
+        <a href="{{ url_for('main.beta') }}">Beta guide</a>
+        <a href="{{ url_for('main.roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('main.whitepaper') }}">Whitepaper</a>
+        <a href="{{ url_for('main.feedback') }}">Feedback</a>
+      </div>
+    </section>
+
+    <section class="zhp-final zhp-reveal">
+      <span class="zhp-kicker">Start small</span>
+      <h2>Create a test world and see the current workflow in action.</h2>
+      <a class="zhp-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
+    </section>
+  </div>
 {% endblock %}

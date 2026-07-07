@@ -134,6 +134,7 @@ class Feedback(db.Model):
     name = db.Column(db.String(120), nullable=True)
     email = db.Column(db.String(255), nullable=True)
     role = db.Column(db.String(40), nullable=True)
+    topic = db.Column(db.String(60), nullable=True)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(
         db.DateTime,

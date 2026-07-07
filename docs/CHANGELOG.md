@@ -56,3 +56,11 @@
 - Старое hex-мини-лого заменено на минималистичный ромбовый знак в стиле Wishlist.
 - Общий Legal Center и Disclaimer удалены; в интерфейсе оставлены отдельные Terms и Privacy.
 - Graph Workspace переработан в полноэкранный fixed-layout по HTML-референсу с собственным topbar, sidebars, inspector и status bar.
+- Warnings Page переработана в полноэкранный workspace по HTML-референсам с topbar, sidebar-фильтрами, warning-карточками, inspector и status bar.
+- Projects Page переработана в полноэкранный workspace по HTML-референсу с topbar, left sidebar, project cards, right quick actions panel, поиском, сортировкой и Grid/List view.
+- Graph Workspace переведен на кастомную constellation map на HTML/SVG/canvas вместо Cytoscape на странице графа.
+- API графа расширен стабильными `positions`, визуальными цветами и знаками узлов без изменения базы данных.
+- Миникарта Graph Workspace теперь строится из реальных позиций узлов и связей.
+- В Graph Workspace сохранены поиск, фильтры, inspector, поиск пути, connected-only, focus selected и перетаскивание узлов.
+- Публичная Contact-страница очищена от лишних верхних reason chips.
+- Feedback получил выбор темы сообщения для бета-обратной связи.

@@ -3,51 +3,144 @@
 {% block title %}Admin Dashboard - Zirel{% endblock %}
 
 {% block content %}
-  <section class="app-workspace admin-page workspace-shell">
-    <header class="workspace-header admin-header">
-      <div>
-        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><span>Admin</span><span>/</span><span>Dashboard</span></nav>
-        <div class="workspace-eyebrow">Beta management</div>
-        <h1>Admin Dashboard</h1>
-        <p>Monitor beta activity, users, projects, feedback, and contact messages.</p>
-      </div>
-    </header>
+<section class="zadmin-page">
+  <div class="zadmin-atmo" aria-hidden="true"><span></span><span></span><i></i></div>
 
-    <nav class="admin-nav" aria-label="Admin navigation">
-      <a class="active" href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
-      <a href="{{ url_for('main.admin_users') }}">Users</a>
-      <a href="{{ url_for('main.admin_feedback') }}">Feedback</a>
-      <a href="{{ url_for('main.admin_contact') }}">Contact Messages</a>
-      <a href="{{ url_for('main.admin_wishlist') }}">Wishlist</a>
-    </nav>
-
-    <div class="admin-stat-grid">
-      <article class="admin-stat-card admin-stat-users"><span class="admin-stat-icon"></span><div><span>Total users</span><strong>{{ stats.users }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-projects"><span class="admin-stat-icon"></span><div><span>Total projects</span><strong>{{ stats.projects }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-characters"><span class="admin-stat-icon"></span><div><span>Characters</span><strong>{{ stats.characters }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-factions"><span class="admin-stat-icon"></span><div><span>Factions</span><strong>{{ stats.factions }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-events"><span class="admin-stat-icon"></span><div><span>Events</span><strong>{{ stats.events }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-relations"><span class="admin-stat-icon"></span><div><span>Relations</span><strong>{{ stats.relations }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-feedback"><span class="admin-stat-icon"></span><div><span>Feedback messages</span><strong>{{ stats.feedback }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-contact"><span class="admin-stat-icon"></span><div><span>Contact messages</span><strong>{{ stats.contact }}</strong></div></article>
-      <article class="admin-stat-card admin-stat-wishlist"><span class="admin-stat-icon"></span><div><span>Wishlist entries</span><strong>{{ stats.wishlist }}</strong></div></article>
+  <header class="zadmin-topbar">
+    <a class="zadmin-brand" href="{{ url_for('main.index') }}" aria-label="Zirel home">
+      <span class="zirel-public-brand-mark zadmin-brand-mark" aria-hidden="true"></span>
+      <strong>Zirel</strong>
+      <em>staff console</em>
+    </a>
+    <div class="zadmin-topbar-center">Admin / Dashboard</div>
+    <div class="zadmin-topbar-actions">
+      <span class="zadmin-live"><i></i>Live data</span>
+      <a href="{{ url_for('main.projects') }}">Projects</a>
+      <a href="{{ url_for('main.logout') }}">Logout</a>
+      <span class="zadmin-avatar">{{ current_user.username[:2]|upper }}</span>
     </div>
+  </header>
 
-    <div class="admin-section-grid">
-      <section class="admin-panel">
-        <header><div><div class="workspace-eyebrow">Latest</div><h2>Users</h2></div><a class="btn-workspace-secondary" href="{{ url_for('main.admin_users') }}">View all users</a></header>
-        {% if users %}<div class="admin-mini-list">{% for user in users %}<article><div><strong>{{ user.username }}</strong><span>{{ user.email }}</span></div><div><span class="admin-badge {% if user.is_admin %}admin-badge-admin{% endif %}">{% if user.is_admin %}Admin{% else %}User{% endif %}</span><small>{{ user.created_at.strftime("%b %d, %Y") }}</small></div></article>{% endfor %}</div>{% else %}<p class="admin-panel-empty">No users registered yet.</p>{% endif %}
-      </section>
+  <nav class="zadmin-tabbar" aria-label="Admin navigation">
+    <a class="active" href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+    <a href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a>
+    <a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a>
+    <a href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a>
+    <a href="{{ url_for('main.admin_wishlist') }}">Wishlist <span>{{ stats.wishlist }}</span></a>
+  </nav>
 
-      <section class="admin-panel">
-        <header><div><div class="workspace-eyebrow">Latest</div><h2>Feedback</h2></div><a class="btn-workspace-secondary" href="{{ url_for('main.admin_feedback') }}">View all feedback</a></header>
-        {% if feedback_entries %}<div class="admin-mini-list">{% for entry in feedback_entries %}<article><div><strong>{{ entry.name or "Anonymous tester" }}</strong><span>{{ entry.role or "No role" }}{% if entry.email %} &middot; {{ entry.email }}{% endif %}</span><p>{{ entry.message[:130] }}{% if entry.message|length > 130 %}...{% endif %}</p></div><small>{{ entry.created_at.strftime("%b %d, %H:%M") }} UTC</small></article>{% endfor %}</div>{% else %}<p class="admin-panel-empty">No feedback submitted yet.</p>{% endif %}
-      </section>
+  <div class="zadmin-main">
+    <section class="zadmin-hero">
+      <span>Beta management</span>
+      <h1>Admin Dashboard</h1>
+      <p>Monitor users, projects, pre-launch requests, feedback, and contact messages from one quiet control surface.</p>
+    </section>
 
-      <section class="admin-panel">
-        <header><div><div class="workspace-eyebrow">Latest</div><h2>Contact Messages</h2></div><a class="btn-workspace-secondary" href="{{ url_for('main.admin_contact') }}">View all messages</a></header>
-        {% if contact_messages %}<div class="admin-mini-list">{% for contact_message in contact_messages %}<article><div><strong>{{ contact_message.name or "Anonymous visitor" }}</strong><span>{{ contact_message.reason or "Other" }} &middot; {{ contact_message.email }}</span>{% if contact_message.subject %}<b>{{ contact_message.subject }}</b>{% endif %}<p>{{ contact_message.message[:130] }}{% if contact_message.message|length > 130 %}...{% endif %}</p></div><small>{{ contact_message.created_at.strftime("%b %d, %H:%M") }} UTC</small></article>{% endfor %}</div>{% else %}<p class="admin-panel-empty">No contact messages yet.</p>{% endif %}
-      </section>
-    </div>
-  </section>
+    <section class="zadmin-kpi-grid" aria-label="Overview stats">
+      <article class="zadmin-kpi"><span>Total users</span><strong>{{ stats.users }}</strong><small>Registered accounts</small></article>
+      <article class="zadmin-kpi"><span>Projects</span><strong>{{ stats.projects }}</strong><small>Private worlds</small></article>
+      <article class="zadmin-kpi"><span>Characters</span><strong>{{ stats.characters }}</strong><small>World entities</small></article>
+      <article class="zadmin-kpi"><span>Factions</span><strong>{{ stats.factions }}</strong><small>Groups and orders</small></article>
+      <article class="zadmin-kpi"><span>Events</span><strong>{{ stats.events }}</strong><small>Timeline records</small></article>
+      <article class="zadmin-kpi"><span>Relations</span><strong>{{ stats.relations }}</strong><small>World links</small></article>
+      <article class="zadmin-kpi"><span>Feedback</span><strong>{{ stats.feedback }}</strong><small>Tester notes</small></article>
+      <article class="zadmin-kpi"><span>Contact</span><strong>{{ stats.contact }}</strong><small>Messages</small></article>
+      <article class="zadmin-kpi zadmin-kpi-wide"><span>Wishlist</span><strong>{{ stats.wishlist }}</strong><small>Pre-launch requests</small></article>
+    </section>
+
+    <section class="zadmin-dashboard-grid">
+      <article class="zadmin-panel">
+        <header><div><span>Latest</span><h2>Users</h2></div><a href="{{ url_for('main.admin_users') }}">View all</a></header>
+        {% if users %}
+          <div class="zadmin-feed">
+            {% for user in users %}
+              <button class="zadmin-feed-row zadmin-detail-trigger" type="button"
+                data-title="{{ user.username }}"
+                data-meta="{{ user.email }}"
+                data-body="ID: #{{ user.id }} | Email: {{ user.email }} | Role: {{ user.role or 'Not specified' }} | Access: {{ 'Admin' if user.is_admin else 'User' }} | Projects: {{ user.projects|length }} | Joined: {{ user.created_at.strftime('%Y-%m-%d %H:%M') }} UTC">
+                <span class="zadmin-avatar mini">{{ user.username[:2]|upper }}</span>
+                <b>{{ user.username }}</b>
+                <small>{{ user.email }}</small>
+                <em>{{ "Admin" if user.is_admin else "User" }}</em>
+              </button>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="zadmin-empty">No users registered yet.</div>
+        {% endif %}
+      </article>
+
+      <article class="zadmin-panel">
+        <header><div><span>Latest</span><h2>Wishlist</h2></div><a href="{{ url_for('main.admin_wishlist') }}">View all</a></header>
+        {% if wishlist_entries %}
+          <div class="zadmin-feed">
+            {% for entry in wishlist_entries %}
+              <button class="zadmin-feed-row zadmin-detail-trigger" type="button"
+                data-title="{{ entry.name or 'Anonymous creator' }}"
+                data-meta="{{ entry.email }}"
+                data-body="Submitted: {{ entry.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Name: {{ entry.name or 'Anonymous creator' }} | Email: {{ entry.email }} | Role: {{ entry.role or 'No role' }} | Message: {{ entry.message or 'No message provided.' }}">
+                <span class="zadmin-dot"></span>
+                <b>{{ entry.name or "Anonymous creator" }}</b>
+                <small>{{ entry.role or "No role" }} · {{ entry.created_at.strftime("%b %d, %H:%M") }} UTC</small>
+                <em>Request</em>
+              </button>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="zadmin-empty">No wishlist entries yet.</div>
+        {% endif %}
+      </article>
+
+      <article class="zadmin-panel">
+        <header><div><span>Latest</span><h2>Feedback</h2></div><a href="{{ url_for('main.admin_feedback') }}">View all</a></header>
+        {% if feedback_entries %}
+          <div class="zadmin-feed">
+            {% for entry in feedback_entries %}
+              <button class="zadmin-feed-row zadmin-detail-trigger" type="button"
+                data-title="{{ entry.name or 'Anonymous tester' }}"
+                data-meta="{{ entry.topic or 'Other' }} · {{ entry.role or 'No role' }}{% if entry.email %} · {{ entry.email }}{% endif %}"
+                data-body="Submitted: {{ entry.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Email: {{ entry.email or 'No email provided' }} | Role: {{ entry.role or 'No role' }} | Topic: {{ entry.topic or 'Other' }} | Message: {{ entry.message }}">
+                <span class="zadmin-dot"></span>
+                <b>{{ entry.name or "Anonymous tester" }}</b>
+                <small>{{ entry.topic or "Other" }} · {{ entry.message[:72] }}{% if entry.message|length > 72 %}...{% endif %}</small>
+                <em>{{ entry.created_at.strftime("%b %d") }}</em>
+              </button>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="zadmin-empty">No feedback submitted yet.</div>
+        {% endif %}
+      </article>
+
+      <article class="zadmin-panel">
+        <header><div><span>Latest</span><h2>Contact</h2></div><a href="{{ url_for('main.admin_contact') }}">View all</a></header>
+        {% if contact_messages %}
+          <div class="zadmin-feed">
+            {% for contact_message in contact_messages %}
+              <button class="zadmin-feed-row zadmin-detail-trigger" type="button"
+                data-title="{{ contact_message.subject or contact_message.reason or 'Contact message' }}"
+                data-meta="{{ contact_message.name or 'Anonymous visitor' }} · {{ contact_message.email }}"
+                data-body="Submitted: {{ contact_message.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Name: {{ contact_message.name or 'Anonymous visitor' }} | Email: {{ contact_message.email }} | Reason: {{ contact_message.reason or 'Other' }} | Subject: {{ contact_message.subject or 'No subject' }} | Message: {{ contact_message.message }}">
+                <span class="zadmin-dot"></span>
+                <b>{{ contact_message.name or "Anonymous visitor" }}</b>
+                <small>{{ contact_message.reason or "Other" }} · {{ contact_message.created_at.strftime("%b %d, %H:%M") }} UTC</small>
+                <em>Open</em>
+              </button>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="zadmin-empty">No contact messages yet.</div>
+        {% endif %}
+      </article>
+    </section>
+  </div>
+
+  <aside class="zadmin-drawer" id="zadminDrawer" aria-hidden="true">
+    <button type="button" class="zadmin-drawer-close" data-zadmin-close aria-label="Close inspector">&times;</button>
+    <span>Inspector</span>
+    <h2 data-zadmin-title>Select an item</h2>
+    <p data-zadmin-meta>Click a row to inspect the available details.</p>
+    <div data-zadmin-body></div>
+  </aside>
+</section>
 {% endblock %}

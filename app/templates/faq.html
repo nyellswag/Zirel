@@ -3,60 +3,92 @@
 {% block title %}Frequently Asked Questions - Zirel{% endblock %}
 
 {% block content %}
-  <div class="public-page faq-page">
-    <div class="public-hero legal-hero">
-      <div class="eyebrow mb-2">Zirel beta</div>
-      <h1>Frequently Asked Questions</h1>
-      <p class="text-secondary mb-0">Answers about Zirel, beta testing, data ownership, and future features.</p>
+  <div class="zv2-page faq-page">
+    <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <section class="zv2-hero zv2-reveal">
+      <div>
+        <p class="zv2-kicker">Zirel beta</p>
+        <h1>Frequently asked <em>questions</em>.</h1>
+        <p>Answers about Zirel, beta testing, data ownership, and future features.</p>
+      </div>
+      <div class="zv2-hero-actions">
+        <a class="zv2-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
+        <a class="zv2-btn-secondary" href="{{ url_for('main.contact') }}">Contact</a>
+      </div>
+    </section>
+
+    <div class="zv2-doc-layout">
+      <aside class="zv2-side-nav zv2-reveal" aria-label="FAQ sections">
+        <span>On this page</span>
+        <a href="#general">General</a>
+        <a href="#data">Data &amp; Ownership</a>
+        <a href="#safety">Beta &amp; Safety</a>
+        <a href="#features">Features</a>
+        <a href="#future">Future Plans</a>
+      </aside>
+
+      <div class="zv2-doc-main">
+        <section class="zv2-doc-section zv2-reveal" id="general">
+          <p class="zv2-kicker">General</p>
+          <div class="accordion zv2-accordion" id="faq-general">
+            <div class="accordion-item"><h2 class="accordion-header" id="general-one"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-one" aria-expanded="true" aria-controls="answer-general-one">What is Zirel?</button></h2><div id="answer-general-one" class="accordion-collapse collapse show" aria-labelledby="general-one" data-bs-parent="#faq-general"><div class="accordion-body">Zirel is a worldbuilding logic tool that helps writers, game masters, and storytellers organize fictional worlds and detect possible logic issues.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="general-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-two" aria-controls="answer-general-two">Who is Zirel for?</button></h2><div id="answer-general-two" class="accordion-collapse collapse" aria-labelledby="general-two" data-bs-parent="#faq-general"><div class="accordion-body">Zirel is for writers, D&amp;D and game masters, screenwriters, indie game developers, and anyone building fictional worlds with characters, factions, events, and relationships.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="general-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-three" aria-controls="answer-general-three">Does Zirel write my story for me?</button></h2><div id="answer-general-three" class="accordion-collapse collapse" aria-labelledby="general-three" data-bs-parent="#faq-general"><div class="accordion-body">No. Zirel is not a story generator. It helps organize and analyze the structure of a fictional world.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="general-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-four" aria-controls="answer-general-four">How is Zirel different from Notion or Obsidian?</button></h2><div id="answer-general-four" class="accordion-collapse collapse" aria-labelledby="general-four" data-bs-parent="#faq-general"><div class="accordion-body">Notion and Obsidian are flexible note-taking tools. Zirel is focused specifically on worldbuilding logic, relationship graphs, and consistency warnings.</div></div></div>
+          </div>
+        </section>
+
+        <section class="zv2-doc-section zv2-reveal" id="data">
+          <p class="zv2-kicker">Data &amp; ownership</p>
+          <div class="accordion zv2-accordion" id="faq-data">
+            <div class="accordion-item"><h2 class="accordion-header" id="data-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-one" aria-controls="answer-data-one">Who owns the content I create in Zirel?</button></h2><div id="answer-data-one" class="accordion-collapse collapse" aria-labelledby="data-one" data-bs-parent="#faq-data"><div class="accordion-body">You do. Zirel does not claim ownership over your fictional worlds, characters, factions, events, notes, relationships, or story ideas.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="data-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-two" aria-controls="answer-data-two">Can I export my project?</button></h2><div id="answer-data-two" class="accordion-collapse collapse" aria-labelledby="data-two" data-bs-parent="#faq-data"><div class="accordion-body">Yes. Zirel supports JSON export so you can download your project data.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="data-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-three" aria-controls="answer-data-three">Can I import a project back?</button></h2><div id="answer-data-three" class="accordion-collapse collapse" aria-labelledby="data-three" data-bs-parent="#faq-data"><div class="accordion-body">Yes. Zirel can import JSON files exported from Zirel.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="data-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-four" aria-controls="answer-data-four">Can I delete my data?</button></h2><div id="answer-data-four" class="accordion-collapse collapse" aria-labelledby="data-four" data-bs-parent="#faq-data"><div class="accordion-body">During the MVP and beta stage, data deletion tools may still be limited. You can contact the project owner for deletion requests. More self-service deletion options may be added later.</div></div></div>
+          </div>
+        </section>
+
+        <section class="zv2-doc-section zv2-reveal" id="safety">
+          <p class="zv2-kicker">Beta &amp; safety</p>
+          <div class="accordion zv2-accordion" id="faq-beta">
+            <div class="accordion-item"><h2 class="accordion-header" id="beta-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-beta-one" aria-controls="answer-beta-one">Is Zirel finished?</button></h2><div id="answer-beta-one" class="accordion-collapse collapse" aria-labelledby="beta-one" data-bs-parent="#faq-beta"><div class="accordion-body">No. Zirel is currently an early MVP and beta. Features, design, and workflows may change.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="beta-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-beta-two" aria-controls="answer-beta-two">Can I upload private or sensitive writing?</button></h2><div id="answer-beta-two" class="accordion-collapse collapse" aria-labelledby="beta-two" data-bs-parent="#faq-beta"><div class="accordion-body">During beta, users should avoid uploading highly sensitive, confidential, or irreplaceable writing material. Use test worlds or backups when possible.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="beta-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-beta-three" aria-controls="answer-beta-three">Are logic warnings always correct?</button></h2><div id="answer-beta-three" class="accordion-collapse collapse" aria-labelledby="beta-three" data-bs-parent="#faq-beta"><div class="accordion-body">No. Logic warnings are suggestions. They may miss issues or flag something intentional. The author remains responsible for final creative decisions.</div></div></div>
+          </div>
+        </section>
+
+        <section class="zv2-doc-section zv2-reveal" id="features">
+          <p class="zv2-kicker">Features</p>
+          <div class="accordion zv2-accordion" id="faq-features">
+            <div class="accordion-item"><h2 class="accordion-header" id="feature-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-one" aria-controls="answer-feature-one">What can I create inside Zirel?</button></h2><div id="answer-feature-one" class="accordion-collapse collapse" aria-labelledby="feature-one" data-bs-parent="#faq-features"><div class="accordion-body">You can create projects, characters, factions, events, and relationships.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="feature-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-two" aria-controls="answer-feature-two">What is the Graph Workspace?</button></h2><div id="answer-feature-two" class="accordion-collapse collapse" aria-labelledby="feature-two" data-bs-parent="#faq-features"><div class="accordion-body">The Graph Workspace visualizes your characters, factions, events, and relationships as an interactive network.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="feature-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-three" aria-controls="answer-feature-three">What are Logic Warnings?</button></h2><div id="answer-feature-three" class="accordion-collapse collapse" aria-labelledby="feature-three" data-bs-parent="#faq-features"><div class="accordion-body">Logic Warnings are rule-based checks that identify possible issues such as timeline conflicts or suspicious relationships.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="feature-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-four" aria-controls="answer-feature-four">Is AI used in Zirel?</button></h2><div id="answer-feature-four" class="accordion-collapse collapse" aria-labelledby="feature-four" data-bs-parent="#faq-features"><div class="accordion-body">Not yet. Future AI features may help extract facts from scenes or suggest possible inconsistencies, but AI functionality is not active unless clearly added later.</div></div></div>
+          </div>
+        </section>
+
+        <section class="zv2-doc-section zv2-reveal" id="future">
+          <p class="zv2-kicker">Future plans</p>
+          <div class="accordion zv2-accordion" id="faq-future">
+            <div class="accordion-item"><h2 class="accordion-header" id="future-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-one" aria-controls="answer-future-one">Will Zirel have paid plans?</button></h2><div id="answer-future-one" class="accordion-collapse collapse" aria-labelledby="future-one" data-bs-parent="#faq-future"><div class="accordion-body">Possibly later. Zirel is not currently accepting payments through the site. Future paid features, donations, or subscriptions will be introduced with clear terms.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="future-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-two" aria-controls="answer-future-two">What features may come later?</button></h2><div id="answer-future-two" class="accordion-collapse collapse" aria-labelledby="future-two" data-bs-parent="#faq-future"><div class="accordion-body">Better graph tools, AI scene analysis, collaboration, user settings, cloud sync, export improvements, and more advanced logic checks.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="future-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-three" aria-controls="answer-future-three">How can I send feedback?</button></h2><div id="answer-future-three" class="accordion-collapse collapse" aria-labelledby="future-three" data-bs-parent="#faq-future"><div class="accordion-body">Use the <a href="{{ url_for('main.feedback') }}">Feedback page</a>.</div></div></div>
+            <div class="accordion-item"><h2 class="accordion-header" id="future-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-four" aria-controls="answer-future-four">How can I contact the creator?</button></h2><div id="answer-future-four" class="accordion-collapse collapse" aria-labelledby="future-four" data-bs-parent="#faq-future"><div class="accordion-body">Use the <a href="{{ url_for('main.contact') }}">Contact page</a>.</div></div></div>
+          </div>
+        </section>
+      </div>
     </div>
 
-    <div class="faq-category">General</div>
-    <div class="accordion faq-accordion" id="faq-general">
-      <div class="accordion-item"><h2 class="accordion-header" id="general-one"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-one" aria-expanded="true" aria-controls="answer-general-one">What is Zirel?</button></h2><div id="answer-general-one" class="accordion-collapse collapse show" aria-labelledby="general-one" data-bs-parent="#faq-general"><div class="accordion-body">Zirel is a worldbuilding logic tool that helps writers, game masters, and storytellers organize fictional worlds and detect possible logic issues.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="general-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-two" aria-controls="answer-general-two">Who is Zirel for?</button></h2><div id="answer-general-two" class="accordion-collapse collapse" aria-labelledby="general-two" data-bs-parent="#faq-general"><div class="accordion-body">Zirel is for writers, D&amp;D and game masters, screenwriters, indie game developers, and anyone building fictional worlds with characters, factions, events, and relationships.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="general-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-three" aria-controls="answer-general-three">Does Zirel write my story for me?</button></h2><div id="answer-general-three" class="accordion-collapse collapse" aria-labelledby="general-three" data-bs-parent="#faq-general"><div class="accordion-body">No. Zirel is not a story generator. It helps organize and analyze the structure of a fictional world.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="general-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-general-four" aria-controls="answer-general-four">How is Zirel different from Notion or Obsidian?</button></h2><div id="answer-general-four" class="accordion-collapse collapse" aria-labelledby="general-four" data-bs-parent="#faq-general"><div class="accordion-body">Notion and Obsidian are flexible note-taking tools. Zirel is focused specifically on worldbuilding logic, relationship graphs, and consistency warnings.</div></div></div>
-    </div>
-
-    <div class="faq-category">Data &amp; Ownership</div>
-    <div class="accordion faq-accordion" id="faq-data">
-      <div class="accordion-item"><h2 class="accordion-header" id="data-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-one" aria-controls="answer-data-one">Who owns the content I create in Zirel?</button></h2><div id="answer-data-one" class="accordion-collapse collapse" aria-labelledby="data-one" data-bs-parent="#faq-data"><div class="accordion-body">You do. Zirel does not claim ownership over your fictional worlds, characters, factions, events, notes, relationships, or story ideas.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="data-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-two" aria-controls="answer-data-two">Can I export my project?</button></h2><div id="answer-data-two" class="accordion-collapse collapse" aria-labelledby="data-two" data-bs-parent="#faq-data"><div class="accordion-body">Yes. Zirel supports JSON export so you can download your project data.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="data-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-three" aria-controls="answer-data-three">Can I import a project back?</button></h2><div id="answer-data-three" class="accordion-collapse collapse" aria-labelledby="data-three" data-bs-parent="#faq-data"><div class="accordion-body">Yes. Zirel can import JSON files exported from Zirel.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="data-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-data-four" aria-controls="answer-data-four">Can I delete my data?</button></h2><div id="answer-data-four" class="accordion-collapse collapse" aria-labelledby="data-four" data-bs-parent="#faq-data"><div class="accordion-body">During the MVP and beta stage, data deletion tools may still be limited. You can contact the project owner for deletion requests. More self-service deletion options may be added later.</div></div></div>
-    </div>
-
-    <div class="faq-category">Beta &amp; Safety</div>
-    <div class="accordion faq-accordion" id="faq-beta">
-      <div class="accordion-item"><h2 class="accordion-header" id="beta-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-beta-one" aria-controls="answer-beta-one">Is Zirel finished?</button></h2><div id="answer-beta-one" class="accordion-collapse collapse" aria-labelledby="beta-one" data-bs-parent="#faq-beta"><div class="accordion-body">No. Zirel is currently an early MVP and beta. Features, design, and workflows may change.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="beta-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-beta-two" aria-controls="answer-beta-two">Can I upload private or sensitive writing?</button></h2><div id="answer-beta-two" class="accordion-collapse collapse" aria-labelledby="beta-two" data-bs-parent="#faq-beta"><div class="accordion-body">During beta, users should avoid uploading highly sensitive, confidential, or irreplaceable writing material. Use test worlds or backups when possible.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="beta-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-beta-three" aria-controls="answer-beta-three">Are logic warnings always correct?</button></h2><div id="answer-beta-three" class="accordion-collapse collapse" aria-labelledby="beta-three" data-bs-parent="#faq-beta"><div class="accordion-body">No. Logic warnings are suggestions. They may miss issues or flag something intentional. The author remains responsible for final creative decisions.</div></div></div>
-    </div>
-
-    <div class="faq-category">Features</div>
-    <div class="accordion faq-accordion" id="faq-features">
-      <div class="accordion-item"><h2 class="accordion-header" id="feature-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-one" aria-controls="answer-feature-one">What can I create inside Zirel?</button></h2><div id="answer-feature-one" class="accordion-collapse collapse" aria-labelledby="feature-one" data-bs-parent="#faq-features"><div class="accordion-body">You can create projects, characters, factions, events, and relationships.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="feature-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-two" aria-controls="answer-feature-two">What is the Graph Workspace?</button></h2><div id="answer-feature-two" class="accordion-collapse collapse" aria-labelledby="feature-two" data-bs-parent="#faq-features"><div class="accordion-body">The Graph Workspace visualizes your characters, factions, events, and relationships as an interactive network.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="feature-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-three" aria-controls="answer-feature-three">What are Logic Warnings?</button></h2><div id="answer-feature-three" class="accordion-collapse collapse" aria-labelledby="feature-three" data-bs-parent="#faq-features"><div class="accordion-body">Logic Warnings are rule-based checks that identify possible issues such as timeline conflicts or suspicious relationships.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="feature-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-feature-four" aria-controls="answer-feature-four">Is AI used in Zirel?</button></h2><div id="answer-feature-four" class="accordion-collapse collapse" aria-labelledby="feature-four" data-bs-parent="#faq-features"><div class="accordion-body">Not yet. Future AI features may help extract facts from scenes or suggest possible inconsistencies, but AI functionality is not active unless clearly added later.</div></div></div>
-    </div>
-
-    <div class="faq-category">Future Plans</div>
-    <div class="accordion faq-accordion" id="faq-future">
-      <div class="accordion-item"><h2 class="accordion-header" id="future-one"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-one" aria-controls="answer-future-one">Will Zirel have paid plans?</button></h2><div id="answer-future-one" class="accordion-collapse collapse" aria-labelledby="future-one" data-bs-parent="#faq-future"><div class="accordion-body">Possibly later. Zirel is not currently accepting payments through the site. Future paid features, donations, or subscriptions will be introduced with clear terms.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="future-two"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-two" aria-controls="answer-future-two">What features may come later?</button></h2><div id="answer-future-two" class="accordion-collapse collapse" aria-labelledby="future-two" data-bs-parent="#faq-future"><div class="accordion-body">Better graph tools, AI scene analysis, collaboration, user settings, cloud sync, export improvements, and more advanced logic checks.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="future-three"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-three" aria-controls="answer-future-three">How can I send feedback?</button></h2><div id="answer-future-three" class="accordion-collapse collapse" aria-labelledby="future-three" data-bs-parent="#faq-future"><div class="accordion-body">Use the <a href="{{ url_for('main.feedback') }}">Feedback page</a>.</div></div></div>
-      <div class="accordion-item"><h2 class="accordion-header" id="future-four"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#answer-future-four" aria-controls="answer-future-four">How can I contact the creator?</button></h2><div id="answer-future-four" class="accordion-collapse collapse" aria-labelledby="future-four" data-bs-parent="#faq-future"><div class="accordion-body">Use the <a href="{{ url_for('main.contact') }}">Contact page</a>.</div></div></div>
-    </div>
-
-    <section class="cta-panel faq-cta text-center">
-      <h2 class="h4 mb-2">Ready to explore Zirel?</h2>
-      <p class="text-secondary mb-3">Build a small world, connect it, and let the logic tools give you a second look.</p>
-      <div class="d-flex justify-content-center gap-2 flex-wrap">
-        <a class="btn btn-primary" href="{{ url_for('main.projects') }}">Open Zirel</a>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.beta') }}">Join Beta</a>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
-        <a class="btn btn-outline-secondary" href="{{ url_for('main.contact') }}">Contact</a>
+    <section class="zv2-cta zv2-reveal">
+      <div>
+        <p class="zv2-kicker">Still curious?</p>
+        <h2>Try a small world and see how it feels.</h2>
+      </div>
+      <div class="zv2-hero-actions">
+        <a class="zv2-btn-primary" href="{{ url_for('main.projects') }}">Open Zirel</a>
+        <a class="zv2-btn-secondary" href="{{ url_for('main.beta') }}">Join Beta</a>
+        <a class="zv2-btn-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
       </div>
     </section>
   </div>

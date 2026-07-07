@@ -1,4 +1,5 @@
 import json
+import math
 import re
 from datetime import datetime, timezone
 from functools import wraps
@@ -60,6 +61,20 @@ RELATION_TYPE_HELPERS = {
     "rules": "Usually character/faction -> faction/location-like entity.",
     "located_in": "Usually character/faction/event -> event or location-like entity.",
 }
+GRAPH_NODE_STYLES = {
+    "character": {"color": "#8b5cf6", "glyph": "§"},
+    "faction": {"color": "#5eead4", "glyph": "◇"},
+    "event": {"color": "#fbbf24", "glyph": "★"},
+}
+GRAPH_RELATION_COLORS = {
+    "hates": "#f87171",
+    "allied_with": "#5eead4",
+    "member_of": "#60a5fa",
+    "loyal_to": "#a78bfa",
+    "participated_in": "#fbbf24",
+    "rules": "#e5e7eb",
+    "located_in": "#22d3ee",
+}
 USER_ROLES = [
     "Writer",
     "Game Master",
@@ -69,6 +84,29 @@ USER_ROLES = [
     "Narrative Designer",
     "Other",
 ]
+FEEDBACK_TOPICS = [
+    "Bug report",
+    "Confusing flow",
+    "Missing feature",
+    "Graph workspace",
+    "Logic warnings",
+    "Design / UX",
+    "Other",
+]
+
+
+def get_admin_stats():
+    return {
+        "users": User.query.count(),
+        "projects": Project.query.count(),
+        "characters": Character.query.count(),
+        "factions": Faction.query.count(),
+        "events": Event.query.count(),
+        "relations": Relation.query.count(),
+        "feedback": Feedback.query.count(),
+        "contact": ContactMessage.query.count(),
+        "wishlist": WishlistEntry.query.count(),
+    }
 
 
 @main.before_app_request
@@ -311,6 +349,7 @@ def feedback():
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip()
         role = request.form.get("role", "").strip()
+        topic = request.form.get("topic", "").strip()
         message = request.form.get("message", "").strip()
         valid_roles = [
             "Writer",
@@ -323,16 +362,19 @@ def feedback():
 
         if not message:
             flash("Feedback message is required.", "danger")
-            return render_template("feedback.html")
+            return render_template("feedback.html", feedback_topics=FEEDBACK_TOPICS)
 
         if role not in valid_roles:
             role = "Other"
+        if topic not in FEEDBACK_TOPICS:
+            topic = "Other"
 
         db.session.add(
             Feedback(
                 name=name or None,
                 email=email or None,
                 role=role,
+                topic=topic,
                 message=message,
             )
         )
@@ -341,7 +383,7 @@ def feedback():
         flash("Thank you for your feedback.", "success")
         return redirect(url_for("main.feedback"))
 
-    return render_template("feedback.html")
+    return render_template("feedback.html", feedback_topics=FEEDBACK_TOPICS)
 
 
 @main.route("/feedback/list")
@@ -402,22 +444,13 @@ def contact_list():
 @main.route("/admin")
 @admin_required
 def admin_dashboard():
-    stats = {
-        "users": User.query.count(),
-        "projects": Project.query.count(),
-        "characters": Character.query.count(),
-        "factions": Faction.query.count(),
-        "events": Event.query.count(),
-        "relations": Relation.query.count(),
-        "feedback": Feedback.query.count(),
-        "contact": ContactMessage.query.count(),
-        "wishlist": WishlistEntry.query.count(),
-    }
+    stats = get_admin_stats()
     return render_template(
         "admin_dashboard.html",
         stats=stats,
         feedback_entries=Feedback.query.order_by(Feedback.created_at.desc()).limit(5).all(),
         contact_messages=ContactMessage.query.order_by(ContactMessage.created_at.desc()).limit(5).all(),
+        wishlist_entries=WishlistEntry.query.order_by(WishlistEntry.created_at.desc()).limit(5).all(),
         users=User.query.order_by(User.created_at.desc()).limit(5).all(),
     )
 
@@ -426,21 +459,30 @@ def admin_dashboard():
 @admin_required
 def admin_feedback():
     entries = Feedback.query.order_by(Feedback.created_at.desc()).all()
-    return render_template("admin_feedback.html", feedback_entries=entries)
+    return render_template(
+        "admin_feedback.html",
+        feedback_entries=entries,
+        feedback_topics=FEEDBACK_TOPICS,
+        stats=get_admin_stats(),
+    )
 
 
 @main.route("/admin/contact")
 @admin_required
 def admin_contact():
     messages = ContactMessage.query.order_by(ContactMessage.created_at.desc()).all()
-    return render_template("admin_contact.html", contact_messages=messages)
+    return render_template(
+        "admin_contact.html",
+        contact_messages=messages,
+        stats=get_admin_stats(),
+    )
 
 
 @main.route("/admin/users")
 @admin_required
 def admin_users():
     users = User.query.order_by(User.created_at.desc()).all()
-    return render_template("admin_users.html", users=users)
+    return render_template("admin_users.html", users=users, stats=get_admin_stats())
 
 
 @main.route("/admin/users/<int:user_id>/delete", methods=["POST"])
@@ -464,7 +506,11 @@ def admin_delete_user(user_id):
 @admin_required
 def admin_wishlist():
     entries = WishlistEntry.query.order_by(WishlistEntry.created_at.desc()).all()
-    return render_template("admin_wishlist.html", wishlist_entries=entries)
+    return render_template(
+        "admin_wishlist.html",
+        wishlist_entries=entries,
+        stats=get_admin_stats(),
+    )
 
 
 @main.route("/admin/wishlist/<int:entry_id>/delete", methods=["POST"])
@@ -504,16 +550,22 @@ def projects():
     if not current_user.is_admin:
         project_query = project_query.filter(Project.user_id == current_user.id)
     all_projects = project_query.order_by(Project.created_at.desc()).all()
+    project_warning_counts = {
+        project.id: len(analyze_project(project)) for project in all_projects
+    }
     project_stats = {
         "worlds": len(all_projects),
         "characters": sum(len(project.characters) for project in all_projects),
+        "factions": sum(len(project.factions) for project in all_projects),
         "relations": sum(len(project.relations) for project in all_projects),
         "events": sum(len(project.events) for project in all_projects),
+        "warnings": sum(project_warning_counts.values()),
     }
     return render_template(
         "projects.html",
         projects=all_projects,
         project_stats=project_stats,
+        project_warning_counts=project_warning_counts,
     )
 
 
@@ -637,13 +689,18 @@ def graph_data(project_id):
 
     for character in project.characters:
         node_id = build_graph_node_id("character", character.id)
+        node_style = GRAPH_NODE_STYLES["character"]
+        node_data = {
+            "id": node_id,
+            "label": character.name,
+            "type": "character",
+            "color": node_style["color"],
+            "glyph": node_style["glyph"],
+        }
         nodes.append(
             {
-                "data": {
-                    "id": node_id,
-                    "label": character.name,
-                    "type": "character",
-                }
+                **node_data,
+                "data": node_data,
             }
         )
         node_ids.add(node_id)
@@ -651,13 +708,18 @@ def graph_data(project_id):
 
     for faction in project.factions:
         node_id = build_graph_node_id("faction", faction.id)
+        node_style = GRAPH_NODE_STYLES["faction"]
+        node_data = {
+            "id": node_id,
+            "label": faction.name,
+            "type": "faction",
+            "color": node_style["color"],
+            "glyph": node_style["glyph"],
+        }
         nodes.append(
             {
-                "data": {
-                    "id": node_id,
-                    "label": faction.name,
-                    "type": "faction",
-                }
+                **node_data,
+                "data": node_data,
             }
         )
         node_ids.add(node_id)
@@ -665,18 +727,24 @@ def graph_data(project_id):
 
     for event in project.events:
         node_id = build_graph_node_id("event", event.id)
+        node_style = GRAPH_NODE_STYLES["event"]
+        node_data = {
+            "id": node_id,
+            "label": event.name,
+            "type": "event",
+            "color": node_style["color"],
+            "glyph": node_style["glyph"],
+        }
         nodes.append(
             {
-                "data": {
-                    "id": node_id,
-                    "label": event.name,
-                    "type": "event",
-                }
+                **node_data,
+                "data": node_data,
             }
         )
         node_ids.add(node_id)
         node_labels[node_id] = event.name
 
+    positions = build_graph_positions(nodes)
     edges = []
     for relation in project.relations:
         source = build_graph_node_id(relation.source_type, relation.source_id)
@@ -685,22 +753,28 @@ def graph_data(project_id):
         if source not in node_ids or target not in node_ids:
             continue
 
+        relation_label = relation.relation_type.replace("_", " ")
+        relation_color = GRAPH_RELATION_COLORS.get(relation.relation_type, "#c4b5fd")
+        edge_data = {
+            "id": f"relation-{relation.id}",
+            "source": source,
+            "target": target,
+            "label": relation_label,
+            "relation": relation_label,
+            "relation_type": relation.relation_type,
+            "description": relation.description or "",
+            "source_label": node_labels[source],
+            "target_label": node_labels[target],
+            "color": relation_color,
+        }
         edges.append(
             {
-                "data": {
-                    "id": f"relation-{relation.id}",
-                    "source": source,
-                    "target": target,
-                    "label": relation.relation_type,
-                    "relation_type": relation.relation_type,
-                    "description": relation.description or "",
-                    "source_label": node_labels[source],
-                    "target_label": node_labels[target],
-                }
+                **edge_data,
+                "data": edge_data,
             }
         )
 
-    return jsonify({"nodes": nodes, "edges": edges})
+    return jsonify({"nodes": nodes, "edges": edges, "positions": positions})
 
 
 @main.route("/projects/create", methods=["GET", "POST"])
@@ -1834,6 +1908,47 @@ def delete_relations_for_entity(project_id, entity_type, entity_id):
 
 def build_graph_node_id(entity_type, entity_id):
     return f"{entity_type}-{entity_id}"
+
+
+def build_graph_positions(nodes):
+    grouped_nodes = {
+        "character": [],
+        "faction": [],
+        "event": [],
+    }
+    for node in nodes:
+        node_type = node.get("type") or node.get("data", {}).get("type")
+        if node_type in grouped_nodes:
+            grouped_nodes[node_type].append(node)
+
+    layouts = {
+        "character": {"cx": 30, "cy": 42, "rx": 20, "ry": 25, "start": -125},
+        "faction": {"cx": 62, "cy": 35, "rx": 19, "ry": 22, "start": -35},
+        "event": {"cx": 55, "cy": 72, "rx": 24, "ry": 18, "start": 150},
+    }
+    positions = {}
+
+    for node_type, items in grouped_nodes.items():
+        layout = layouts[node_type]
+        total = len(items)
+        if total == 1:
+            node = items[0]
+            positions[node["id"]] = {"px": layout["cx"], "py": layout["cy"]}
+            continue
+
+        for index, node in enumerate(items):
+            if total:
+                angle = math.radians(layout["start"] + (360 / total) * index)
+            else:
+                angle = 0
+            px = layout["cx"] + math.cos(angle) * layout["rx"]
+            py = layout["cy"] + math.sin(angle) * layout["ry"]
+            positions[node["id"]] = {
+                "px": max(8, min(92, round(px, 2))),
+                "py": max(8, min(92, round(py, 2))),
+            }
+
+    return positions
 
 
 def parse_optional_int(value):

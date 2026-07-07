@@ -3,43 +3,278 @@
 {% block title %}Projects - Zirel{% endblock %}
 
 {% block content %}
-  <div class="app-workspace workspace-shell">
-    <header class="workspace-header">
-      <div><div class="workspace-eyebrow">World workspace</div><h1>Your <span>worlds</span></h1><p>Create, manage, import, and continue working on your fictional worlds.</p></div>
-      <div class="workspace-actions"><a class="btn btn-workspace-secondary" href="{{ url_for('main.import_project') }}">Import Project</a><a class="btn btn-workspace-primary" href="{{ url_for('main.create_project') }}">New Project <span aria-hidden="true">&rarr;</span></a></div>
-    </header>
-
-    <div class="stat-grid project-stat-grid">
-      <article class="stat-card"><span class="stat-card-icon stat-worlds"></span><div><span>Total worlds</span><strong>{{ project_stats.worlds }}</strong></div></article>
-      <article class="stat-card"><span class="stat-card-icon stat-characters"></span><div><span>Total characters</span><strong>{{ project_stats.characters }}</strong></div></article>
-      <article class="stat-card"><span class="stat-card-icon stat-relations"></span><div><span>Total relations</span><strong>{{ project_stats.relations }}</strong></div></article>
-      <article class="stat-card"><span class="stat-card-icon stat-events"></span><div><span>Total events</span><strong>{{ project_stats.events }}</strong></div></article>
+  <section class="zirel-projects-workspace" data-projects-workspace>
+    <div class="zpw-bg" aria-hidden="true">
+      <div class="zpw-grad zpw-grad-one"></div>
+      <div class="zpw-grad zpw-grad-two"></div>
+      <div class="zpw-dots"></div>
+      <div class="zpw-noise"></div>
+      <div class="zpw-vignette"></div>
     </div>
 
-    {% if projects %}
-      <div class="project-list-filter" data-filter-list data-list-label="worlds">
-      <div class="workspace-toolbar">
-        <div class="workspace-search"><input type="search" data-list-search placeholder="Search worlds..." aria-label="Search worlds"><span aria-hidden="true"></span></div>
-        <p class="workspace-list-count" data-list-count></p>
-        <a class="btn btn-workspace-primary btn-sm" href="{{ url_for('main.create_project') }}">New Project</a>
+    <header class="zpw-topbar zpw-glass">
+      <a class="zpw-brand" href="{{ url_for('main.index') }}" aria-label="Zirel home">
+        <span class="zpw-brand-mark" aria-hidden="true"></span>
+        <span class="zpw-wordmark">Zirel</span>
+        <span class="zpw-sub-label">Projects</span>
+      </a>
+      <nav class="zpw-topnav" aria-label="Workspace navigation">
+        <a class="active" href="{{ url_for('main.projects') }}">Projects</a>
+        <a href="{{ url_for('main.beta') }}">Beta</a>
+        <a href="{{ url_for('main.roadmap') }}">Roadmap</a>
+        <a href="{{ url_for('main.feedback') }}">Feedback</a>
+      </nav>
+      <div class="zpw-topbar-right">
+        <span class="zpw-count-badge" id="zpw-visible-count">{{ projects|length }} worlds</span>
+        {% if current_user.is_admin %}<a class="zpw-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>{% endif %}
+        <a class="zpw-link" href="{{ url_for('main.logout') }}">Logout</a>
+        <span class="zpw-avatar">{{ (current_user.username or current_user.email or 'U')[:2]|upper }}</span>
       </div>
-      <div class="project-grid">
-        {% for project in projects %}
-          <article class="project-card" data-list-item data-search-text="{{ project.name }} {{ project.description or '' }}">
-            <div class="project-card-top"><span class="project-card-mark"></span><span class="neon-badge">World</span></div>
-            <h2><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a></h2>
-            <p>{{ project.description or "No description yet. Start with a few key people, places, and events." }}</p>
-            <div class="project-entity-counts"><span><b>{{ project.characters|length }}</b> Characters</span><span><b>{{ project.factions|length }}</b> Factions</span><span><b>{{ project.events|length }}</b> Events</span><span><b>{{ project.relations|length }}</b> Relations</span></div>
-            <div class="project-card-footer"><span>Created {{ project.created_at.strftime("%b %d, %Y") }}</span><div><a class="btn btn-workspace-primary btn-sm" href="{{ url_for('main.project_detail', project_id=project.id) }}">Open</a><a class="btn btn-workspace-secondary btn-sm" href="{{ url_for('main.edit_project', project_id=project.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_project', project_id=project.id) }}" onsubmit="return confirm('Delete this project and all related characters, factions, events, and relations?');"><button type="submit" class="btn btn-workspace-danger btn-sm">Delete</button></form></div></div>
-          </article>
-        {% endfor %}
-      </div>
-      <div class="empty-state workspace-empty-state" data-list-empty hidden><h2>No matching worlds.</h2><p>Try another search or create a new world.</p></div>
-      </div>
-    {% else %}
-      <div class="empty-state workspace-empty-state text-center"><span class="empty-world-mark"></span><h2>No worlds yet.</h2><p>Create your first world and start mapping characters, factions, events, and relationships.</p><a class="btn btn-workspace-primary" href="{{ url_for('main.create_project') }}">Create Project <span aria-hidden="true">&rarr;</span></a></div>
-    {% endif %}
+    </header>
 
-    <section class="quick-actions-card"><div><div class="workspace-eyebrow">Quick actions</div><h2>Keep building your world.</h2><p>Start fresh, bring an export back in, or help shape the beta.</p></div><div class="quick-action-links"><a href="{{ url_for('main.create_project') }}"><span class="quick-action-icon quick-new"></span><div><b>New blank world</b><small>Start from scratch</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.import_project') }}"><span class="quick-action-icon quick-import"></span><div><b>Import from JSON</b><small>Restore a Zirel export</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.beta') }}"><span class="quick-action-icon quick-beta"></span><div><b>Join Beta</b><small>See the guided test flow</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.feedback') }}"><span class="quick-action-icon quick-feedback"></span><div><b>Send Feedback</b><small>Help improve Zirel</small></div><i aria-hidden="true">&rarr;</i></a></div></section>
-  </div>
+    <div class="zpw-layout">
+      <aside class="zpw-sidebar zpw-glass">
+        <section class="zpw-section">
+          <div class="zpw-section-label">View</div>
+          <div class="zpw-view-toggle" role="group" aria-label="Project view">
+            <button class="zpw-view-btn active" type="button" data-view="grid">Grid</button>
+            <button class="zpw-view-btn" type="button" data-view="list">List</button>
+          </div>
+        </section>
+
+        <section class="zpw-section">
+          <div class="zpw-section-label">Sort by</div>
+          <select class="zpw-select" id="zpw-sort" aria-label="Sort projects">
+            <option value="created-desc">Newest created</option>
+            <option value="created-asc">Oldest created</option>
+            <option value="name-asc">Name A-Z</option>
+            <option value="name-desc">Name Z-A</option>
+            <option value="warnings-desc">Most warnings</option>
+            <option value="size-desc">Most entities</option>
+          </select>
+        </section>
+
+        <section class="zpw-section zpw-sidebar-summary">
+          <div class="zpw-section-label">Summary</div>
+          <p><strong>{{ project_stats.worlds }}</strong> worlds</p>
+          <p><strong>{{ project_stats.characters + project_stats.factions + project_stats.events }}</strong> core entities</p>
+          <p><strong>{{ project_stats.warnings }}</strong> logic warnings</p>
+        </section>
+      </aside>
+
+      <main class="zpw-main">
+        <div class="zpw-main-header">
+          <div>
+            <span class="zpw-kicker">v0.1 · your worlds</span>
+            <h1>The <em>worlds</em> you are building.</h1>
+            <p>Each project is a self-contained universe: characters, factions, events, relationships, warnings, and graph structure. Open one to continue building.</p>
+          </div>
+        </div>
+
+        <section class="zpw-stats" aria-label="Project stats">
+          <article><span>{{ project_stats.worlds }}</span><small>worlds</small></article>
+          <article><span>{{ project_stats.characters }}</span><small>characters</small></article>
+          <article><span>{{ project_stats.relations }}</span><small>relations</small></article>
+          <article><span>{{ project_stats.warnings }}</span><small>warnings</small></article>
+        </section>
+
+        <div class="zpw-action-row">
+          <a class="zpw-btn-primary" href="{{ url_for('main.create_project') }}">New project</a>
+          <a class="zpw-btn-secondary" href="{{ url_for('main.import_project') }}">Import project</a>
+          <div class="zpw-search-wrap">
+            <span aria-hidden="true"></span>
+            <input id="zpw-search" type="search" placeholder="Search worlds..." autocomplete="off" aria-label="Search worlds">
+            <button id="zpw-search-clear" type="button" aria-label="Clear search">×</button>
+          </div>
+        </div>
+
+        {% if projects %}
+          <div class="zpw-project-grid" id="zpw-projects">
+            {% for project in projects %}
+              {% set character_count = project.characters|length %}
+              {% set faction_count = project.factions|length %}
+              {% set event_count = project.events|length %}
+              {% set relation_count = project.relations|length %}
+              {% set warning_count = project_warning_counts.get(project.id, 0) %}
+              {% set entity_count = character_count + faction_count + event_count %}
+              <article class="zpw-project-card"
+                data-project-card
+                data-name="{{ project.name|lower }}"
+                data-description="{{ (project.description or '')|lower }}"
+                data-created="{{ project.created_at.isoformat() if project.created_at else '' }}"
+                data-warnings="{{ warning_count }}"
+                data-size="{{ entity_count + relation_count }}">
+                <a class="zpw-project-cover" href="{{ url_for('main.project_detail', project_id=project.id) }}" aria-label="Open {{ project.name }}">
+                  <span class="zpw-cover-orbit"></span>
+                  <strong>{{ project.name[:2]|upper }}</strong>
+                </a>
+                <div class="zpw-project-body">
+                  <div class="zpw-project-title-row">
+                    <h2><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a></h2>
+                    {% if warning_count %}<span class="zpw-warning-pill">{{ warning_count }} warn</span>{% else %}<span class="zpw-clean-pill">clean</span>{% endif %}
+                  </div>
+                  <p>{{ project.description or "No description yet. Start with a few key people, factions, events, and relationships." }}</p>
+                  <div class="zpw-card-stats">
+                    <span><b>{{ character_count }}</b> characters</span>
+                    <span><b>{{ faction_count }}</b> factions</span>
+                    <span><b>{{ event_count }}</b> events</span>
+                    <span><b>{{ relation_count }}</b> relations</span>
+                  </div>
+                  <div class="zpw-health-line" aria-label="Warning load">
+                    {% set health_width = 22 if warning_count > 6 else 100 - (warning_count * 12) %}
+                    <span>review load</span>
+                    <div><i style="width: {{ health_width }}%"></i></div>
+                    <em>{{ health_width }}%</em>
+                  </div>
+                  <footer class="zpw-card-footer">
+                    <span>{% if project.created_at %}Created {{ project.created_at.strftime("%b %d, %Y") }}{% else %}Created date unknown{% endif %}</span>
+                    <div>
+                      <a href="{{ url_for('main.project_detail', project_id=project.id) }}">Open</a>
+                      <a href="{{ url_for('main.edit_project', project_id=project.id) }}">Edit</a>
+                      <form method="post" action="{{ url_for('main.delete_project', project_id=project.id) }}" onsubmit="return confirm('Delete this project and all related characters, factions, events, and relations?');">
+                        <button type="submit">Delete</button>
+                      </form>
+                    </div>
+                  </footer>
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+          <div class="zpw-empty-filter" id="zpw-empty-filter" hidden>
+            <h2>No matching worlds.</h2>
+            <p>Try another search or sort mode.</p>
+          </div>
+        {% else %}
+          <div class="zpw-empty-state">
+            <span class="zpw-empty-mark" aria-hidden="true"></span>
+            <h2>No worlds yet.</h2>
+            <p>Create your first world and start mapping characters, factions, events, and relationships.</p>
+            <a class="zpw-btn-primary" href="{{ url_for('main.create_project') }}">Create Project</a>
+          </div>
+        {% endif %}
+      </main>
+
+      <aside class="zpw-right-panel zpw-glass">
+        <section class="zpw-panel-section">
+          <div class="zpw-panel-header"><span>Quick actions</span></div>
+          <a class="zpw-quick-card" href="{{ url_for('main.create_project') }}"><b>New blank world</b><small>Start from scratch</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.import_project') }}"><b>Import from file</b><small>Restore a Zirel export</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.beta') }}"><b>Beta guide</b><small>Follow the 10-minute test flow</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.feedback') }}"><b>Send feedback</b><small>Tell us what feels unclear</small></a>
+        </section>
+
+        <section class="zpw-panel-section">
+          <div class="zpw-panel-header"><span>World health</span></div>
+          {% if projects %}
+            <div class="zpw-health-list">
+              {% for project in projects[:5] %}
+                {% set warning_count = project_warning_counts.get(project.id, 0) %}
+                {% set score = 22 if warning_count > 6 else 100 - (warning_count * 12) %}
+                <a href="{{ url_for('main.warnings', project_id=project.id) }}">
+                  <span>{{ project.name }}</span>
+                  <div><i style="width: {{ score }}%"></i></div>
+                  <b>{{ warning_count }}w</b>
+                </a>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="zpw-muted-copy">Create a world to see warning load here.</p>
+          {% endif %}
+        </section>
+
+        <section class="zpw-panel-section">
+          <div class="zpw-panel-header"><span>Tips</span></div>
+          <div class="zpw-tip-card">Open a project, add two characters, then connect them with a relation.</div>
+          <div class="zpw-tip-card">Use JSON export before large clean-up sessions.</div>
+          <div class="zpw-tip-card">Warnings are suggestions. Intentional contradictions can stay if the story explains them.</div>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="zpw-bottombar zpw-glass">
+      <div><span id="zpw-bottom-count">{{ projects|length }}</span> visible · {{ project_stats.characters + project_stats.factions + project_stats.events }} entities · {{ project_stats.warnings }} warnings</div>
+      <div><span class="zpw-status-dot"></span>Workspace ready</div>
+      <div>Zirel v0.1</div>
+    </footer>
+  </section>
+
+  <script>
+    (function () {
+      const workspace = document.querySelector('[data-projects-workspace]');
+      if (!workspace) return;
+
+      const grid = document.getElementById('zpw-projects');
+      const cards = grid ? Array.from(grid.querySelectorAll('[data-project-card]')) : [];
+      const search = document.getElementById('zpw-search');
+      const clear = document.getElementById('zpw-search-clear');
+      const sort = document.getElementById('zpw-sort');
+      const empty = document.getElementById('zpw-empty-filter');
+      const visibleCount = document.getElementById('zpw-visible-count');
+      const bottomCount = document.getElementById('zpw-bottom-count');
+      const viewButtons = Array.from(workspace.querySelectorAll('.zpw-view-btn'));
+
+      function normalize(value) {
+        return (value || '').toString().toLowerCase().trim();
+      }
+
+      function compareCards(a, b) {
+        const mode = sort ? sort.value : 'created-desc';
+        if (mode === 'name-asc') return a.dataset.name.localeCompare(b.dataset.name);
+        if (mode === 'name-desc') return b.dataset.name.localeCompare(a.dataset.name);
+        if (mode === 'warnings-desc') return Number(b.dataset.warnings) - Number(a.dataset.warnings);
+        if (mode === 'size-desc') return Number(b.dataset.size) - Number(a.dataset.size);
+        const aTime = Date.parse(a.dataset.created || '') || 0;
+        const bTime = Date.parse(b.dataset.created || '') || 0;
+        return mode === 'created-asc' ? aTime - bTime : bTime - aTime;
+      }
+
+      function applyProjectsView() {
+        if (!grid) return;
+        const query = normalize(search.value);
+        const ordered = [...cards].sort(compareCards);
+        let visible = 0;
+        ordered.forEach((card) => {
+          grid.appendChild(card);
+          const haystack = `${card.dataset.name} ${card.dataset.description}`;
+          const match = !query || haystack.includes(query);
+          card.hidden = !match;
+          if (match) visible += 1;
+        });
+        if (empty) empty.hidden = visible !== 0;
+        if (visibleCount) visibleCount.textContent = `${visible} world${visible === 1 ? '' : 's'}`;
+        if (bottomCount) bottomCount.textContent = visible;
+        clear.classList.toggle('visible', Boolean(query));
+      }
+
+      search && search.addEventListener('input', applyProjectsView);
+      clear && clear.addEventListener('click', () => {
+        search.value = '';
+        search.focus();
+        applyProjectsView();
+      });
+      sort && sort.addEventListener('change', applyProjectsView);
+
+      viewButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const view = button.dataset.view;
+          viewButtons.forEach((item) => item.classList.toggle('active', item === button));
+          if (grid) grid.classList.toggle('is-list-view', view === 'list');
+        });
+      });
+
+      document.addEventListener('keydown', (event) => {
+        const isTyping = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+          event.preventDefault();
+          search && search.focus();
+        }
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'n' && !isTyping) {
+          event.preventDefault();
+          window.location.href = "{{ url_for('main.create_project') }}";
+        }
+      });
+
+      applyProjectsView();
+    })();
+  </script>
 {% endblock %}

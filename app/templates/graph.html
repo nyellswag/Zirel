@@ -1,650 +1,77 @@
-﻿{% extends "base.html" %}
-
+{% extends "base.html" %}
 {% block title %}Graph Workspace - {{ project.name }}{% endblock %}
-
 {% block content %}
-  <section class="zirel-graph-workspace" data-graph-workspace>
-    <div class="graph-bg-layer" aria-hidden="true">
-      <div class="graph-bg-grad graph-bg-grad-one"></div>
-      <div class="graph-bg-grad graph-bg-grad-two"></div>
-      <div class="graph-bg-vignette"></div>
-      <div class="graph-bg-noise"></div>
+<section class="zirel-graph-workspace zcg" data-graph-workspace>
+  <div class="graph-bg-layer" aria-hidden="true"><div class="graph-bg-grad graph-bg-grad-one"></div><div class="graph-bg-grad graph-bg-grad-two"></div><div class="graph-bg-vignette"></div><div class="graph-bg-noise"></div></div>
+  <header class="zgw-topbar graph-glass">
+    <a class="zgw-brand" href="{{ url_for('main.project_detail', project_id=project.id) }}"><span class="zgw-brand-mark"></span><span class="zgw-wordmark">Zirel</span><span class="zgw-sub-label">Graph Workspace</span></a>
+    <nav class="zgw-breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span class="active">Constellation</span></nav>
+    <div class="zgw-topbar-right"><a class="zgw-btn-mono" href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a><a class="zgw-btn-mono" href="{{ url_for('main.warnings', project_id=project.id) }}">Warnings</a><a class="zgw-back-link" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back</a></div>
+  </header>
+
+  <aside class="zgw-sidebar zgw-sidebar-left graph-glass zcg-side" id="left-side">
+    <button class="zcg-side-toggle" id="toggle-left" type="button">›</button>
+    <div class="zcg-side-scroll">
+      <section class="zgw-section"><div class="zgw-section-label"><span class="pulse-dot"></span>Search</div><input id="graph-search" class="zgw-search-input" type="search" placeholder="Search nodes..."></section>
+      <section class="zgw-section"><div class="zgw-section-label">Node Types</div>{% for value,label,count in [("character","Characters",graph_summary.characters),("faction","Factions",graph_summary.factions),("event","Events",graph_summary.events)] %}<label class="zcg-check"><input class="graph-filter entity-filter" type="checkbox" value="{{ value }}" checked><span></span><i class="filter-dot dot-{{ value }}"></i><b>{{ label }}</b><em>{{ count }}</em></label>{% endfor %}</section>
+      <section class="zgw-section"><div class="zgw-section-label">Relation Types</div>{% for relation_type in ["hates","allied_with","member_of","loyal_to","participated_in","rules","located_in"] %}<label class="zcg-check"><input class="graph-filter relation-filter" type="checkbox" value="{{ relation_type }}" checked><span></span><i class="legend-line relation-{{ relation_type }}"></i><b>{{ relation_type.replace('_',' ') }}</b></label>{% endfor %}</section>
+      <section class="zgw-section"><div class="zgw-section-label">View</div>{% for id,label,on in [("toggle-flow","Flow animation",true),("toggle-labels","Edge labels",false),("toggle-stars","Star field",true),("toggle-nebula","Nebula clouds",true)] %}<button class="zcg-toggle{% if on %} is-on{% endif %}" id="{{ id }}" type="button"><span>{{ label }}</span><i></i></button>{% endfor %}</section>
+      <section class="zgw-section graph-pathfinder"><div class="zgw-section-label">Path Finder</div><label for="path-source">Source node</label><select class="pathfinder-select" id="path-source"><option value="">Choose source</option></select><label for="path-target">Target node</label><select class="pathfinder-select" id="path-target"><option value="">Choose target</option></select><div class="pathfinder-actions"><button class="zgw-view-btn" id="find-path" type="button">Find path</button><button class="zgw-view-btn" id="clear-path" type="button">Clear</button></div><p class="pathfinder-result" id="path-result"></p></section>
+      <section class="zgw-section"><div class="zgw-section-label">Controls</div><button class="zgw-view-btn" id="fit-graph" type="button">Fit to view</button><button class="zgw-view-btn" id="reset-selection" type="button">Reset selection</button><button class="zgw-view-btn" id="reset-filters" type="button">Reset filters</button><button class="zgw-view-btn" id="connected-only" type="button">Show connected only</button><button class="zgw-view-btn" id="focus-selected" type="button">Focus selected</button></section>
     </div>
+  </aside>
 
-    <header class="zgw-topbar graph-glass">
-      <a class="zgw-brand" href="{{ url_for('main.project_detail', project_id=project.id) }}" aria-label="Back to {{ project.name }}">
-        <span class="zgw-brand-mark" aria-hidden="true"></span>
-        <span class="zgw-wordmark">Zirel</span>
-        <span class="zgw-sub-label">Graph Workspace</span>
-      </a>
-      <nav class="zgw-breadcrumb" aria-label="Breadcrumb">
-        <a href="{{ url_for('main.projects') }}">Projects</a>
-        <span>/</span>
-        <a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a>
-        <span>/</span>
-        <span class="active">Graph</span>
-      </nav>
-      <div class="zgw-topbar-right">
-        <a class="zgw-btn-mono" href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a>
-        <a class="zgw-btn-mono" href="{{ url_for('main.warnings', project_id=project.id) }}">Warnings</a>
-        <a class="zgw-back-link" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back</a>
-      </div>
-    </header>
+  <main class="zgw-canvas-wrap zcg-canvas" id="canvas-wrap">
+    <div class="zcg-nebula" id="nebula-layer"><span></span><span></span><span></span></div><canvas id="star-canvas" class="zcg-stars"></canvas><svg id="radial-grid" class="zcg-grid"></svg>
+    <div class="zgw-canvas-header"><div><span class="zgw-kicker">Living Network</span><h1>{{ project.name }}</h1></div><p>Drag nodes, inspect direct relations, and trace paths through your world structure.</p></div>
+    <svg id="edges-svg" class="zcg-edges"><defs id="svg-defs"></defs></svg><div id="edge-labels-layer" class="zcg-edge-labels"></div><div id="nodes-layer" class="zcg-nodes"></div><div id="cursor-glow" class="zcg-cursor"></div><div id="focus-label" class="zcg-focus-label">Focus mode</div>
+    <div id="minimap" class="zcg-minimap graph-glass"><canvas id="minimap-canvas" width="256" height="168"></canvas><small>Overview</small></div>
+    <div class="zcg-tools"><button class="tool-btn" id="btn-fit-view" type="button">⛶</button><button class="tool-btn" id="btn-reset" type="button">↻</button></div>
+  </main>
 
-    <aside class="zgw-sidebar zgw-sidebar-left graph-glass">
-      <section class="zgw-section">
-        <div class="zgw-section-label"><span class="pulse-dot"></span>Search</div>
-        <input id="graph-search" class="zgw-search-input" type="search" placeholder="Filter nodes..." aria-label="Search nodes">
-      </section>
+  <aside class="zgw-sidebar zgw-sidebar-right graph-glass zcg-side" id="right-side">
+    <button class="zcg-side-toggle zcg-side-toggle-right" id="toggle-right" type="button">‹</button>
+    <div class="zcg-side-scroll"><section class="zgw-section"><div class="zgw-section-label">Inspector</div><div id="details-panel" class="zcg-inspector"><div class="node-empty">Select a node or relation to inspect details.</div></div></section><section class="zgw-section"><div class="zgw-section-label">Project Signal</div><div class="zgw-signal-grid"><div><span>{{ graph_summary.characters }}</span><small>Characters</small></div><div><span>{{ graph_summary.factions }}</span><small>Factions</small></div><div><span>{{ graph_summary.events }}</span><small>Events</small></div><div><span>{{ graph_summary.warnings }}</span><small>Warnings</small></div></div></section><section class="zgw-section"><div class="zgw-section-label">Real Actions</div><div class="node-actions"><a class="action-btn primary" href="{{ url_for('main.create_relation', project_id=project.id) }}">+ Relation</a><a class="action-btn" href="{{ url_for('main.relations', project_id=project.id) }}">Manage Relations</a><a class="action-btn" href="{{ url_for('main.warnings', project_id=project.id) }}">Review Warnings</a></div></section></div>
+  </aside>
 
-      <section class="zgw-section">
-        <div class="zgw-section-label">Node Types</div>
-        <label class="zgw-filter-item">
-          <input class="graph-filter entity-filter" type="checkbox" value="character" checked>
-          <span class="filter-dot dot-character"></span>
-          <span class="filter-label">Characters</span>
-        </label>
-        <label class="zgw-filter-item">
-          <input class="graph-filter entity-filter" type="checkbox" value="faction" checked>
-          <span class="filter-dot dot-faction"></span>
-          <span class="filter-label">Factions</span>
-        </label>
-        <label class="zgw-filter-item">
-          <input class="graph-filter entity-filter" type="checkbox" value="event" checked>
-          <span class="filter-dot dot-event"></span>
-          <span class="filter-label">Events</span>
-        </label>
-      </section>
-
-      <section class="zgw-section">
-        <div class="zgw-section-label">Relation Types</div>
-        {% for relation_type in ["hates", "allied_with", "member_of", "loyal_to", "participated_in", "rules", "located_in"] %}
-          <label class="zgw-filter-item">
-            <input class="graph-filter relation-filter" type="checkbox" value="{{ relation_type }}" checked>
-            <span class="legend-line relation-{{ relation_type }}"></span>
-            <span class="filter-label">{{ relation_type.replace('_', ' ') }}</span>
-          </label>
-        {% endfor %}
-      </section>
-
-      <section class="zgw-section">
-        <div class="zgw-section-label">View</div>
-        <button class="zgw-view-btn" id="fit-graph" type="button">Fit to view <span>F</span></button>
-        <button class="zgw-view-btn" id="reset-selection" type="button">Reset selection</button>
-        <button class="zgw-view-btn" id="reset-filters" type="button">Reset filters</button>
-        <button class="zgw-view-btn" id="connected-only" type="button">Show connected only</button>
-        <button class="zgw-view-btn" id="focus-selected" type="button">Focus selected</button>
-      </section>
-
-      <section class="zgw-section graph-pathfinder">
-        <div class="zgw-section-label">Path Finder</div>
-        <label for="path-source">Source node</label>
-        <select class="pathfinder-select" id="path-source" aria-label="Path source node"><option value="">Choose source</option></select>
-        <label for="path-target">Target node</label>
-        <select class="pathfinder-select" id="path-target" aria-label="Path target node"><option value="">Choose target</option></select>
-        <div class="pathfinder-actions">
-          <button class="zgw-view-btn" id="find-path" type="button">Find path</button>
-          <button class="zgw-view-btn" id="clear-path" type="button">Clear</button>
-        </div>
-        <p class="pathfinder-result" id="path-result" aria-live="polite"></p>
-      </section>
-
-      <section class="zgw-section zgw-legend">
-        <div class="zgw-section-label">Legend</div>
-        <div class="legend-row"><span class="filter-dot dot-character"></span><span class="legend-txt">Character</span></div>
-        <div class="legend-row"><span class="filter-dot dot-faction"></span><span class="legend-txt">Faction</span></div>
-        <div class="legend-row"><span class="filter-dot dot-event"></span><span class="legend-txt">Event</span></div>
-        <div class="legend-row"><span class="legend-line relation-hates"></span><span class="legend-txt">Hates</span></div>
-        <div class="legend-row"><span class="legend-line relation-allied_with"></span><span class="legend-txt">Allied with</span></div>
-        <div class="legend-row"><span class="legend-line relation-member_of"></span><span class="legend-txt">Member of</span></div>
-        <div class="legend-row"><span class="legend-line relation-loyal_to"></span><span class="legend-txt">Loyal to</span></div>
-        <div class="legend-row"><span class="legend-line relation-participated_in"></span><span class="legend-txt">Participated in</span></div>
-        <div class="legend-row"><span class="legend-line relation-rules"></span><span class="legend-txt">Rules</span></div>
-        <div class="legend-row"><span class="legend-line relation-located_in"></span><span class="legend-txt">Located in</span></div>
-      </section>
-    </aside>
-
-    <main class="zgw-canvas-wrap" id="canvas-wrap">
-      <div class="zgw-canvas-header">
-        <div>
-          <span class="zgw-kicker">Living Network</span>
-          <h1>{{ project.name }}</h1>
-        </div>
-        <p>Explore entities, relationships, paths, and possible logic pressure points.</p>
-      </div>
-      <div id="cy" class="zgw-cytoscape-canvas"></div>
-      <div class="zgw-minimap graph-glass" aria-hidden="true">
-        <div class="zgw-minimap-grid"></div>
-        <div class="zgw-minimap-node mini-character"></div>
-        <div class="zgw-minimap-node mini-faction"></div>
-        <div class="zgw-minimap-node mini-event"></div>
-        <div class="zgw-minimap-frame"></div>
-      </div>
-    </main>
-
-    <aside class="zgw-sidebar zgw-sidebar-right graph-glass">
-      <section class="zgw-r-section" id="inspector-section">
-        <header class="zgw-r-section-header">
-          <span class="zgw-r-title"><em>Inspector</em></span>
-          <span class="zgw-r-chevron">▾</span>
-        </header>
-        <div id="details-panel" class="zgw-inspector-body">
-          <div class="node-empty">Select a node or relation to inspect details.</div>
-        </div>
-      </section>
-
-      <section class="zgw-r-section">
-        <header class="zgw-r-section-header">
-          <span class="zgw-r-title"><em>Project Signal</em></span>
-          <span class="zgw-r-chevron">▾</span>
-        </header>
-        <div class="zgw-signal-grid">
-          <div><span>{{ graph_summary.characters }}</span><small>Characters</small></div>
-          <div><span>{{ graph_summary.factions }}</span><small>Factions</small></div>
-          <div><span>{{ graph_summary.events }}</span><small>Events</small></div>
-          <div><span>{{ graph_summary.warnings }}</span><small>Warnings</small></div>
-        </div>
-      </section>
-
-      <section class="zgw-r-section">
-        <header class="zgw-r-section-header">
-          <span class="zgw-r-title"><em>Real Actions</em></span>
-          <span class="zgw-r-chevron">▾</span>
-        </header>
-        <div class="node-actions">
-          <a class="action-btn primary" href="{{ url_for('main.create_relation', project_id=project.id) }}">+ Relation</a>
-          <a class="action-btn" href="{{ url_for('main.relations', project_id=project.id) }}">Manage Relations</a>
-          <a class="action-btn" href="{{ url_for('main.warnings', project_id=project.id) }}">Review Warnings</a>
-        </div>
-      </section>
-    </aside>
-
-    <footer class="zgw-statusbar graph-glass">
-      <div class="status-left" id="status-counts">{{ graph_summary.characters + graph_summary.factions + graph_summary.events }} nodes · {{ graph_summary.relations }} edges · {{ graph_summary.warnings }} warnings</div>
-      <div class="status-center"><span class="autosave-dot"></span><span>Live graph from project data</span></div>
-      <div class="status-right">
-        <span class="zoom-indicator" id="zoom-label">100%</span>
-        <button class="zoom-btn" id="zoom-out" type="button" title="Zoom out">−</button>
-        <button class="zoom-btn" id="zoom-in" type="button" title="Zoom in">+</button>
-      </div>
-    </footer>
-  </section>
-
-  <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.29.2/dist/cytoscape.min.js"></script>
-  <script>
-    fetch("{{ url_for('main.graph_data', project_id=project.id) }}")
-      .then((response) => response.json())
-      .then((graphData) => {
-        const detailsPanel = document.getElementById("details-panel");
-        const searchInput = document.getElementById("graph-search");
-        const filterInputs = Array.from(document.querySelectorAll(".graph-filter"));
-        const pathSourceSelect = document.getElementById("path-source");
-        const pathTargetSelect = document.getElementById("path-target");
-        const pathResult = document.getElementById("path-result");
-        const zoomLabel = document.getElementById("zoom-label");
-        const statusCounts = document.getElementById("status-counts");
-        let selectedNode = null;
-        let selectedEdge = null;
-        let connectedOnly = false;
-        let activePath = null;
-
-        const cy = cytoscape({
-          container: document.getElementById("cy"),
-          elements: [...graphData.nodes, ...graphData.edges],
-          layout: {
-            name: "cose",
-            animate: false,
-            fit: true,
-            padding: 90,
-            nodeRepulsion: 9000,
-            idealEdgeLength: 130,
-            componentSpacing: 120
-          },
-          wheelSensitivity: 0.16,
-          minZoom: 0.25,
-          maxZoom: 2.5,
-          style: [
-            {
-              selector: "node",
-              style: {
-                "background-color": "#a78bfa",
-                "border-color": "rgba(196, 181, 253, 0.34)",
-                "border-width": 1.4,
-                "color": "#ececff",
-                "font-family": "DM Sans, sans-serif",
-                "font-size": 10,
-                "font-weight": 400,
-                "height": 52,
-                "label": "data(label)",
-                "overlay-opacity": 0,
-                "shadow-blur": 22,
-                "shadow-color": "rgba(167, 139, 250, 0.52)",
-                "shadow-opacity": 0.8,
-                "text-halign": "center",
-                "text-margin-y": 12,
-                "text-outline-color": "#050507",
-                "text-outline-opacity": 0.92,
-                "text-outline-width": 4,
-                "text-valign": "bottom",
-                "width": 52
-              }
-            },
-            { selector: 'node[type = "character"]', style: { "background-color": "#a78bfa", "shadow-color": "rgba(167, 139, 250, 0.7)" } },
-            { selector: 'node[type = "faction"]', style: { "background-color": "#6ee7b7", "shadow-color": "rgba(110, 231, 183, 0.55)" } },
-            { selector: 'node[type = "event"]', style: { "background-color": "#fde68a", "shadow-color": "rgba(253, 230, 138, 0.52)" } },
-            {
-              selector: "edge",
-              style: {
-                "color": "#9a9aa8",
-                "curve-style": "bezier",
-                "font-family": "JetBrains Mono, Share Tech, monospace",
-                "font-size": 8,
-                "label": "data(label)",
-                "line-color": "rgba(154, 154, 168, 0.46)",
-                "line-style": "dashed",
-                "target-arrow-color": "rgba(154, 154, 168, 0.5)",
-                "target-arrow-shape": "triangle",
-                "text-background-color": "#0c0c12",
-                "text-background-opacity": 0.82,
-                "text-background-padding": 4,
-                "text-rotation": "autorotate",
-                "width": 1.5
-              }
-            },
-            { selector: 'edge[relation_type = "hates"]', style: { "line-color": "#fb7185", "target-arrow-color": "#fb7185", "line-style": "solid" } },
-            { selector: 'edge[relation_type = "allied_with"]', style: { "line-color": "#6ee7b7", "target-arrow-color": "#6ee7b7" } },
-            { selector: 'edge[relation_type = "member_of"]', style: { "line-color": "#93c5fd", "target-arrow-color": "#93c5fd" } },
-            { selector: 'edge[relation_type = "loyal_to"]', style: { "line-color": "#c4b5fd", "target-arrow-color": "#c4b5fd" } },
-            { selector: 'edge[relation_type = "participated_in"]', style: { "line-color": "#fde68a", "target-arrow-color": "#fde68a" } },
-            { selector: 'edge[relation_type = "rules"]', style: { "line-color": "#f0abfc", "target-arrow-color": "#f0abfc", "line-style": "solid" } },
-            { selector: 'edge[relation_type = "located_in"]', style: { "line-color": "#67e8f9", "target-arrow-color": "#67e8f9" } },
-            { selector: ".filtered", style: { "display": "none" } },
-            { selector: ".faded", style: { "opacity": 0.14 } },
-            { selector: ".path-faded", style: { "opacity": 0.08 } },
-            { selector: "node.path-highlight", style: { "border-color": "#ececec", "border-width": 3, "height": 66, "opacity": 1, "shadow-blur": 34, "width": 66, "z-index": 32 } },
-            { selector: "edge.path-highlight", style: { "line-style": "solid", "opacity": 1, "width": 4, "z-index": 30 } },
-            { selector: ".hovered", style: { "border-width": 3, "opacity": 1, "z-index": 20 } },
-            { selector: ".neighbor", style: { "opacity": 0.84, "z-index": 12 } },
-            { selector: ".selected", style: { "border-width": 3.5, "border-color": "#ececec", "height": 68, "opacity": 1, "width": 68, "z-index": 30 } },
-            { selector: "edge.selected, edge.neighbor, edge.hovered", style: { "line-style": "solid", "opacity": 1, "width": 3.5, "z-index": 25 } },
-            { selector: ".search-match", style: { "border-width": 4, "border-color": "#fef3c7", "height": 64, "width": 64, "opacity": 1, "z-index": 28 } }
-          ]
-        });
-
-        function checkedValues(selector) {
-          return new Set(
-            Array.from(document.querySelectorAll(selector))
-              .filter((input) => input.checked)
-              .map((input) => input.value)
-          );
-        }
-
-        function updateStatus() {
-          const visibleNodes = cy.nodes().not(".filtered").length;
-          const visibleEdges = cy.edges().not(".filtered").length;
-          statusCounts.textContent = `${visibleNodes} nodes · ${visibleEdges} edges · {{ graph_summary.warnings }} warnings`;
-          zoomLabel.textContent = `${Math.round(cy.zoom() * 100)}%`;
-        }
-
-        function applyFilters() {
-          const visibleEntityTypes = checkedValues(".entity-filter");
-          const visibleRelationTypes = checkedValues(".relation-filter");
-
-          if (activePath) {
-            activePath = null;
-            cy.elements().removeClass("path-highlight path-faded");
-            clearPathResult();
-          }
-
-          cy.elements().removeClass("filtered");
-
-          cy.nodes().forEach((node) => {
-            if (!visibleEntityTypes.has(node.data("type"))) {
-              node.addClass("filtered");
-            }
-          });
-
-          cy.edges().forEach((edge) => {
-            const relationHidden = !visibleRelationTypes.has(edge.data("relation_type"));
-            const endpointHidden = edge.source().hasClass("filtered") || edge.target().hasClass("filtered");
-            if (relationHidden || endpointHidden) {
-              edge.addClass("filtered");
-            }
-          });
-
-          applySearch();
-          restoreSelectionClasses();
-          updateStatus();
-        }
-
-        function resetVisualState() {
-          cy.elements().removeClass("faded selected neighbor hovered search-match connected-only-hidden path-highlight path-faded");
-        }
-
-        function resetSelection(updateDetails = true) {
-          selectedNode = null;
-          selectedEdge = null;
-          connectedOnly = false;
-          activePath = null;
-          resetVisualState();
-          applySearch();
-          clearPathResult();
-          if (updateDetails) {
-            showEmptyDetails();
-          }
-          updateStatus();
-        }
-
-        function restoreSelectionClasses() {
-          cy.elements().removeClass("selected neighbor connected-only-hidden");
-          if (selectedNode && !selectedNode.hasClass("filtered")) {
-            highlightNeighborhood(selectedNode);
-            if (connectedOnly) {
-              showConnectedOnly();
-            }
-          } else if (selectedEdge && !selectedEdge.hasClass("filtered")) {
-            highlightEdge(selectedEdge);
-          }
-        }
-
-        function applySearch() {
-          const query = searchInput.value.trim().toLowerCase();
-          cy.elements().removeClass("search-match");
-
-          if (!query) {
-            cy.elements().removeClass("faded");
-            return;
-          }
-
-          cy.elements().not(".filtered").addClass("faded");
-          cy.nodes().not(".filtered").forEach((node) => {
-            if (node.data("label").toLowerCase().includes(query)) {
-              node.removeClass("faded").addClass("search-match");
-              node.connectedEdges().not(".filtered").removeClass("faded");
-            }
-          });
-        }
-
-        function showEmptyDetails() {
-          detailsPanel.innerHTML = `<div class="node-empty">Select a node or relation to inspect details.</div>`;
-        }
-
-        function showNodeDetails(node) {
-          const connectedEdges = node.connectedEdges().not(".filtered");
-          const type = node.data("type") || "node";
-          const initials = node.data("label").split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
-          const connectionItems = connectedEdges.map((edge) => {
-            const source = edge.source();
-            const target = edge.target();
-            const isOutgoing = source.id() === node.id();
-            const connectedNode = isOutgoing ? target : source;
-            const arrow = isOutgoing ? "→" : "←";
-            return `
-              <button class="inspector-connection-item conn-row" type="button" data-connection-node="${escapeHtml(connectedNode.id())}" data-connection-edge="${escapeHtml(edge.id())}">
-                <span class="conn-arrow">${arrow}</span>
-                <span class="conn-name">${escapeHtml(connectedNode.data("label"))}</span>
-                <span class="conn-label">${escapeHtml(edge.data("relation_type").replaceAll("_", " "))}</span>
-              </button>
-            `;
-          }).join("");
-          detailsPanel.innerHTML = `
-            <div class="node-header">
-              <div class="node-avatar node-avatar-${escapeHtml(type)}">${escapeHtml(initials)}</div>
-              <div>
-                <div class="node-name">${escapeHtml(node.data("label"))}</div>
-                <span class="node-type-chip node-type-${escapeHtml(type)}">${escapeHtml(type)}</span>
-              </div>
-            </div>
-            <div class="props-row"><span class="prop-key">Relations</span><span class="prop-val">${connectedEdges.length}</span></div>
-            <div class="node-desc">Click a connected node or relation to explore the network.</div>
-            <div class="node-actions">
-              <button class="action-btn primary" type="button" data-focus-neighborhood>Focus neighborhood</button>
-            </div>
-            <div class="connections-list">
-              <div class="section-sub">CONNECTIONS (${connectedEdges.length})</div>
-              ${connectionItems || '<div class="node-empty">No direct connections yet.</div>'}
-            </div>
-          `;
-        }
-
-        function showEdgeDetails(edge) {
-          const description = edge.data("description") || "No description yet.";
-          detailsPanel.innerHTML = `
-            <div class="node-name edge-title">${escapeHtml(edge.data("relation_type").replaceAll("_", " "))}</div>
-            <div class="section-sub">RELATION SELECTED</div>
-            <div class="props-row"><span class="prop-key">From</span><span class="prop-val">${escapeHtml(edge.data("source_label"))}</span></div>
-            <div class="props-row"><span class="prop-key">To</span><span class="prop-val">${escapeHtml(edge.data("target_label"))}</span></div>
-            <div class="props-row"><span class="prop-key">Type</span><span class="prop-val">${escapeHtml(edge.data("relation_type"))}</span></div>
-            <div class="node-desc">${escapeHtml(description)}</div>
-          `;
-        }
-
-        function populatePathfinder() {
-          const nodes = cy.nodes().sort((first, second) => first.data("label").localeCompare(second.data("label")));
-          nodes.forEach((node) => {
-            const optionLabel = `${node.data("type").charAt(0).toUpperCase()}${node.data("type").slice(1)}: ${node.data("label")}`;
-            [pathSourceSelect, pathTargetSelect].forEach((select) => {
-              const option = document.createElement("option");
-              option.value = node.id();
-              option.textContent = optionLabel;
-              select.append(option);
-            });
-          });
-        }
-
-        function clearPathResult() {
-          pathResult.textContent = "";
-          pathResult.removeAttribute("data-state");
-        }
-
-        function setPathResult(message, state) {
-          pathResult.textContent = message;
-          pathResult.dataset.state = state;
-        }
-
-        function findPath() {
-          const sourceId = pathSourceSelect.value;
-          const targetId = pathTargetSelect.value;
-          if (!sourceId || !targetId) {
-            setPathResult("Select both source and target nodes.", "error");
-            return;
-          }
-          if (sourceId === targetId) {
-            setPathResult("Choose two different nodes.", "error");
-            return;
-          }
-
-          const source = cy.getElementById(sourceId);
-          const target = cy.getElementById(targetId);
-          const visibleElements = cy.elements().not(".filtered");
-          const dijkstra = visibleElements.dijkstra({ root: source, directed: false });
-          const path = dijkstra.pathTo(target);
-          if (!path || path.length === 0) {
-            setPathResult("No path found between selected nodes.", "error");
-            return;
-          }
-
-          selectedNode = null;
-          selectedEdge = null;
-          connectedOnly = false;
-          resetVisualState();
-          cy.elements().not(".filtered").not(path).addClass("path-faded");
-          path.removeClass("path-faded").addClass("path-highlight");
-          activePath = path;
-          const labels = path.nodes().map((node) => node.data("label"));
-          setPathResult(`Path found: ${labels.join(" → ")}`, "success");
-          cy.animate({ fit: { eles: path, padding: 110 }, duration: 350 });
-          showEmptyDetails();
-          updateStatus();
-        }
-
-        function clearPath() {
-          pathSourceSelect.value = "";
-          pathTargetSelect.value = "";
-          activePath = null;
-          resetVisualState();
-          applyFilters();
-          clearPathResult();
-          showEmptyDetails();
-        }
-
-        function highlightNeighborhood(node) {
-          const neighborhood = node.closedNeighborhood().not(".filtered");
-          cy.elements().not(".filtered").addClass("faded").removeClass("selected neighbor");
-          neighborhood.removeClass("faded").addClass("neighbor");
-          node.removeClass("neighbor").addClass("selected");
-        }
-
-        function highlightEdge(edge) {
-          const related = edge.connectedNodes().union(edge).not(".filtered");
-          cy.elements().not(".filtered").addClass("faded").removeClass("selected neighbor");
-          related.removeClass("faded").addClass("neighbor");
-          edge.removeClass("neighbor").addClass("selected");
-        }
-
-        function showConnectedOnly() {
-          if (!selectedNode) return;
-          const neighborhood = selectedNode.closedNeighborhood().not(".filtered");
-          cy.elements().not(".filtered").not(neighborhood).addClass("faded");
-          neighborhood.removeClass("faded");
-          selectedNode.addClass("selected");
-          connectedOnly = true;
-        }
-
-        function focusSelected() {
-          if (!selectedNode) return;
-          const neighborhood = selectedNode.closedNeighborhood().not(".filtered");
-          if (neighborhood.length > 0) {
-            cy.animate({ fit: { eles: neighborhood, padding: 110 }, duration: 350 });
-          }
-        }
-
-        function fitVisibleGraph() {
-          const visibleElements = cy.elements().not(".filtered");
-          if (visibleElements.length > 0) {
-            cy.animate({ fit: { eles: visibleElements, padding: 90 }, duration: 250 });
-          }
-        }
-
-        function escapeHtml(value) {
-          return String(value)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
-        }
-
-        detailsPanel.addEventListener("click", (event) => {
-          const focusButton = event.target.closest("[data-focus-neighborhood]");
-          if (focusButton && selectedNode) {
-            highlightNeighborhood(selectedNode);
-            return;
-          }
-
-          const connectionButton = event.target.closest("[data-connection-node]");
-          if (!connectionButton) return;
-          const connectedNode = cy.getElementById(connectionButton.dataset.connectionNode);
-          if (connectedNode && connectedNode.length) {
-            activePath = null;
-            cy.elements().removeClass("path-highlight path-faded");
-            clearPathResult();
-            selectedNode = connectedNode;
-            selectedEdge = null;
-            connectedOnly = false;
-            highlightNeighborhood(connectedNode);
-            showNodeDetails(connectedNode);
-            focusSelected();
-          }
-        });
-
-        populatePathfinder();
-        updateStatus();
-        cy.on("zoom pan", updateStatus);
-        cy.ready(() => {
-          fitVisibleGraph();
-          updateStatus();
-        });
-
-        filterInputs.forEach((input) => input.addEventListener("change", applyFilters));
-
-        searchInput.addEventListener("input", () => {
-          selectedNode = null;
-          selectedEdge = null;
-          connectedOnly = false;
-          resetVisualState();
-          applyFilters();
-          showEmptyDetails();
-        });
-
-        document.getElementById("fit-graph").addEventListener("click", fitVisibleGraph);
-        document.getElementById("reset-selection").addEventListener("click", () => resetSelection());
-        document.getElementById("reset-filters").addEventListener("click", () => {
-          filterInputs.forEach((input) => { input.checked = true; });
-          searchInput.value = "";
-          resetSelection(false);
-          applyFilters();
-          fitVisibleGraph();
-          showEmptyDetails();
-        });
-        document.getElementById("connected-only").addEventListener("click", () => {
-          if (selectedNode) showConnectedOnly();
-        });
-        document.getElementById("focus-selected").addEventListener("click", focusSelected);
-        document.getElementById("find-path").addEventListener("click", findPath);
-        document.getElementById("clear-path").addEventListener("click", clearPath);
-        document.getElementById("zoom-in").addEventListener("click", () => { cy.zoom({ level: cy.zoom() + 0.15, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } }); updateStatus(); });
-        document.getElementById("zoom-out").addEventListener("click", () => { cy.zoom({ level: cy.zoom() - 0.15, renderedPosition: { x: cy.width() / 2, y: cy.height() / 2 } }); updateStatus(); });
-
-        document.addEventListener("keydown", (event) => {
-          if (event.target.matches("input, textarea, select")) return;
-          if (event.key === "Escape") resetSelection();
-          if (event.key.toLowerCase() === "f") fitVisibleGraph();
-        });
-
-        cy.on("tap", "node", (event) => {
-          const node = event.target;
-          if (node.hasClass("filtered")) return;
-          selectedNode = node;
-          selectedEdge = null;
-          connectedOnly = false;
-          activePath = null;
-          cy.elements().removeClass("path-highlight path-faded");
-          clearPathResult();
-          highlightNeighborhood(node);
-          showNodeDetails(node);
-        });
-
-        cy.on("tap", "edge", (event) => {
-          const edge = event.target;
-          if (edge.hasClass("filtered")) return;
-          selectedEdge = edge;
-          selectedNode = null;
-          connectedOnly = false;
-          activePath = null;
-          cy.elements().removeClass("path-highlight path-faded");
-          clearPathResult();
-          highlightEdge(edge);
-          showEdgeDetails(edge);
-        });
-
-        cy.on("tap", (event) => {
-          if (event.target === cy) resetSelection();
-        });
-
-        cy.on("mouseover", "node", (event) => {
-          const node = event.target;
-          if (node.hasClass("filtered")) return;
-          node.addClass("hovered");
-          node.connectedEdges().not(".filtered").addClass("hovered");
-        });
-
-        cy.on("mouseout", "node", (event) => {
-          const node = event.target;
-          node.removeClass("hovered");
-          node.connectedEdges().removeClass("hovered");
-          restoreSelectionClasses();
-        });
-      });
-  </script>
+  <footer class="zgw-statusbar graph-glass"><div class="status-left" id="status-counts">{{ graph_summary.characters + graph_summary.factions + graph_summary.events }} nodes · {{ graph_summary.relations }} edges · {{ graph_summary.warnings }} warnings</div><div class="status-center"><span class="autosave-dot"></span><span id="sb-toast">Click a node from project data</span></div><div class="status-right"><span class="zoom-indicator" id="zoom-label">100%</span><button class="zoom-btn" id="zoom-out" type="button">−</button><button class="zoom-btn" id="zoom-in" type="button">+</button></div></footer>
+</section>
+<script>
+const GRAPH_ENDPOINT = "{{ url_for('main.graph_data', project_id=project.id) }}";
+fetch(GRAPH_ENDPOINT).then(r => r.json()).then(raw => {
+  const styles = { character:["#8b5cf6","§"], faction:["#5eead4","◇"], event:["#fbbf24","★"] };
+  const relColors = { hates:"#f87171", allied_with:"#5eead4", member_of:"#60a5fa", loyal_to:"#a78bfa", participated_in:"#fbbf24", rules:"#e5e7eb", located_in:"#22d3ee" };
+  const nodes = (raw.nodes || []).map(x => { const d = x.data || x, s = styles[d.type] || ["#c4b5fd","•"]; return { id:d.id, label:d.label, type:d.type, color:d.color || s[0], glyph:d.glyph || s[1] }; });
+  const edges = (raw.edges || []).map(x => { const d = x.data || x; return { id:d.id, source:d.source, target:d.target, label:d.label || d.relation || d.relation_type, relation_type:d.relation_type || d.label, description:d.description || "", source_label:d.source_label || "Source", target_label:d.target_label || "Target", color:d.color || relColors[d.relation_type] || "#c4b5fd" }; });
+  const positions = raw.positions || Object.fromEntries(nodes.map((n,i) => [n.id, { px:50 + Math.cos(i / Math.max(nodes.length,1) * Math.PI * 2) * 28, py:50 + Math.sin(i / Math.max(nodes.length,1) * Math.PI * 2) * 28 }]));
+  const byId = new Map(nodes.map(n => [n.id,n])), byEdge = new Map(edges.map(e => [e.id,e]));
+  const S = { nodePos:{}, nodeEls:{}, edgeEls:{}, labelEls:{}, activeNode:null, activeEdge:null, path:null, drag:null, zoom:1, labels:false, flow:true, stars:true, nebula:true, connectedOnly:false, starList:[] };
+  const $ = id => document.getElementById(id), wrap=$("canvas-wrap"), ns=$("nodes-layer"), es=$("edges-svg"), defs=$("svg-defs"), labs=$("edge-labels-layer"), details=$("details-panel"), search=$("graph-search"), mini=$("minimap-canvas"), stars=$("star-canvas"), grid=$("radial-grid"), toastEl=$("sb-toast"), status=$("status-counts"), zoomLabel=$("zoom-label");
+  const filters = [...document.querySelectorAll(".graph-filter")];
+  init();
+  function init(){ resize(true); seedStars(); gridDraw(); defsDraw(); nodesDraw(); edgesDraw(); pathOptions(); bind(); state(); requestAnimationFrame(loop); }
+  function resize(reset){ const w=wrap.offsetWidth,h=wrap.offsetHeight; stars.width=w; stars.height=h; es.setAttribute("viewBox",`0 0 ${w} ${h}`); es.setAttribute("width",w); es.setAttribute("height",h); grid.setAttribute("viewBox",`0 0 ${w} ${h}`); nodes.forEach(n=>{ if(reset || !S.nodePos[n.id]) S.nodePos[n.id]={x:(positions[n.id]?.px||50)/100*w,y:(positions[n.id]?.py||50)/100*h}; }); }
+  function gridDraw(){ const w=wrap.offsetWidth,h=wrap.offsetHeight,cx=w*.5,cy=h*.48; grid.innerHTML=[80,160,260,370,490,620].map(r=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(196,181,253,.06)"/>`).join(""); }
+  function defsDraw(){ defs.innerHTML=edges.map(e=>{ const a=byId.get(e.source),b=byId.get(e.target); if(!a||!b)return""; return `<linearGradient id="grad-${e.id}"><stop offset="0%" stop-color="${a.color}"/><stop offset="100%" stop-color="${b.color}"/></linearGradient><marker id="arrow-${e.id}" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0,1 L6,3.5 L0,6 Z" fill="${e.color}" opacity=".85"/></marker>` }).join(""); }
+  function nodesDraw(){ ns.innerHTML=""; nodes.forEach(n=>{ const p=S.nodePos[n.id], el=document.createElement("button"); el.type="button"; el.className="zcg-node"; el.dataset.id=n.id; el.dataset.type=n.type; el.style.left=`${p.x-59}px`; el.style.top=`${p.y-24}px`; el.style.borderColor=rgba(n.color,.44); el.innerHTML=`<span class="zcg-core" style="background:radial-gradient(circle at 35% 35%,${light(n.color)},${n.color});box-shadow:0 0 14px ${rgba(n.color,.58)}">${esc(n.glyph)}</span><span class="zcg-node-copy"><strong>${esc(n.label)}</strong><small style="color:${n.color}">${esc(n.type)}</small></span>`; ns.append(el); S.nodeEls[n.id]=el; bindNode(el,n); }); }
+  function edgesDraw(){ es.querySelectorAll(".zcg-edge").forEach(e=>e.remove()); labs.innerHTML=""; edges.forEach(e=>{ if(!byId.has(e.source)||!byId.has(e.target))return; const p=document.createElementNS("http://www.w3.org/2000/svg","path"); p.classList.add("zcg-edge","is-flowing"); p.dataset.id=e.id; p.setAttribute("stroke",`url(#grad-${e.id})`); p.setAttribute("marker-end",`url(#arrow-${e.id})`); es.append(p); S.edgeEls[e.id]=p; const l=document.createElement("button"); l.type="button"; l.className="zcg-edge-label"; l.dataset.id=e.id; l.textContent=e.label; l.style.color=e.color; labs.append(l); S.labelEls[e.id]=l; [p,l].forEach(x=>x.addEventListener("click",ev=>{ev.stopPropagation(); selectEdge(e.id)})); }); edgePaths(); }
+  function edgePaths(){ edges.forEach(e=>{ const a=S.nodePos[e.source],b=S.nodePos[e.target],el=S.edgeEls[e.id],lb=S.labelEls[e.id]; if(!a||!b||!el)return; const dx=b.x-a.x,dy=b.y-a.y,len=Math.max(Math.hypot(dx,dy),1),off=Math.min(Math.max(len*.24,28),120),mx=(a.x+b.x)/2-(dy/len)*off,my=(a.y+b.y)/2+(dx/len)*off*.45; el.setAttribute("d",`M ${a.x},${a.y} Q ${mx},${my} ${b.x},${b.y}`); if(lb){ lb.style.left=`${(.25*a.x+.5*mx+.25*b.x)}px`; lb.style.top=`${(.25*a.y+.5*my+.25*b.y)}px`; } }); minimap(); }
+  function bindNode(el,n){ el.addEventListener("click",e=>{e.stopPropagation(); if(S.drag?.moved)return; selectNode(n.id)}); el.addEventListener("dblclick",e=>{e.stopPropagation(); S.connectedOnly=true; selectNode(n.id); $("focus-label").classList.add("active")}); el.addEventListener("mousedown",e=>{ if(e.button)return; e.preventDefault(); const p=S.nodePos[n.id]; S.drag={id:n.id,sx:e.clientX,sy:e.clientY,ox:p.x,oy:p.y,moved:false}; el.classList.add("is-dragging")}); el.addEventListener("mouseenter",()=>{ if(!S.activeNode&&!S.activeEdge) connected(n.id).forEach(ed=>S.edgeEls[ed.id]?.classList.add("is-hovered"))}); el.addEventListener("mouseleave",()=>Object.values(S.edgeEls).forEach(x=>x.classList.remove("is-hovered"))); }
+  function bind(){ filters.forEach(i=>i.addEventListener("change",state)); search.addEventListener("input",state); wrap.addEventListener("click",e=>{ if([wrap,ns,labs,stars,grid].includes(e.target)) clear() }); wrap.addEventListener("mousemove",move); wrap.addEventListener("mouseleave",()=>$("cursor-glow").style.opacity=0); window.addEventListener("mouseup",()=>{ if(S.drag){S.nodeEls[S.drag.id]?.classList.remove("is-dragging"); S.drag=null} }); window.addEventListener("resize",()=>{resize(false); gridDraw(); defsDraw(); edgePaths();}); $("toggle-left").onclick=()=>$("left-side").classList.toggle("is-collapsed"); $("toggle-right").onclick=()=>$("right-side").classList.toggle("is-collapsed"); $("toggle-flow").onclick=e=>toggle(e,"flow","is-flowing"); $("toggle-labels").onclick=e=>{S.labels=!S.labels;e.currentTarget.classList.toggle("is-on",S.labels);state()}; $("toggle-stars").onclick=e=>{S.stars=!S.stars;e.currentTarget.classList.toggle("is-on",S.stars)}; $("toggle-nebula").onclick=e=>{S.nebula=!S.nebula;e.currentTarget.classList.toggle("is-on",S.nebula);$("nebula-layer").style.opacity=S.nebula?1:0}; ["fit-graph","btn-fit-view","btn-reset"].forEach(id=>$(id).onclick=reset); $("reset-selection").onclick=clear; $("reset-filters").onclick=()=>{filters.forEach(i=>i.checked=true);search.value="";clear();state()}; $("connected-only").onclick=()=>{ if(S.activeNode){S.connectedOnly=true;state()} }; $("focus-selected").onclick=()=>{ if(S.activeNode){S.zoom=1.08;zoom();S.connectedOnly=true;state()} }; $("find-path").onclick=findPath; $("clear-path").onclick=()=>{S.path=null;$("path-source").value="";$("path-target").value="";pathMsg("");state()}; $("zoom-in").onclick=()=>{S.zoom=Math.min(1.45,S.zoom+.1);zoom()}; $("zoom-out").onclick=()=>{S.zoom=Math.max(.75,S.zoom-.1);zoom()}; document.addEventListener("keydown",e=>{ if(e.target.matches("input,select,textarea"))return; if(e.key==="Escape")clear(); if(e.key.toLowerCase()==="f")reset(); }); }
+  function move(e){ const r=wrap.getBoundingClientRect(); $("cursor-glow").style.left=`${e.clientX-r.left}px`; $("cursor-glow").style.top=`${e.clientY-r.top}px`; $("cursor-glow").style.opacity=1; if(!S.drag)return; const dx=e.clientX-S.drag.sx,dy=e.clientY-S.drag.sy; if(Math.abs(dx)>2||Math.abs(dy)>2)S.drag.moved=true; if(!S.drag.moved)return; const p=S.nodePos[S.drag.id]={x:Math.max(40,Math.min(wrap.offsetWidth-40,S.drag.ox+dx)),y:Math.max(30,Math.min(wrap.offsetHeight-30,S.drag.oy+dy))}; const el=S.nodeEls[S.drag.id]; el.style.left=`${p.x-59}px`; el.style.top=`${p.y-24}px`; edgePaths(); }
+  function selectNode(id){ S.activeNode=id; S.activeEdge=null; S.path=null; state(); nodeDetails(id); toast(`${byId.get(id).label} — ${connected(id).length} relations`); }
+  function selectEdge(id){ S.activeEdge=id; S.activeNode=null; S.path=null; state(); edgeDetails(id); toast(`Relation selected: ${byEdge.get(id).label}`); }
+  function clear(){ S.activeNode=null;S.activeEdge=null;S.path=null;S.connectedOnly=false;$("focus-label").classList.remove("active"); pathMsg(""); state(); details.innerHTML='<div class="node-empty">Select a node or relation to inspect details.</div>'; toast("Click a node from project data"); }
+  function state(){ const types=new Set([...document.querySelectorAll(".entity-filter:checked")].map(x=>x.value)), rels=new Set([...document.querySelectorAll(".relation-filter:checked")].map(x=>x.value)), q=search.value.toLowerCase().trim(), nn=new Set(), ne=new Set(), pn=new Set(S.path?.nodes||[]), pe=new Set(S.path?.edges||[]); if(S.activeNode){nn.add(S.activeNode); connected(S.activeNode).forEach(e=>{ne.add(e.id);nn.add(e.source);nn.add(e.target)})} if(S.activeEdge){const e=byEdge.get(S.activeEdge);ne.add(e.id);nn.add(e.source);nn.add(e.target)} nodes.forEach(n=>{ const el=S.nodeEls[n.id], hidden=!types.has(n.type)||(S.connectedOnly&&S.activeNode&&!nn.has(n.id)), miss=q&&!`${n.label} ${n.type}`.toLowerCase().includes(q), fade=(S.activeNode||S.activeEdge||S.path)&&!nn.has(n.id)&&!pn.has(n.id); el.classList.toggle("is-hidden",hidden); el.classList.toggle("is-dimmed",!!miss||fade); el.classList.toggle("is-selected",n.id===S.activeNode||pn.has(n.id)); el.classList.toggle("is-neighbor",nn.has(n.id)&&n.id!==S.activeNode&&!pn.has(n.id)); }); edges.forEach(e=>{ const hidden=!rels.has(e.relation_type)||!types.has(byId.get(e.source)?.type)||!types.has(byId.get(e.target)?.type)||(S.connectedOnly&&S.activeNode&&!ne.has(e.id)), selected=e.id===S.activeEdge||pe.has(e.id), near=ne.has(e.id), fade=(S.activeNode||S.activeEdge||S.path)&&!near&&!selected&&!pe.has(e.id); [S.edgeEls[e.id],S.labelEls[e.id]].forEach(el=>el?.classList.toggle("is-hidden",hidden)); S.edgeEls[e.id]?.classList.toggle("is-selected",selected); S.edgeEls[e.id]?.classList.toggle("is-neighbor",near&&!selected); S.edgeEls[e.id]?.classList.toggle("is-dimmed",fade); S.labelEls[e.id]?.classList.toggle("visible",S.labels||selected||near||pe.has(e.id)); }); status.textContent=`${nodes.filter(n=>!S.nodeEls[n.id].classList.contains("is-hidden")).length} / ${nodes.length} nodes · ${edges.filter(e=>!S.edgeEls[e.id]?.classList.contains("is-hidden")).length} / ${edges.length} edges · {{ graph_summary.warnings }} warnings`; minimap(); }
+  function nodeDetails(id){ const n=byId.get(id), list=connected(id).map(e=>{ const oid=e.source===id?e.target:e.source,o=byId.get(oid), dir=e.source===id?"outgoing":"incoming"; return `<button class="zcg-conn" data-node="${oid}" data-edge="${e.id}"><i style="background:${o.color}"></i><span><b>${esc(o.label)}</b><small>${esc(o.type)} · ${dir}</small><em>${esc(e.source===id?`${n.label} → ${e.label} → ${o.label}`:`${o.label} → ${e.label} → ${n.label}`)}</em></span></button>` }).join(""); details.innerHTML=`<div class="zcg-in-head"><i style="background:${n.color};box-shadow:0 0 18px ${rgba(n.color,.5)}">${esc(n.glyph)}</i><span><b>${esc(n.label)}</b><small><em style="background:${n.color}"></em>${esc(n.type)}</small></span></div><div class="zcg-prop"><span>Connected relations</span><b>${connected(id).length}</b></div><p class="node-desc">Click a connected node or relation to explore the network.</p><button class="action-btn primary inspector-focus-button" data-focus>Focus neighborhood</button><div class="inspector-connections"><h3>Direct connections</h3>${list||'<div class="node-empty">No direct connections yet.</div>'}</div>`; details.querySelectorAll(".zcg-conn").forEach(b=>b.onclick=()=>selectNode(b.dataset.node)); details.querySelector("[data-focus]").onclick=()=>{S.connectedOnly=true;state()}; }
+  function edgeDetails(id){ const e=byEdge.get(id); details.innerHTML=`<div class="zcg-in-head"><i style="background:${e.color};box-shadow:0 0 18px ${rgba(e.color,.45)}">↦</i><span><b>${esc(e.label)}</b><small><em style="background:${e.color}"></em>relation</small></span></div><div class="zcg-prop"><span>Source</span><b>${esc(e.source_label)}</b></div><div class="zcg-prop"><span>Target</span><b>${esc(e.target_label)}</b></div><div class="zcg-prop"><span>Type</span><b>${esc(e.relation_type)}</b></div><p class="node-desc">${esc(e.description||"No description yet.")}</p>`; }
+  function pathOptions(){ nodes.sort((a,b)=>a.label.localeCompare(b.label)).forEach(n=>[$("path-source"),$("path-target")].forEach(s=>{const o=document.createElement("option");o.value=n.id;o.textContent=`${cap(n.type)}: ${n.label}`;s.append(o)})); }
+  function findPath(){ const a=$("path-source").value,b=$("path-target").value; if(!a||!b)return pathMsg("Select both source and target nodes.","error"); if(a===b)return pathMsg("Choose two different nodes.","error"); const p=bfs(a,b); if(!p)return pathMsg("No path found between selected nodes.","error"); S.activeNode=null;S.activeEdge=null;S.path=p;S.connectedOnly=false;state();pathMsg(`Path found: ${p.nodes.map(id=>byId.get(id).label).join(" → ")}`,"success"); }
+  function bfs(a,b){ const q=[a],v=new Set([a]),prev=new Map(),rels=new Set([...document.querySelectorAll(".relation-filter:checked")].map(x=>x.value)); while(q.length){ const c=q.shift(); if(c===b)break; edges.forEach(e=>{ if(!rels.has(e.relation_type)||(e.source!==c&&e.target!==c))return; const nx=e.source===c?e.target:e.source; if(v.has(nx))return; v.add(nx); prev.set(nx,{node:c,edge:e.id}); q.push(nx); }); } if(!v.has(b))return null; const pn=[b],pe=[]; let cur=b; while(cur!==a){ const st=prev.get(cur); if(!st)return null; pe.unshift(st.edge); pn.unshift(st.node); cur=st.node; } return {nodes:pn,edges:pe}; }
+  function reset(){ resize(true); nodes.forEach(n=>{const p=S.nodePos[n.id],el=S.nodeEls[n.id]; el.style.left=`${p.x-59}px`; el.style.top=`${p.y-24}px`;}); S.zoom=1;zoom(); edgePaths(); clear(); }
+  function minimap(){ const ctx=mini.getContext("2d"),w=mini.width,h=mini.height,cw=Math.max(wrap.offsetWidth,1),ch=Math.max(wrap.offsetHeight,1); ctx.clearRect(0,0,w,h); ctx.fillStyle="rgba(10,5,18,.78)"; ctx.fillRect(0,0,w,h); edges.forEach(e=>{const a=S.nodePos[e.source],b=S.nodePos[e.target]; if(!a||!b)return; ctx.beginPath();ctx.moveTo(a.x/cw*w,a.y/ch*h);ctx.lineTo(b.x/cw*w,b.y/ch*h);ctx.strokeStyle=rgba(e.color,S.edgeEls[e.id]?.classList.contains("is-hidden")?.08:.38);ctx.stroke();}); nodes.forEach(n=>{const p=S.nodePos[n.id];ctx.beginPath();ctx.arc(p.x/cw*w,p.y/ch*h,S.nodeEls[n.id]?.classList.contains("is-hidden")?2:3.8,0,Math.PI*2);ctx.fillStyle=S.nodeEls[n.id]?.classList.contains("is-hidden")?rgba(n.color,.18):n.color;ctx.fill();});ctx.strokeStyle="rgba(196,181,253,.48)";ctx.strokeRect(8,8,w-16,h-16); }
+  function seedStars(){S.starList=Array.from({length:140},()=>({x:Math.random()*stars.width,y:Math.random()*stars.height,r:.35+Math.random()*1.25,o:.16+Math.random()*.7,d:.012+Math.random()*.025,p:Math.random()*Math.PI*2}))} function loop(t){ const ctx=stars.getContext("2d"); ctx.clearRect(0,0,stars.width,stars.height); if(S.stars)S.starList.forEach(s=>{s.y+=s.d;if(s.y>stars.height+2)s.y=-2;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(238,232,255,${Math.max(.08,s.o*(.45+.55*Math.sin(t*.001+s.p)))})`;ctx.fill();}); requestAnimationFrame(loop); }
+  function toggle(e,key,klass){S[key]=!S[key];e.currentTarget.classList.toggle("is-on",S[key]);Object.values(S.edgeEls).forEach(x=>x.classList.toggle(klass,S[key]))} function zoom(){[ns,labs,es].forEach(x=>{x.style.transform=`scale(${S.zoom})`;x.style.transformOrigin="50% 50%"});zoomLabel.textContent=`${Math.round(S.zoom*100)}%`} function connected(id){return edges.filter(e=>e.source===id||e.target===id)} function pathMsg(m,s){const p=$("path-result");p.textContent=m;p.dataset.state=s||""} function toast(m){toastEl.textContent=m} function rgba(h,a){const c=h.replace("#","");return `rgba(${parseInt(c.slice(0,2),16)},${parseInt(c.slice(2,4),16)},${parseInt(c.slice(4,6),16)},${a})`} function light(h){const c=h.replace("#","");return `#${[0,2,4].map(i=>Math.min(255,parseInt(c.slice(i,i+2),16)+42).toString(16).padStart(2,"0")).join("")}`} function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")} function cap(v){return v.charAt(0).toUpperCase()+v.slice(1)}
+}).catch(()=>{ document.getElementById("details-panel").innerHTML='<div class="node-empty">Graph data could not be loaded.</div>'; });
+</script>
 {% endblock %}
