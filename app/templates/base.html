@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-5L92K3KW');</script>
-    <!-- End Google Tag Manager -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9JG8J2FMPP"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-9JG8J2FMPP');
+    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Zirel{% endblock %}</title>
@@ -25,10 +27,6 @@
   {% set projects_workspace_page = request.endpoint == 'main.projects' %}
   {% set admin_workspace_page = request.endpoint and request.endpoint.startswith('main.admin_') %}
   <body class="{% if wishlist_page %}wishlist-body{% elif graph_workspace_page %}graph-body{% elif warnings_workspace_page %}warnings-body{% elif projects_workspace_page %}projects-body{% elif admin_workspace_page %}zadmin-body{% elif request.endpoint in legal_document_endpoints %}legal-doc-body{% elif request.endpoint in public_endpoints %}public-body{% if request.endpoint == 'main.index' %} landing-body{% endif %}{% elif request.endpoint in ['main.login', 'main.register'] %}auth-body{% else %}app-body{% endif %}">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5L92K3KW"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     {% if not wishlist_page and not graph_workspace_page and not warnings_workspace_page and not projects_workspace_page and not admin_workspace_page and request.endpoint not in ['main.login', 'main.register'] and request.endpoint not in legal_document_endpoints %}
     <nav class="navbar navbar-expand-lg navbar-dark app-navbar {% if request.endpoint in public_endpoints %}landing-navbar public-navbar zirel-public-topbar{% endif %}">
       <div class="{% if request.endpoint in public_endpoints %}zirel-public-nav-inner{% else %}container{% endif %}">
