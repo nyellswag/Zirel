@@ -18,6 +18,7 @@ Zirel — Flask-монолит для worldbuilding workflow: пользоват
 
 ## Изменения, ожидающие просмотра
 
+- Пользователь добавил Google Tag Manager в `base.html` для проверки аналитики после deploy.
 - Выполнен общий редизайн v2 части публичных страниц: `/beta`, `/faq`, `/roadmap`, `/whitepaper`, `/feedback`, `/contact`.
 - Главная страница `/` переработана; справа добавлен `partials/world_engine.html`, близкий к `ZirelWorldEngine.html`.
 - Админские страницы переписаны под отдельный fullscreen admin workspace по `ZirelAdminDashboard.html`.
@@ -57,6 +58,7 @@ Zirel — Flask-монолит для worldbuilding workflow: пользоват
 
 ## Что требует уточнения
 
+- Нужно проверить на production, что Google Tag Manager корректно загружается и видит посещения.
 - Нужно ли делать commit/push после подтверждения текущих admin/contact исправлений.
 - Нужно ли запускать локальный сервер заново, если браузер все еще показывает старую ошибку `/admin`.
 - Список дальнейших правок Graph Workspace.
@@ -66,10 +68,11 @@ Zirel — Flask-монолит для worldbuilding workflow: пользоват
 
 ## Рекомендуемые следующие шаги
 
-1. Проверить `/admin` в браузере после refresh или перезапуска сервера.
-2. Проверить `/contact`, что верхние chips исчезли.
-3. Проверить `/feedback`, что выбор темы сохраняется.
-4. Проверить `/admin/feedback`, что тема видна в списке и drawer.
-5. После подтверждения обновить `CHANGELOG.md`.
-6. После push проверить production-deploy и открыть `/projects/<project_id>/graph` на реальном проекте.
-7. После просмотра production-версии собрать следующий пакет правок.
+1. После deploy проверить Google Tag Manager / Google Analytics в режиме реального времени.
+2. Проверить `/admin` в браузере после refresh или перезапуска сервера.
+3. Проверить `/contact`, что верхние chips исчезли.
+4. Проверить `/feedback`, что выбор темы сохраняется.
+5. Проверить `/admin/feedback`, что тема видна в списке и drawer.
+6. После подтверждения обновить `CHANGELOG.md`.
+7. После push проверить production-deploy и открыть `/projects/<project_id>/graph` на реальном проекте.
+8. После просмотра production-версии собрать следующий пакет правок.
