@@ -20,12 +20,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;1,9..144,200;1,9..144,300&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Share+Tech&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260711-landing-explorer-v7') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='20260712-mobile-v8') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='form_system.css', v='20260712-v1') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='entity_create_refresh.css', v='20260712-v1') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='beta_access.css', v='20260712-v2') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='beta_access_hero.css', v='20260712-v1') }}">
     {% block extra_head %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='mobile_public_fixes.css', v='20260712-v1') }}">
   </head>
   {% set public_endpoints = ['main.index', 'main.beta', 'main.faq', 'main.whitepaper', 'main.roadmap', 'main.feedback', 'main.contact', 'main.terms', 'main.privacy'] %}
   {% set legal_document_endpoints = ['main.terms', 'main.privacy'] %}

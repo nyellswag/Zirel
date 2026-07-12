@@ -8101,7 +8101,7 @@ hr {
 }
 
 /* Exact-style landing World Engine embed from the supplied reference. */
-.zhp-hero > .zhp-reveal:last-child {
+.zhp-hero > .zhp-reveal[aria-label="Interactive Zirel world engine preview"] {
   display: flex;
   align-items: center;
   justify-content: center;
