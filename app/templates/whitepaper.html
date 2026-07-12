@@ -1,68 +1,35 @@
 {% extends "base.html" %}
-
 {% block title %}Zirel Whitepaper{% endblock %}
-
+{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='whitepaper_manual.css', v='20260711-v2') }}">{% endblock %}
 {% block content %}
-  <div class="zv2-page whitepaper-page">
-    <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
+<div class="zwp-page" data-whitepaper>
+  <div class="zwp-progress" data-whitepaper-progress aria-hidden="true"></div>
+  <header class="zwp-hero" id="whitepaper-top">
+    <div><span>Product vision</span><h1>Zirel <em>Whitepaper</em>.</h1><p>A product vision for structured worldbuilding, relationship mapping, and explainable consistency checks.</p></div>
+    <div class="zwp-actions"><a class="zwp-primary" href="{{ url_for('main.beta') }}">Join Beta</a><a class="zwp-outline" href="{{ url_for('main.roadmap') }}">View Roadmap</a></div>
+  </header>
+  <aside class="zwp-disclaimer"><i></i><p>Zirel is an early MVP. This document explains the working product and its direction; it is not a promise that every explored feature will be released.</p><i></i></aside>
 
-    <section class="zv2-hero zv2-reveal">
-      <div>
-        <p class="zv2-kicker">Product vision</p>
-        <h1>Zirel <em>Whitepaper</em>.</h1>
-        <p>A product vision for graph-based worldbuilding, relationship mapping, and logic consistency checks.</p>
-      </div>
-      <div class="zv2-hero-actions">
-        <a class="zv2-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
-        <a class="zv2-btn-secondary" href="{{ url_for('main.roadmap') }}">Roadmap</a>
-      </div>
-    </section>
-
-    <div class="zv2-note zv2-reveal">Zirel is currently an early MVP. This document describes the product direction and may change as the project evolves.</div>
-
-    <div class="zv2-doc-layout">
-      <aside class="zv2-side-nav zv2-reveal" aria-label="Whitepaper sections">
-        <span>Document</span>
-        <a href="#introduction">Introduction</a>
-        <a href="#problem">The Problem</a>
-        <a href="#users">Target Users</a>
-        <a href="#concept">Product Concept</a>
-        <a href="#data-model">Core Data Model</a>
-        <a href="#logic-engine">Logic Engine</a>
-        <a href="#graph">Graph Workspace</a>
-        <a href="#ownership">Ownership</a>
-        <a href="#mvp">Current MVP</a>
-        <a href="#ai">Future AI</a>
-        <a href="#roadmap">Roadmap</a>
-        <a href="#beta">Beta Status</a>
-      </aside>
-
-      <article class="zv2-doc-main">
-        <section class="zv2-doc-section zv2-reveal" id="introduction"><span class="zv2-section-num">01</span><h2>Introduction</h2><p>Zirel is a worldbuilding logic workspace for writers, game masters, screenwriters, and creators of fictional universes. It gives creative teams and solo creators a structured place to map the people, groups, events, and relationships that make a setting feel alive.</p></section>
-        <section class="zv2-doc-section zv2-reveal" id="problem"><span class="zv2-section-num">02</span><h2>The Problem</h2><p>As a fictional world grows, its characters, factions, events, timelines, and relationships become difficult to keep consistent. Notes can spread across documents, and a small change to one character may quietly affect a battle, an alliance, or an entire timeline.</p></section>
-        <section class="zv2-doc-section zv2-reveal" id="users"><span class="zv2-section-num">03</span><h2>Target Users</h2><ul class="zv2-list"><li>Writers</li><li>Game masters</li><li>Screenwriters</li><li>Indie game developers</li><li>Narrative designers</li><li>World-builders</li></ul></section>
-        <section class="zv2-doc-section zv2-reveal" id="concept"><span class="zv2-section-num">04</span><h2>Product Concept</h2><p>Zirel lets users structure worlds through projects, entities, typed relationships, logic warnings, and graph visualization. The goal is not to replace creative writing tools, but to provide a dedicated layer for examining how the moving parts of a fictional universe fit together.</p></section>
-        <section class="zv2-doc-section zv2-reveal" id="data-model"><span class="zv2-section-num">05</span><h2>Core Data Model</h2><ul class="zv2-list"><li><strong>Projects:</strong> private worldbuilding workspaces.</li><li><strong>Characters:</strong> named figures with descriptions, status, and timeline details.</li><li><strong>Factions:</strong> groups, orders, governments, guilds, or alliances.</li><li><strong>Events:</strong> story moments, battles, discoveries, and timeline points.</li><li><strong>Relations:</strong> typed links between entities, such as member_of, hates, or participated_in.</li></ul></section>
-        <section class="zv2-doc-section zv2-reveal" id="logic-engine"><span class="zv2-section-num">06</span><h2>Logic Engine</h2><p>The current logic engine is rule-based. It provides early consistency checks rather than claiming to understand a story completely.</p><ul class="zv2-list"><li>Dead characters appearing after their recorded death.</li><li>Characters participating before their recorded birth.</li><li>Destroyed factions appearing in later events.</li><li>One-sided hostility between characters.</li><li>Internal faction conflicts involving membership, loyalty, and hostility.</li></ul></section>
-        <section class="zv2-doc-section zv2-reveal" id="graph"><span class="zv2-section-num">07</span><h2>Graph Workspace</h2><p>The Graph Workspace visualizes a project as an interactive network. Nodes represent characters, factions, and events; relation lines show how they connect. The current workspace includes filters, search, selected-node focus, connected-node exploration, and a details panel.</p></section>
-        <section class="zv2-doc-section zv2-reveal" id="ownership"><span class="zv2-section-num">08</span><h2>Data Ownership and Portability</h2><p>Users own their creative content. Zirel does not claim ownership over fictional worlds, notes, characters, or story ideas. JSON export and import support portability and backups, so project data is not locked into a single workflow.</p></section>
-        <section class="zv2-doc-section zv2-reveal" id="mvp"><span class="zv2-section-num">09</span><h2>Current MVP</h2><ul class="zv2-list"><li>User accounts and protected user projects.</li><li>CRUD for projects, characters, factions, events, and relations.</li><li>A relationship builder and bulk management actions.</li><li>Logic warnings and the Graph Workspace.</li><li>JSON export and import.</li><li>Feedback and contact forms.</li><li>An admin dashboard for beta management.</li></ul></section>
-        <section class="zv2-doc-section zv2-reveal" id="ai"><span class="zv2-section-num">10</span><h2>Future AI Direction</h2><p>Future AI-assisted workflows may analyze scenes, extract possible facts from text, suggest relations, or help flag potential inconsistencies. Any AI suggestion should remain reviewable by the user before it is saved. AI features are not active unless clearly added in a future release.</p></section>
-        <section class="zv2-doc-section zv2-reveal" id="roadmap"><span class="zv2-section-num">11</span><h2>Roadmap Summary</h2><ul class="zv2-list"><li>Stronger graph tools.</li><li>A better warning system.</li><li>Collaboration.</li><li>User settings and cloud sync.</li><li>Export improvements.</li><li>Possible paid plans later, with clear terms if introduced.</li></ul></section>
-        <section class="zv2-doc-section zv2-reveal" id="beta"><span class="zv2-section-num">12</span><h2>Beta Status</h2><p>Zirel is in early beta. Testers should avoid highly sensitive or irreplaceable content, export backups of important projects, and expect features to evolve. Feedback is especially valuable now because it helps decide what becomes more reliable, more useful, and more focused next.</p></section>
-      </article>
-    </div>
-
-    <section class="zv2-cta zv2-reveal">
-      <div>
-        <p class="zv2-kicker">Product direction</p>
-        <h2>Explore the MVP and tell us what should become real.</h2>
-      </div>
-      <div class="zv2-hero-actions">
-        <a class="zv2-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
-        <a class="zv2-btn-secondary" href="{{ url_for('main.projects') }}">Open Zirel</a>
-        <a class="zv2-btn-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
-      </div>
-    </section>
+  {% set sections = [('summary','Executive Summary'),('problem','The Problem'),('principles','Product Principles'),('workflow','Core Workflow'),('data-model','World Model'),('logic-engine','Logic Engine'),('visualization','Visual Exploration'),('ownership','Ownership & Portability'),('mvp','Current MVP'),('validation','Beta Questions'),('future','Future Direction'),('boundaries','Product Boundaries')] %}
+  <nav class="zwp-mobile-toc" aria-label="Whitepaper sections">{% for id, label in sections %}<a href="#{{ id }}">{{ label }}</a>{% endfor %}</nav>
+  <div class="zwp-doc">
+    <aside class="zwp-toc" aria-label="Whitepaper table of contents"><span>Contents</span><ol>{% for id, label in sections %}<li data-whitepaper-item><a href="#{{ id }}">{{ label }}</a></li>{% endfor %}</ol><a class="zwp-back" href="#whitepaper-top">↑ Back to top</a></aside>
+    <article class="zwp-content">
+      <section id="summary"><header><span>01</span><h2><a href="#summary">Executive Summary</a></h2></header><p class="zwp-dropcap">Zirel is a private worldbuilding workspace for writers, game masters, screenwriters, indie game developers, narrative designers, and other creators of connected fictional worlds. It turns scattered facts into structured entities and relations, then uses explainable rules and visual maps to help creators notice possible contradictions.</p><p>Zirel is not a story generator and does not replace creative judgment. Its purpose is to make the structure behind a world easier to inspect.</p></section>
+      <section id="problem"><header><span>02</span><h2><a href="#problem">The Problem</a></h2></header><p>Worlds rarely break because their creators lack ideas. They become difficult to manage because facts accumulate across characters, factions, events, dates, and relationships. A changed death year can invalidate a later battle. A loyalty can conflict with a character's hostility. Notes can remain individually correct while the network between them becomes inconsistent.</p><blockquote>General note tools store information well, but they do not naturally treat fictional facts as a connected system that can be queried, visualized, and checked.</blockquote></section>
+      <section id="principles"><header><span>03</span><h2><a href="#principles">Product Principles</a></h2></header><ol class="zwp-principles"><li><b>Structure without rigidity</b><p>Provide useful fields and relation types without dictating how a world must be written.</p></li><li><b>Explain, do not judge</b><p>Warnings show why a pattern was flagged and remain suggestions for the creator.</p></li><li><b>Creator control</b><p>Users decide what to save, change, export, or delete.</p></li><li><b>Portability</b><p>Project data should be exportable rather than trapped in the product.</p></li><li><b>Honest scope</b><p>Distinguish working features from experiments and future possibilities.</p></li></ol></section>
+      <section id="workflow"><header><span>04</span><h2><a href="#workflow">Core Workflow</a></h2></header><ol><li>Create a private project for a fictional world.</li><li>Add characters, factions, and events with relevant timeline facts.</li><li>Connect those entities using typed, directional relations.</li><li>Review dynamically generated Logic Warnings.</li><li>Explore the network through Graph Workspace and Story Tapestry.</li><li>Export the project as JSON for backup or portability.</li></ol></section>
+      <section id="data-model"><header><span>05</span><h2><a href="#data-model">World Model</a></h2></header><ul><li><strong>Projects</strong> contain one user's world data.</li><li><strong>Characters</strong> record identity, description, status, birth year, and death year.</li><li><strong>Factions</strong> represent organizations with creation and destruction years.</li><li><strong>Events</strong> represent dated or undated occurrences and locations.</li><li><strong>Relations</strong> connect a source entity to a target through types such as <code>member_of</code>, <code>loyal_to</code>, or <code>participated_in</code>.</li></ul><p>This graph-shaped model lets one fact participate in multiple contexts without duplicating the same note everywhere.</p></section>
+      <section id="logic-engine"><header><span>06</span><h2><a href="#logic-engine">Explainable Logic Engine</a></h2></header><p>The current engine is deterministic and rule-based. Warnings are generated when requested and are not stored as permanent verdicts. The first version checks for:</p><ul><li>A character participating in an event after their recorded death.</li><li>A character participating before their recorded birth.</li><li>A faction participating after its recorded destruction.</li><li>One-sided hostility between two characters.</li><li>A faction member hating a character to whom that faction is loyal.</li></ul><p>Each warning includes severity, category, message, explanation, and possible next steps. The creator decides whether it represents a twist, incomplete data, or a contradiction.</p></section>
+      <section id="visualization"><header><span>07</span><h2><a href="#visualization">Visual Exploration</a></h2></header><p>Graph Workspace presents entities as a constellation-like network with filters, search, an inspector, direct connections, path finding, node movement, and a minimap based on the current layout. Project Dashboard also includes Story Tapestry: a compact interactive view built from the project's actual entities and relations.</p><p>These views are navigation tools for discovering dense clusters, isolated entities, and indirect paths through the world.</p></section>
+      <section id="ownership"><header><span>08</span><h2><a href="#ownership">Ownership &amp; Portability</a></h2></header><p>Creators retain ownership of their worlds and creative content. Zirel receives only the limited permission needed to host, display, process, analyze, and export that content as part of the service.</p><p>Projects are associated with user accounts and protected by ownership checks. JSON export and import provide a practical portability path. The beta still requires stronger self-service deletion, consent, backup, and account controls before broad release.</p></section>
+      <section id="mvp"><header><span>09</span><h2><a href="#mvp">Current MVP</a></h2></header><ul><li>Registration, login, password hashing, and private projects.</li><li>Project and entity CRUD, search, filters, and bulk actions.</li><li>A guided relation builder with typed links and live preview.</li><li>Dynamic Logic Warnings and a consistency review dashboard.</li><li>Graph Workspace, inspector, path finder, minimap, and Story Tapestry.</li><li>JSON export and import.</li><li>Feedback, contact, waitlist, and admin beta-management tools.</li></ul></section>
+      <section id="validation"><header><span>10</span><h2><a href="#validation">Beta Questions</a></h2></header><ul><li>Can a new creator understand the entity-and-relation model without instruction?</li><li>Does the relation builder match how people think about their worlds?</li><li>Are warnings useful often enough to justify structured data?</li><li>Does the graph reveal connections that lists and notes hide?</li><li>Which missing controls prevent creators from trusting Zirel?</li></ul></section>
+      <section id="future"><header><span>11</span><h2><a href="#future">Future Direction</a></h2></header><p>Near-term work prioritizes beta reliability, onboarding, data controls, accessibility, and refinement of warnings and graph exploration. Later research may include custom world schemas, collaboration, additional export formats, and assisted analysis.</p><p>If AI-assisted analysis is explored, suggestions should be transparent, optional, and reviewed by the user before anything is saved. AI processing is not currently part of the core product.</p></section>
+      <section id="boundaries"><header><span>12</span><h2><a href="#boundaries">Product Boundaries</a></h2></header><p>Zirel does not promise perfect consistency, legal or publishing review, automatic story quality, permanent availability, collaboration, or AI analysis. It currently accepts no payments through the site. These boundaries keep the beta focused on one question: can structured relations and explainable checks make complex fictional worlds easier to maintain?</p></section>
+      <footer class="zwp-final"><span>Test the thesis</span><h2>Build a <em>small world</em> and see whether the connections become clearer.</h2><div class="zwp-actions"><a class="zwp-primary" href="{{ url_for('main.beta') }}">Join Beta</a><a class="zwp-outline" href="{{ url_for('main.projects') }}">Open Zirel</a><a class="zwp-outline" href="{{ url_for('main.feedback') }}">Send Feedback</a></div></footer>
+    </article>
   </div>
+</div>
+<script src="{{ url_for('static', filename='whitepaper_manual.js', v='20260711-v1') }}"></script>
 {% endblock %}

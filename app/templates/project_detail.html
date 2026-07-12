@@ -3,13 +3,178 @@
 {% block title %}{{ project.name }} - Zirel{% endblock %}
 
 {% block content %}
-  <div class="app-workspace workspace-shell project-dashboard-page">
-    <header class="workspace-header dashboard-workspace-header"><div><nav class="workspace-breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>&rsaquo;</span><span>{{ project.name }}</span></nav><div class="workspace-eyebrow">Project dashboard</div><h1>{{ project.name }}</h1><p>{{ project.description or "No description yet. Add the essential details that define this world." }}</p></div><div class="workspace-actions"><a class="btn btn-workspace-secondary" href="{{ url_for('main.edit_project', project_id=project.id) }}">Edit Project</a><a class="btn btn-workspace-secondary" href="/projects/{{ project.id }}/export/json">Export JSON</a><a class="btn btn-workspace-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace <span aria-hidden="true">&rarr;</span></a><form method="post" action="{{ url_for('main.delete_project', project_id=project.id) }}" onsubmit="return confirm('Delete this project and all of its characters, factions, events, and relations?');"><button type="submit" class="btn btn-workspace-danger">Delete</button></form></div></header>
+  {% set character_count = project.characters|length %}
+  {% set faction_count = project.factions|length %}
+  {% set event_count = project.events|length %}
+  {% set relation_count = project.relations|length %}
+  {% set entity_count = character_count + faction_count + event_count %}
+  {% set character_target = 15 %}
+  {% set faction_target = 10 %}
+  {% set event_target = 15 %}
+  {% set relation_target = 25 %}
+  {% set character_pct = 100 if character_count >= character_target else ((character_count / character_target) * 100)|round(0, 'floor')|int %}
+  {% set faction_pct = 100 if faction_count >= faction_target else ((faction_count / faction_target) * 100)|round(0, 'floor')|int %}
+  {% set event_pct = 100 if event_count >= event_target else ((event_count / event_target) * 100)|round(0, 'floor')|int %}
+  {% set relation_pct = 100 if relation_count >= relation_target else ((relation_count / relation_target) * 100)|round(0, 'floor')|int %}
+  {% set completion_score = ((character_pct + faction_pct + event_pct + relation_pct) / 4)|round(0, 'floor')|int %}
 
-    <div class="stat-grid dashboard-stat-grid"><article class="stat-card"><span class="stat-card-icon stat-characters"></span><div><span>Characters</span><strong>{{ project.characters|length }}</strong></div></article><article class="stat-card"><span class="stat-card-icon stat-factions"></span><div><span>Factions</span><strong>{{ project.factions|length }}</strong></div></article><article class="stat-card"><span class="stat-card-icon stat-events"></span><div><span>Events</span><strong>{{ project.events|length }}</strong></div></article><article class="stat-card"><span class="stat-card-icon stat-relations"></span><div><span>Relations</span><strong>{{ project.relations|length }}</strong></div></article><article class="stat-card"><span class="stat-card-icon stat-warnings"></span><div><span>Logic warnings</span><strong>{{ warning_count }}</strong></div></article></div>
+  <section class="zirel-projects-workspace zirel-project-dashboard" data-project-dashboard>
+    <div class="zpw-bg" aria-hidden="true">
+      <div class="zpw-grad zpw-grad-one"></div>
+      <div class="zpw-grad zpw-grad-two"></div>
+      <div class="zpw-dots"></div>
+      <div class="zpw-noise"></div>
+      <div class="zpw-vignette"></div>
+    </div>
 
-    <div class="dashboard-grid"><a class="dashboard-card" href="{{ url_for('main.characters', project_id=project.id) }}"><span class="dashboard-card-icon icon-characters"></span><span class="neon-badge">{{ project.characters|length }} tracked</span><h2>Characters</h2><p>Manage people, creatures, and key figures in your world.</p><span class="dashboard-card-link">Manage characters &rarr;</span></a><a class="dashboard-card" href="{{ url_for('main.factions', project_id=project.id) }}"><span class="dashboard-card-icon icon-factions"></span><span class="neon-badge">{{ project.factions|length }} tracked</span><h2>Factions</h2><p>Track houses, guilds, kingdoms, orders, and organizations.</p><span class="dashboard-card-link">Manage factions &rarr;</span></a><a class="dashboard-card" href="{{ url_for('main.events', project_id=project.id) }}"><span class="dashboard-card-icon icon-events"></span><span class="neon-badge">{{ project.events|length }} tracked</span><h2>Events</h2><p>Build the timeline of battles, rituals, discoveries, and turning points.</p><span class="dashboard-card-link">Manage events &rarr;</span></a><a class="dashboard-card" href="{{ url_for('main.relations', project_id=project.id) }}"><span class="dashboard-card-icon icon-relations"></span><span class="neon-badge">{{ project.relations|length }} mapped</span><h2>Relations</h2><p>Connect entities with meaningful relationships.</p><span class="dashboard-card-link">Build relations &rarr;</span></a><a class="dashboard-card dashboard-card-warnings" href="{{ url_for('main.warnings', project_id=project.id) }}"><span class="dashboard-card-icon icon-warnings"></span><span class="neon-badge">{{ warning_count }} found</span><h2>Logic Warnings</h2><p>Review possible contradictions and consistency issues.</p><span class="dashboard-card-link">Review warnings &rarr;</span></a><a class="dashboard-card" href="{{ url_for('main.graph', project_id=project.id) }}"><span class="dashboard-card-icon icon-graph"></span><span class="neon-badge">Interactive</span><h2>Graph Workspace</h2><p>Explore your world as an interactive network.</p><span class="dashboard-card-link">Open graph &rarr;</span></a></div>
+    <header class="zpw-topbar zpw-glass">
+      <a class="zpw-brand" href="{{ url_for('main.index') }}" aria-label="Zirel home">
+        <span class="zpw-brand-mark" aria-hidden="true"></span>
+        <span class="zpw-wordmark">Zirel</span>
+        <span class="zpw-sub-label">Dashboard</span>
+      </a>
+      <nav class="zpw-topnav" aria-label="Workspace navigation">
+        <a href="{{ url_for('main.projects') }}">Projects</a>
+        <a class="active" href="{{ url_for('main.project_detail', project_id=project.id) }}">Dashboard</a>
+        <a href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a>
+        <a href="{{ url_for('main.graph', project_id=project.id) }}">Graph</a>
+      </nav>
+      <div class="zpw-topbar-right">
+        <span class="zpw-count-badge">{{ completion_score }}% complete</span>
+        {% if current_user.is_admin %}<a class="zpw-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>{% endif %}
+        <a class="zpw-link" href="{{ url_for('main.logout') }}">Logout</a>
+        <span class="zpw-avatar">{{ (current_user.username or current_user.email or 'U')[:2]|upper }}</span>
+      </div>
+    </header>
 
-    <div class="dashboard-lower-grid"><section class="quick-actions-card suggested-steps-card"><div><div class="workspace-eyebrow">Suggested next steps</div><h2>Keep your canon connected.</h2><p>Use the next available layer to turn a blank world into a working map.</p></div><ol class="suggested-step-list"><li><a href="{{ url_for('main.create_character', project_id=project.id) }}"><b>01</b><span>Add characters</span></a></li><li><a href="{{ url_for('main.create_faction', project_id=project.id) }}"><b>02</b><span>Create factions</span></a></li><li><a href="{{ url_for('main.create_event', project_id=project.id) }}"><b>03</b><span>Add events</span></a></li><li><a href="{{ url_for('main.create_relation', project_id=project.id) }}"><b>04</b><span>Build relationships</span></a></li><li><a href="{{ url_for('main.warnings', project_id=project.id) }}"><b>05</b><span>Review warnings</span></a></li><li><a href="{{ url_for('main.graph', project_id=project.id) }}"><b>06</b><span>Explore graph</span></a></li></ol></section><section class="quick-actions-card project-tools-card"><div><div class="workspace-eyebrow">Project tools</div><h2>Data and feedback.</h2><p>Keep a portable copy and help direct the next beta iteration.</p></div><div class="quick-action-links"><a href="/projects/{{ project.id }}/export/json"><span class="quick-action-icon quick-export"></span><div><b>Export JSON</b><small>Download this world</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.import_project') }}"><span class="quick-action-icon quick-import"></span><div><b>Import Project</b><small>Bring in a JSON export</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.feedback') }}"><span class="quick-action-icon quick-feedback"></span><div><b>Send Feedback</b><small>Tell us what would help</small></div><i aria-hidden="true">&rarr;</i></a><a href="{{ url_for('main.beta') }}"><span class="quick-action-icon quick-beta"></span><div><b>View Beta Guide</b><small>Try the 10-minute flow</small></div><i aria-hidden="true">&rarr;</i></a></div></section></div>
-  </div>
+    <div class="zpw-layout">
+      <aside class="zpw-sidebar zpw-glass">
+        <section class="zpw-section">
+          <div class="zpw-section-label">Project</div>
+          <div class="zpd-project-chip">
+            <span>{{ project.name[:2]|upper }}</span>
+            <div><b>{{ project.name }}</b><small>{% if project.created_at %}Created {{ project.created_at.strftime('%b %d, %Y') }}{% else %}Created date unknown{% endif %}</small></div>
+          </div>
+        </section>
+
+        <section class="zpw-section">
+          <div class="zpw-section-label">Workspace</div>
+          <div class="zpd-nav-list">
+            <a href="{{ url_for('main.characters', project_id=project.id) }}"><span>Characters</span><b>{{ character_count }}</b></a>
+            <a href="{{ url_for('main.factions', project_id=project.id) }}"><span>Factions</span><b>{{ faction_count }}</b></a>
+            <a href="{{ url_for('main.events', project_id=project.id) }}"><span>Events</span><b>{{ event_count }}</b></a>
+            <a href="{{ url_for('main.relations', project_id=project.id) }}"><span>Relations</span><b>{{ relation_count }}</b></a>
+            <a href="{{ url_for('main.warnings', project_id=project.id) }}"><span>Warnings</span><b>{{ warning_count }}</b></a>
+          </div>
+        </section>
+
+        <section class="zpw-section zpw-sidebar-summary">
+          <div class="zpw-section-label">Summary</div>
+          <p><strong>{{ entity_count }}</strong> core entities</p>
+          <p><strong>{{ relation_count }}</strong> relationships</p>
+          <p><strong>{{ warning_count }}</strong> logic warnings</p>
+        </section>
+      </aside>
+
+      <main class="zpw-main">
+        <section class="zpd-hero-stage">
+          <div class="zpd-hero-copy">
+            <span class="zpw-kicker">Projects › {{ project.name }}</span>
+            <h1>{{ project.name }}</h1>
+            <p>{{ project.description or "A world waiting to be filled with characters, factions, events, and relationships." }}</p>
+
+            <section class="zpw-stats" aria-label="Project stats">
+              <article><span>{{ character_count }}</span><small>characters</small></article>
+              <article><span>{{ faction_count }}</span><small>factions</small></article>
+              <article><span>{{ event_count }}</span><small>events</small></article>
+              <article><span>{{ relation_count }}</span><small>relations</small></article>
+            </section>
+
+            <div class="zpw-action-row">
+              <a class="zpw-btn-primary" href="{{ url_for('main.graph', project_id=project.id) }}">Open graph</a>
+              <a class="zpw-btn-secondary" href="{{ url_for('main.edit_project', project_id=project.id) }}">Edit project</a>
+              <a class="zpw-btn-secondary" href="/projects/{{ project.id }}/export/json">Export JSON</a>
+              <form class="zpd-inline-form" method="post" action="{{ url_for('main.delete_project', project_id=project.id) }}" onsubmit="return confirm('Delete this project and all related data?');"><button class="zpw-danger-link" type="submit">Delete project</button></form>
+            </div>
+
+            <div class="zpd-hero-note">
+              <span class="zpw-status-dot"></span>
+              <p><strong>{{ entity_count }} records</strong> currently shape this world. Move across the tapestry to reveal their threads.</p>
+            </div>
+          </div>
+
+          <div class="zpd-hero-tapestry">
+            {% include "_story_tapestry.html" %}
+          </div>
+        </section>
+
+        <section class="zpd-card-grid">
+          {% set cards = [
+            ('Characters', character_count, 'Manage people, creatures, and figures who shape the story.', url_for('main.characters', project_id=project.id), 'dot-character'),
+            ('Factions', faction_count, 'Track houses, guilds, kingdoms, orders, and organizations.', url_for('main.factions', project_id=project.id), 'dot-faction'),
+            ('Events', event_count, 'Build the timeline of battles, rituals, discoveries, and turning points.', url_for('main.events', project_id=project.id), 'dot-event'),
+            ('Relations', relation_count, 'Connect entities with meaningful relationship logic.', url_for('main.relations', project_id=project.id), 'dot-relation'),
+            ('Logic Warnings', warning_count, 'Review possible contradictions and consistency issues.', url_for('main.warnings', project_id=project.id), 'dot-warning'),
+            ('Graph Workspace', entity_count, 'Explore your world as a living constellation map.', url_for('main.graph', project_id=project.id), 'dot-graph')
+          ] %}
+          {% for title, count, description, href, dot_class in cards %}
+            <a class="zpd-work-card" href="{{ href }}">
+              <span class="{{ dot_class }}"></span>
+              <div><b>{{ count }}</b><h2>{{ title }}</h2><p>{{ description }}</p></div>
+              <em>Open</em>
+            </a>
+          {% endfor %}
+        </section>
+
+        <section class="zpd-panel zpw-glass">
+          <div class="zpw-panel-header"><span>Recent activity</span></div>
+          <div class="zpd-activity-grid">
+            {% for character in project.characters|sort(attribute='id', reverse=True) %}{% if loop.index <= 2 %}<a href="{{ url_for('main.characters', project_id=project.id) }}"><i class="dot-character"></i><span><b>Character added</b><small>{{ character.name }}</small></span></a>{% endif %}{% endfor %}
+            {% for faction in project.factions|sort(attribute='id', reverse=True) %}{% if loop.index <= 2 %}<a href="{{ url_for('main.factions', project_id=project.id) }}"><i class="dot-faction"></i><span><b>Faction added</b><small>{{ faction.name }}</small></span></a>{% endif %}{% endfor %}
+            {% for event in project.events|sort(attribute='id', reverse=True) %}{% if loop.index <= 2 %}<a href="{{ url_for('main.events', project_id=project.id) }}"><i class="dot-event"></i><span><b>Event added</b><small>{{ event.name }}</small></span></a>{% endif %}{% endfor %}
+            {% for relation in project.relations|sort(attribute='id', reverse=True) %}{% if loop.index <= 2 %}<a href="{{ url_for('main.relations', project_id=project.id) }}"><i class="dot-relation"></i><span><b>Relation added</b><small>{{ relation.relation_type }}</small></span></a>{% endif %}{% endfor %}
+            {% if entity_count == 0 and relation_count == 0 %}<p>No records yet. Start by adding characters, factions, events, or relations.</p>{% endif %}
+          </div>
+        </section>
+      </main>
+
+      <aside class="zpw-right-panel zpw-glass">
+        <section class="zpw-panel-section">
+          <div class="zpw-panel-header"><span>World completion</span></div>
+          <div class="zpd-completion">
+            <strong>{{ completion_score }}%</strong>
+            <div><i style="width: {{ completion_score }}%"></i></div>
+            <small>Based on a healthy world target: 15 characters, 10 factions, 15 events, and 25 relations.</small>
+          </div>
+          <div class="zpw-health-list">
+            <a href="{{ url_for('main.characters', project_id=project.id) }}"><span>Characters</span><div><i style="width: {{ character_pct }}%"></i></div><b>{{ character_count }}/{{ character_target }}</b></a>
+            <a href="{{ url_for('main.factions', project_id=project.id) }}"><span>Factions</span><div><i style="width: {{ faction_pct }}%"></i></div><b>{{ faction_count }}/{{ faction_target }}</b></a>
+            <a href="{{ url_for('main.events', project_id=project.id) }}"><span>Events</span><div><i style="width: {{ event_pct }}%"></i></div><b>{{ event_count }}/{{ event_target }}</b></a>
+            <a href="{{ url_for('main.relations', project_id=project.id) }}"><span>Relations</span><div><i style="width: {{ relation_pct }}%"></i></div><b>{{ relation_count }}/{{ relation_target }}</b></a>
+          </div>
+        </section>
+
+        <section class="zpw-panel-section">
+          <div class="zpw-panel-header"><span>Quick actions</span></div>
+          <a class="zpw-quick-card" href="{{ url_for('main.create_character', project_id=project.id) }}"><b>Add character</b><small>Create a person, creature, or figure</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.create_faction', project_id=project.id) }}"><b>Create faction</b><small>Add an order, guild, house, or kingdom</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.create_event', project_id=project.id) }}"><b>Add event</b><small>Build timeline moments</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.create_relation', project_id=project.id) }}"><b>Build relation</b><small>Connect existing world elements</small></a>
+        </section>
+
+        <section class="zpw-panel-section">
+          <div class="zpw-panel-header"><span>Project tools</span></div>
+          <a class="zpw-quick-card" href="{{ url_for('main.warnings', project_id=project.id) }}"><b>Logic warnings</b><small>{{ warning_count }} warning{{ '' if warning_count == 1 else 's' }} to review</small></a>
+          <a class="zpw-quick-card" href="/projects/{{ project.id }}/export/json"><b>Export JSON</b><small>Download a portable backup</small></a>
+          <a class="zpw-quick-card" href="{{ url_for('main.feedback') }}"><b>Send feedback</b><small>Tell us what feels unclear</small></a>
+        </section>
+      </aside>
+    </div>
+
+    <footer class="zpw-bottombar zpw-glass">
+      <div>{{ project.name }} · {{ entity_count }} entities · {{ relation_count }} relations</div>
+      <div><span class="zpw-status-dot"></span>Project workspace ready</div>
+      <div>Zirel v0.1</div>
+    </footer>
+  </section>
 {% endblock %}

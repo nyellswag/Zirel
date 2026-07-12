@@ -1,0 +1,29 @@
+(function () {
+  "use strict";
+  var root = document.querySelector("[data-workflow-demo]");
+  if (!root) return;
+
+  var steps = [
+    { id:"create", title:"Create", summary:"Start a private project for a story, campaign, screenplay, or game world.", details:["Name the world and describe its scope.","Keep the project protected inside your account.","Begin with an empty structure you control."], stats:{entities:1,relations:0,warnings:0,resolved:0}, logs:[["SYS","Creating private project"],["OK","Project workspace ready"],["SYS","Waiting for the first record"]] },
+    { id:"connect", title:"Connect", summary:"Add entities and map the relationships that define the setting.", details:["Create characters, factions, and events.","Connect records with typed relations.","Preview source → relation → target before saving."], stats:{entities:8,relations:7,warnings:0,resolved:0}, logs:[["EVT","Character and faction records added"],["EVT","Typed relations saved"],["OK","World graph updated"]] },
+    { id:"analyze", title:"Analyze", summary:"Review rule-based warnings and inspect the graph for hidden consequences.", details:["Run the five current explainable checks.","Review timeline and relationship warnings.","Explore connected records in Graph Workspace."], stats:{entities:8,relations:7,warnings:3,resolved:0}, logs:[["SYS","Running Logic Engine checks"],["WARN","Possible timeline conflict found"],["WARN","Relationship requires review"],["OK","Analysis finished with explanations"]] },
+    { id:"refine", title:"Refine", summary:"Adjust your canon while the broader network stays visible.", details:["Edit records and relations without losing context.","Resolve or intentionally keep creative exceptions.","Export the project as JSON for portability and backup."], stats:{entities:8,relations:7,warnings:1,resolved:2}, logs:[["EVT","Related records reviewed"],["OK","Two warnings resolved"],["SYS","Project exported as JSON"],["OK","Portable copy ready"]] }
+  ];
+  var list=root.querySelector("[data-workflow-steps]"), log=root.querySelector("[data-workflow-log]"), status=root.querySelector("[data-workflow-status]"), progress=root.querySelector("[data-workflow-progress]");
+  var prev=root.querySelector("[data-workflow-prev]"), next=root.querySelector("[data-workflow-next]"), play=root.querySelector("[data-workflow-play]"), statsRoot=root.querySelector("[data-workflow-stats]");
+  var current=0, playing=true, timer=null, logTimers=[], state={entities:0,relations:0,warnings:0,resolved:0}, reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  steps.forEach(function(step,index){var item=document.createElement("li");item.className="zlw-step";item.dataset.index=index;item.setAttribute("role","tab");item.setAttribute("tabindex","0");item.innerHTML='<div><span>'+String(index+1).padStart(2,"0")+'</span><h3>'+step.title+'</h3><i>↓</i></div><div class="zlw-step-body"><div><p>'+step.summary+'</p><ul>'+step.details.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul></div></div>';list.appendChild(item);});
+  var items=Array.from(list.querySelectorAll(".zlw-step"));
+  function clearLogs(){logTimers.forEach(clearTimeout);logTimers=[];log.innerHTML="";}
+  function addLog(pair){var row=document.createElement("div");row.innerHTML='<span>'+new Date().toLocaleTimeString([], {hour12:false,hour:"2-digit",minute:"2-digit",second:"2-digit"})+'</span><b class="'+pair[0].toLowerCase()+'">'+pair[0]+'</b><em>'+pair[1]+'</em>';log.appendChild(row);requestAnimationFrame(function(){row.classList.add("in");});}
+  function scheduleLogs(step){clearLogs();status.textContent=step.id+" · streaming";step.logs.forEach(function(pair,index){logTimers.push(setTimeout(function(){addLog(pair);if(index===step.logs.length-1)status.textContent="ready";},reduce?0:120+index*260));});}
+  function renderStat(key){var el=statsRoot.querySelector('[data-key="'+key+'"]'),value=state[key];el.querySelector("b").textContent=value;el.querySelector("em").style.width=Math.min(100,value/12*100)+"%";el.classList.add("bump");setTimeout(function(){el.classList.remove("bump");},260);}
+  function setStep(index, updateStats){current=(index+steps.length)%steps.length;items.forEach(function(item,i){var open=i===current;item.classList.toggle("is-open",open);item.setAttribute("aria-selected",open?"true":"false");});list.style.setProperty("--p",(current/(steps.length-1)*100)+"%");progress.style.width=((current+1)/steps.length*100)+"%";if(updateStats!==false){Object.keys(state).forEach(function(key){state[key]=steps[current].stats[key];renderStat(key);});}scheduleLogs(steps[current]);}
+  function pause(){playing=false;clearInterval(timer);timer=null;play.classList.add("is-paused");play.querySelector("span").textContent="Resume";}
+  function resume(){playing=true;play.classList.remove("is-paused");play.querySelector("span").textContent="Pause";if(!reduce){clearInterval(timer);timer=setInterval(function(){setStep(current+1,true);},4300);}}
+  items.forEach(function(item,index){item.addEventListener("click",function(){setStep(index,true);pause();});item.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();setStep(index,true);pause();}});});
+  prev.addEventListener("click",function(){setStep(current-1,true);pause();});next.addEventListener("click",function(){setStep(current+1,true);pause();});play.addEventListener("click",function(){playing?pause():resume();});
+  document.addEventListener("keydown",function(e){if(/input|textarea|select/i.test((e.target||{}).tagName||""))return;if(e.key==="ArrowRight"){setStep(current+1,true);pause();}else if(e.key==="ArrowLeft"){setStep(current-1,true);pause();}else if(e.key===" "&&root.getBoundingClientRect().top<innerHeight&&root.getBoundingClientRect().bottom>0){e.preventDefault();playing?pause():resume();}});
+  setStep(0,true);resume();
+})();

@@ -1,0 +1,5 @@
+<header class="zpw-topbar zpw-glass">
+  <a class="zpw-brand" href="{{ url_for('main.index') }}" aria-label="Zirel home"><span class="zpw-brand-mark" aria-hidden="true"></span><span class="zpw-wordmark">Zirel</span><span class="zpw-sub-label">Projects</span></a>
+  <nav class="zpw-topnav" aria-label="Projects navigation"><a class="active" href="{{ url_for('main.projects') }}">Projects</a><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.feedback') }}">Feedback</a></nav>
+  <div class="zpw-topbar-right">{% if current_user.is_admin %}<a class="zpw-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>{% endif %}<a class="zpw-link" href="{{ url_for('main.logout') }}">Logout</a><span class="zpw-avatar">{{ (current_user.username or current_user.email or 'U')[:2]|upper }}</span></div>
+</header>

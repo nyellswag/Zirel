@@ -155,9 +155,14 @@ Graph Workspace использует fullscreen constellation map:
 Некоторые страницы используют отдельный fullscreen layout и отключают общий navbar/footer в `base.html`:
 
 - `/projects`;
+- `/projects/create`, `/projects/import` и редактирование проекта;
+- страницы Characters, Factions, Events и Relations;
+- формы создания и редактирования сущностей и связей;
 - `/projects/<project_id>/warnings`;
 - `/projects/<project_id>/graph`;
 - `/admin` и admin-подстраницы.
+
+Длинные project workspace-страницы используют `projects-shell scrollable-projects-shell`: верхняя панель остается фиксированной, а `main` становится отдельным вертикальным scroll-контейнером. Фиксированные Dashboard, Graph и Warnings сохраняют собственную модель прокрутки.
 
 ## Интерфейс
 
@@ -166,8 +171,16 @@ Graph Workspace использует fullscreen constellation map:
 - Jinja2 templates;
 - Bootstrap CDN;
 - основной CSS-файл `app/static/style.css`;
+- `app/static/privacy_policy_reference.css` — изолированная визуальная система Privacy, перенесенная из подтвержденного HTML-референса;
+- `app/static/terms_of_service_reference.css` — изолированная визуальная система Terms, перенесенная из подтвержденного HTML-референса;
 - `app/static/list_filters.js`;
-- `app/static/auth.js`.
+- `app/static/auth.js`;
+- `app/static/entity_composer.js` — live preview форм сущностей;
+- `app/static/record_workspace.js` — Grid/List и состояние bulk-selection;
+- `app/static/story_tapestry.js` — интерактивная ткань данных проекта;
+- `app/static/import_project.js` — состояние выбора JSON-файла и drag-and-drop импорта.
+
+`base.html` предоставляет блок `extra_head`. Terms и Privacy используют его для подключения своих reference CSS после общего `style.css`, поэтому их утвержденный дизайн не зависит от последующих изменений общей визуальной системы приложения.
 
 Текущий визуальный стиль:
 

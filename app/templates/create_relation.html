@@ -3,10 +3,16 @@
 {% block title %}Create Relation - {{ project.name }}{% endblock %}
 
 {% block content %}
-  <section class="app-workspace relation-builder-shell workspace-shell">
+  {% set active_section = 'relations' %}
+  {% include "_project_workspace_topbar.html" %}
+  <section class="entity-composer-page relation-composer-page">
+    <div class="entity-composer-orb entity-composer-orb-one" aria-hidden="true"></div><div class="entity-composer-orb entity-composer-orb-two" aria-hidden="true"></div>
+    <div class="entity-composer-shell relation-builder-shell">
     <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a><span>/</span><span>New</span></nav>
-    <header class="form-shell-heading relation-builder-header"><div><div class="workspace-eyebrow">Relationship builder</div><h1>Create Relation</h1><p>Choose the entities and the connection that gives their story meaning.</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.relations', project_id=project.id) }}">Back to Relations</a></header>
-    <form method="post" class="relation-builder form-card">
+    {% set create_type = 'relation' %}{% include '_entity_create_tabs.html' %}
+    <header class="entity-composer-header relation-builder-header"><div><span>Relationship builder</span><h1>Create a relation</h1><p>Choose two existing records and define the thread between them.</p></div><a class="entity-quiet-link" href="{{ url_for('main.relations', project_id=project.id) }}">Back to relations</a></header>
+    <form method="post" class="relation-builder entity-composer-form">
+      <div class="entity-form-section"><span class="entity-section-index">01</span><div><h2>Build the connection</h2><p>Read the flow from left to right: source, relationship, target.</p></div></div>
       <div class="relation-builder-grid">
         <div class="relation-field relation-builder-node">
           <label for="source_entity" class="form-label">Source entity</label>
@@ -58,12 +64,13 @@
         </div>
       </div>
 
-      <div class="relation-preview-box relation-preview">
+      <div class="relation-preview-box relation-preview" aria-live="polite">
         <div class="relation-preview-label">Live preview</div>
         <div class="relation-preview-content" id="relation-preview">Select a source, relation type, and target to preview the connection.</div>
         <div class="relation-tip" id="relation-tip"></div>
       </div>
 
+      <div class="entity-form-section"><span class="entity-section-index">02</span><div><h2>Story context</h2><p>Explain why this connection exists or how it changes.</p></div></div>
       <div class="relation-notes">
         <label for="description" class="form-label">Relation notes</label>
         <p>Add context, motive, or story explanation for this connection.</p>
@@ -77,6 +84,7 @@
         <a class="btn-workspace-secondary" href="{{ url_for('main.relations', project_id=project.id) }}">Cancel</a>
       </div>
     </form>
+    </div>
   </section>
 
   {% include "_relation_builder_script.html" %}

@@ -1,19 +1,36 @@
 {% extends "base.html" %}
-
 {% block title %}Import Project - Zirel{% endblock %}
-
 {% block content %}
-  <section class="app-workspace project-form-page workspace-shell">
-    <header class="workspace-header project-form-header"><div><nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><span>Import</span></nav><div class="workspace-eyebrow">Project portability</div><h1>Import a Zirel project</h1><p>Upload a JSON export file to restore or duplicate a world.</p></div></header>
-    <div class="project-form-shell">
-      <form class="project-form-card import-panel" method="post" enctype="multipart/form-data">
-        <div class="form-callout"><strong>Import creates a new project.</strong><span>Existing projects will not be overwritten.</span></div>
-        <label class="form-label" for="import_file">Zirel JSON export</label>
-        <label class="import-dropzone" for="import_file"><span class="import-dropzone-mark" aria-hidden="true"></span><strong>Choose a JSON export file</strong><small>Accepted format: Zirel JSON export.</small><input type="file" id="import_file" name="import_file" accept=".json,application/json" required></label>
-        <p class="project-form-field-help">Warnings are not imported. Zirel will regenerate them from the imported project data.</p>
-        <div class="form-actions"><button class="btn-workspace-primary" type="submit">Import Project</button><a class="btn-workspace-secondary" href="{{ url_for('main.projects') }}">Back to Projects</a></div>
-      </form>
-      <aside class="project-helper-card"><div class="workspace-eyebrow">Before you import</div><h2>Bring a world back into the workspace.</h2><p>Exports contain project details, characters, factions, events, and relations. Import uses them to create a separate project you can safely explore or edit.</p></aside>
+  {% include "_projects_global_topbar.html" %}
+  <section class="project-setup-page project-import-page" data-import-project>
+    <div class="project-setup-orbit" aria-hidden="true"></div>
+    <div class="project-setup-inner">
+      <nav class="record-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><b>Import world</b></nav>
+      <header class="project-setup-header"><div><span>Project portability</span><h1>Bring a world<br><em>back to life.</em></h1><p>Upload a Zirel JSON export to restore a backup or create an independent copy of an existing world.</p></div><a href="{{ url_for('main.projects') }}">Back to projects</a></header>
+
+      <div class="project-setup-grid">
+        <form class="project-setup-form" method="post" enctype="multipart/form-data">
+          <div class="project-setup-step"><b>01</b><div><h2>Select an export</h2><p>The original project remains untouched. Import always creates a new world.</p></div></div>
+          <label class="project-import-dropzone" for="import_file" data-import-dropzone>
+            <input type="file" id="import_file" name="import_file" accept=".json,application/json" required data-import-input>
+            <span class="project-import-mark" aria-hidden="true"></span>
+            <strong data-import-title>Choose a Zirel JSON file</strong>
+            <small data-import-meta>Drop it here or click to browse · .json only</small>
+          </label>
+          <div class="project-import-status" data-import-status><i></i><span>No file selected</span></div>
+
+          <div class="project-setup-step project-import-second-step"><b>02</b><div><h2>Create the copy</h2><p>Zirel validates the export, rebuilds its records, and maps relations to their new IDs.</p></div></div>
+          <div class="project-import-callout"><strong>What will be imported</strong><div><span>Project details</span><span>Characters</span><span>Factions</span><span>Events</span><span>Relations</span></div><p>Logic warnings are regenerated from the imported records and are never copied as stored data.</p></div>
+          <div class="project-setup-actions"><button type="submit" data-import-submit disabled>Import project <span>&rarr;</span></button><a href="{{ url_for('main.projects') }}">Cancel</a></div>
+        </form>
+
+        <aside class="project-setup-aside">
+          <span>Safe import</span><h2>A separate world,<br>not an overwrite.</h2><p>Your current projects are never replaced. Imported names receive an “(Imported)” suffix so the new copy is easy to recognize.</p>
+          <div class="project-import-flow"><article><b>1</b><span>Read export</span></article><i></i><article><b>2</b><span>Map records</span></article><i></i><article><b>3</b><span>Rebuild links</span></article></div>
+          <div class="project-setup-note"><i></i><p>Use JSON export before important beta tests to keep a portable backup of your world.</p></div>
+        </aside>
+      </div>
     </div>
   </section>
+  <script src="{{ url_for('static', filename='import_project.js') }}"></script>
 {% endblock %}

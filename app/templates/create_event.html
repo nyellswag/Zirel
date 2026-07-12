@@ -3,19 +3,25 @@
 {% block title %}Create Event - {{ project.name }}{% endblock %}
 
 {% block content %}
-  <section class="app-workspace form-shell workspace-shell">
-    <div class="form-shell-inner">
+  {% set active_section = 'dashboard' %}
+  {% include "_project_workspace_topbar.html" %}
+  <section class="entity-composer-page" data-entity-composer data-meta-fields="year,location" data-name-fallback="Unnamed event" data-meta-fallback="Timeline and location details">
+    <div class="entity-composer-orb entity-composer-orb-one" aria-hidden="true"></div><div class="entity-composer-orb entity-composer-orb-two" aria-hidden="true"></div>
+    <div class="entity-composer-shell">
       <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.events', project_id=project.id) }}">Events</a><span>/</span><span>New</span></nav>
-      <div class="form-shell-heading"><div><div class="workspace-eyebrow">World entity</div><h1>Create Event</h1><p>Add a battle, ritual, discovery, or turning point to {{ project.name }}.</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.events', project_id=project.id) }}">Back to Events</a></div>
-      <form method="post" class="form-card">
+      {% set create_type = 'event' %}{% include '_entity_create_tabs.html' %}
+      <header class="entity-composer-header"><div><span>Timeline studio</span><h1>Create an event</h1><p>Add a battle, ritual, discovery, or turning point to {{ project.name }}.</p></div><a class="entity-quiet-link" href="{{ url_for('main.events', project_id=project.id) }}">Back to events</a></header>
+      <div class="entity-composer-grid"><form method="post" class="entity-composer-form">
+        <div class="entity-form-section"><span class="entity-section-index">01</span><div><h2>Event record</h2><p>Capture the moment and why it matters to the world.</p></div></div>
         <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
-          <input type="text" class="form-control" id="name" name="name" required autofocus>
+          <label for="name" class="form-label">Event name <span>Required</span></label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="e.g. Battle of Stone Bridge" required autofocus>
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+          <textarea class="form-control" id="description" name="description" rows="5" placeholder="What happened, who was involved, and what changed afterward..."></textarea>
         </div>
+        <div class="entity-form-section"><span class="entity-section-index">02</span><div><h2>Time and place</h2><p>Optional anchors power timeline warnings and graph context.</p></div></div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="year" class="form-label">Year</label>
@@ -30,7 +36,8 @@
           <button type="submit" class="btn-workspace-primary">Create Event</button>
           <a class="btn-workspace-secondary" href="{{ url_for('main.events', project_id=project.id) }}">Cancel</a>
         </div>
-      </form>
+      </form><aside class="entity-preview-card"><span class="entity-preview-kicker">Live record preview</span><div class="entity-preview-symbol entity-preview-event">E</div><h2 data-preview-name>Unnamed event</h2><p data-preview-description>Add a description to give this event more context.</p><div class="entity-preview-meta" data-preview-meta>Timeline and location details</div><div class="entity-preview-progress"><div><span>Record depth</span><b data-form-progress-text>0% complete</b></div><i><span data-form-progress></span></i></div><div class="entity-preview-note">Event years are compared with character and faction dates by Logic Warnings.</div></aside></div>
     </div>
   </section>
+  <script src="{{ url_for('static', filename='entity_composer.js') }}"></script>
 {% endblock %}

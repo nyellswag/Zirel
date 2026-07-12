@@ -1,0 +1,19 @@
+<header class="zpw-topbar zpw-glass">
+  <a class="zpw-brand" href="{{ url_for('main.index') }}" aria-label="Zirel home">
+    <span class="zpw-brand-mark" aria-hidden="true"></span>
+    <span class="zpw-wordmark">Zirel</span>
+    <span class="zpw-sub-label">Workspace</span>
+  </a>
+  <nav class="zpw-topnav" aria-label="Project workspace navigation">
+    <a href="{{ url_for('main.projects') }}">Projects</a>
+    <a class="{% if active_section == 'dashboard' %}active{% endif %}" href="{{ url_for('main.project_detail', project_id=project.id) }}">Dashboard</a>
+    <a class="{% if active_section == 'relations' %}active{% endif %}" href="{{ url_for('main.relations', project_id=project.id) }}">Relations</a>
+    <a href="{{ url_for('main.graph', project_id=project.id) }}">Graph</a>
+  </nav>
+  <div class="zpw-topbar-right">
+    <span class="zpw-count-badge">{{ project.name }}</span>
+    {% if current_user.is_admin %}<a class="zpw-link" href="{{ url_for('main.admin_dashboard') }}">Admin</a>{% endif %}
+    <a class="zpw-link" href="{{ url_for('main.logout') }}">Logout</a>
+    <span class="zpw-avatar">{{ (current_user.username or current_user.email or 'U')[:2]|upper }}</span>
+  </div>
+</header>

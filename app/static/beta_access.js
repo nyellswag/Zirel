@@ -1,0 +1,1 @@
+(() => { document.querySelectorAll("[data-beta-capacity]").forEach(strip => { const fill=strip.querySelector("[data-capacity-fill]"); requestAnimationFrame(()=>requestAnimationFrame(()=>{fill.style.width=getComputedStyle(strip).getPropertyValue("--capacity").trim();})); }); })();

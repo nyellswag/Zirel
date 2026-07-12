@@ -1,0 +1,6 @@
+<nav class="zec-tabs" aria-label="Create record type">
+  <a class="{% if create_type == 'character' %}is-active{% endif %}" href="{{ url_for('main.create_character', project_id=project.id) }}"><i></i>Create Character</a>
+  <a class="{% if create_type == 'faction' %}is-active{% endif %}" href="{{ url_for('main.create_faction', project_id=project.id) }}"><i></i>Create Faction</a>
+  <a class="{% if create_type == 'event' %}is-active{% endif %}" href="{{ url_for('main.create_event', project_id=project.id) }}"><i></i>Create Event</a>
+  <a class="{% if create_type == 'relation' %}is-active{% endif %}" href="{{ url_for('main.create_relation', project_id=project.id) }}"><i></i>Create Relation</a>
+</nav>

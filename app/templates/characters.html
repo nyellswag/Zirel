@@ -3,45 +3,52 @@
 {% block title %}Characters - {{ project.name }}{% endblock %}
 
 {% block content %}
-  <section class="app-workspace entity-page workspace-shell">
-    <header class="workspace-header entity-header">
-      <div>
-        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span>Characters</span></nav>
-        <div class="workspace-eyebrow">World entities</div>
-        <h1>Characters</h1>
-        <p>Manage people, creatures, and key figures who shape {{ project.name }}.</p>
-      </div>
-      <div class="workspace-actions entity-actions">
-        <a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a>
-        <a class="btn-workspace-secondary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace</a>
-        <a class="btn-workspace-primary" href="{{ url_for('main.create_character', project_id=project.id) }}">Add Character</a>
-      </div>
-    </header>
-    <div class="entity-stat-grid character-stat-grid">
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-characters"></span><div><span>Total characters</span><strong>{{ character_stats.total }}</strong></div></article>
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-alive"></span><div><span>Alive</span><strong>{{ character_stats.alive }}</strong></div></article>
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-dead"></span><div><span>Dead</span><strong>{{ character_stats.dead }}</strong></div></article>
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-unknown"></span><div><span>Unknown</span><strong>{{ character_stats.unknown }}</strong></div></article>
-    </div>
-    {% if characters %}
-      <div class="entity-list" data-filter-list data-list-label="characters">
-        <form id="character-bulk-form" method="post" action="{{ url_for('main.bulk_delete_characters', project_id=project.id) }}"></form>
-        <div class="entity-search-row"><div class="workspace-search"><input type="search" placeholder="Search characters..." data-list-search aria-label="Search characters"><span aria-hidden="true"></span></div><p class="workspace-list-count" data-list-count>Showing {{ characters|length }} of {{ characters|length }} characters</p></div>
-        <div class="bulk-actions-bar"><span>Select characters to manage them in one pass.</span><div><button class="btn-workspace-danger" type="submit" form="character-bulk-form" onclick="return confirm('Delete selected characters?');">Delete selected</button><form method="post" action="{{ url_for('main.delete_all_characters', project_id=project.id) }}" onsubmit="return confirm('Delete ALL characters in this project? This will also delete related relations.');"><button class="btn-workspace-danger" type="submit">Delete all</button></form></div></div>
-        <div class="empty-state entity-empty-match" data-list-empty hidden><h2>No matching characters found.</h2><p>Try a different name, status, or year.</p></div>
-        <div class="entity-grid">
-          {% for character in characters %}
-            <article class="entity-card" data-list-item data-search-text="{{ character.name }} {{ character.description or '' }} {{ character.status }} {{ character.birth_year if character.birth_year is not none else '' }} {{ character.death_year if character.death_year is not none else '' }}">
-              <header class="entity-card-header"><label class="entity-select" for="character-{{ character.id }}"><input type="checkbox" form="character-bulk-form" name="character_ids" value="{{ character.id }}" id="character-{{ character.id }}"><span>Select</span></label><span class="entity-badge status-{{ character.status }}">{{ character.status|capitalize }}</span></header>
-              <h2>{{ character.name }}</h2><p class="entity-description">{{ character.description or "No description yet." }}</p>
-              <div class="entity-meta"><span>Birth <b>{{ character.birth_year if character.birth_year is not none else "Unknown" }}</b></span><span>Death <b>{{ character.death_year if character.death_year is not none else "Unknown" }}</b></span></div>
-              <footer class="entity-card-footer"><a class="btn-workspace-secondary" href="{{ url_for('main.edit_character', project_id=project.id, character_id=character.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_character', project_id=project.id, character_id=character.id) }}" onsubmit="return confirm('Delete this character?');"><button class="btn-workspace-danger" type="submit">Delete</button></form></footer>
-            </article>
-          {% endfor %}
+  {% set active_section = 'dashboard' %}
+  {% include "_project_workspace_topbar.html" %}
+  <section class="record-workspace record-workspace-characters" data-record-workspace>
+    <div class="record-workspace-bg" aria-hidden="true"></div>
+    <div class="record-workspace-inner">
+      <nav class="record-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><b>Characters</b></nav>
+
+      <header class="record-hero">
+        <div><span class="record-kicker">World cast</span><h1>Characters</h1><p>Shape the people, creatures, rivals, and figures who carry the story of {{ project.name }}.</p></div>
+        <div class="record-hero-actions"><a class="record-btn-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Project dashboard</a><a class="record-btn-secondary" href="{{ url_for('main.graph', project_id=project.id) }}">Open graph</a><a class="record-btn-primary" href="{{ url_for('main.create_character', project_id=project.id) }}">Add character <span>+</span></a></div>
+      </header>
+
+      <section class="record-stat-row" aria-label="Character summary">
+        <article><i class="record-dot record-dot-character"></i><div><small>Total records</small><strong>{{ character_stats.total }}</strong></div></article>
+        <article><i class="record-dot record-dot-alive"></i><div><small>Alive</small><strong>{{ character_stats.alive }}</strong></div></article>
+        <article><i class="record-dot record-dot-dead"></i><div><small>Dead</small><strong>{{ character_stats.dead }}</strong></div></article>
+        <article><i class="record-dot record-dot-unknown"></i><div><small>Unknown</small><strong>{{ character_stats.unknown }}</strong></div></article>
+      </section>
+
+      {% if characters %}
+        <div class="record-list-shell" data-filter-list data-list-label="characters">
+          <form id="character-bulk-form" method="post" action="{{ url_for('main.bulk_delete_characters', project_id=project.id) }}"></form>
+          <div class="record-toolbar">
+            <label class="record-search"><span></span><input type="search" placeholder="Search characters..." data-list-search aria-label="Search characters"></label>
+            <p data-list-count>Showing {{ characters|length }} of {{ characters|length }} characters</p>
+            <div class="record-view-switch" aria-label="View mode"><button class="is-active" type="button" data-record-view="grid">Grid</button><button type="button" data-record-view="list">List</button></div>
+          </div>
+          <div class="record-bulk-bar" data-bulk-bar><span><b data-selected-count>0</b> selected</span><div><button type="submit" form="character-bulk-form" onclick="return confirm('Delete selected characters?');">Delete selected</button><form method="post" action="{{ url_for('main.delete_all_characters', project_id=project.id) }}" onsubmit="return confirm('Delete ALL characters in this project? This will also delete related relations.');"><button type="submit">Delete all</button></form></div></div>
+          <div class="record-empty-match" data-list-empty hidden><h2>No matching characters.</h2><p>Try another name, description, status, or year.</p></div>
+
+          <div class="record-card-grid" data-record-collection>
+            {% for character in characters %}
+              <article class="record-card record-card-character" data-list-item data-search-text="{{ character.name }} {{ character.description or '' }} {{ character.status }} {{ character.birth_year if character.birth_year is not none else '' }} {{ character.death_year if character.death_year is not none else '' }}">
+                <div class="record-card-top"><label class="record-checkbox" for="character-{{ character.id }}"><input data-record-checkbox type="checkbox" form="character-bulk-form" name="character_ids" value="{{ character.id }}" id="character-{{ character.id }}"><span></span></label><em class="record-status record-status-{{ character.status }}">{{ character.status|capitalize }}</em></div>
+                <div class="record-card-identity"><span>{{ character.name[:2]|upper }}</span><div><small>Character</small><h2>{{ character.name }}</h2></div></div>
+                <p>{{ character.description or "No description yet. Add motives, history, or a role in the world." }}</p>
+                <dl><div><dt>Born</dt><dd>{{ character.birth_year if character.birth_year is not none else "Unknown" }}</dd></div><div><dt>Died</dt><dd>{{ character.death_year if character.death_year is not none else "Unknown" }}</dd></div></dl>
+                <footer><a href="{{ url_for('main.edit_character', project_id=project.id, character_id=character.id) }}">Edit record</a><form method="post" action="{{ url_for('main.delete_character', project_id=project.id, character_id=character.id) }}" onsubmit="return confirm('Delete this character?');"><button type="submit">Delete</button></form></footer>
+              </article>
+            {% endfor %}
+          </div>
         </div>
-      </div>
-    {% else %}
-      <div class="workspace-empty-state entity-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No characters yet.</h2><p>Add the people, creatures, and key figures who make this world move.</p><a class="btn-workspace-primary" href="{{ url_for('main.create_character', project_id=project.id) }}">Add your first character</a></div>
-    {% endif %}
+      {% else %}
+        <div class="record-empty-state"><span>C</span><h2>No characters yet.</h2><p>Add the first person, creature, or key figure who makes this world move.</p><a class="record-btn-primary" href="{{ url_for('main.create_character', project_id=project.id) }}">Add first character</a></div>
+      {% endif %}
+    </div>
   </section>
+  <script src="{{ url_for('static', filename='record_workspace.js') }}"></script>
 {% endblock %}

@@ -34,6 +34,31 @@ class User(UserMixin, db.Model):
         return f"<User {self.username}>"
 
 
+class BetaInvite(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(64), unique=True, nullable=False, index=True)
+    note = db.Column(db.String(200), nullable=True)
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=True)
+    used_at = db.Column(db.DateTime, nullable=True)
+    used_by_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True, unique=True)
+    revoked = db.Column(db.Boolean, default=False, nullable=False)
+    used_by = db.relationship("User", foreign_keys=[used_by_id])
+
+    @property
+    def is_expired(self):
+        if not self.expires_at:
+            return False
+        expires_at = self.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        return expires_at <= datetime.now(timezone.utc)
+
+    @property
+    def is_available(self):
+        return not self.revoked and self.used_by_id is None and not self.is_expired
+
+
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)

@@ -1,87 +1,95 @@
-﻿{% extends "base.html" %}
+{% extends "base.html" %}
 
 {% block title %}Privacy Policy - Zirel{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='privacy_policy_reference.css', v='20260710-meta-pills-v4') }}">{% endblock %}
 
 {% block content %}
-  <div class="zirel-legal-doc" data-legal-doc>
-    <div class="legal-grain" aria-hidden="true"></div>
-    <div class="legal-dot-grid" aria-hidden="true"></div>
-    <div class="legal-progress" data-legal-progress aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+<div id="progress-bar" aria-hidden="true"></div>
 
-    <nav class="legal-top-nav" aria-label="Privacy navigation">
-      <a class="legal-nav-logo" href="{{ url_for('main.index') }}"><span class="legal-nav-glyph" aria-hidden="true"></span><span>Zirel</span></a>
-      <span class="legal-nav-breadcrumb">Privacy Policy</span>
-      <div class="legal-nav-actions">
-        <a href="{{ url_for('main.register') }}">Back to signup &rarr;</a>
-        <button type="button" class="legal-print-btn" onclick="window.print()" aria-label="Print Privacy Policy">
-          <span class="legal-print-label">Print</span>
-        </button>
-      </div>
-    </nav>
+<nav aria-label="Privacy navigation">
+  <a href="{{ url_for('main.index') }}" class="nav-logo zirel-public-brand legal-main-brand">
+    <span class="zirel-public-brand-mark" aria-hidden="true"></span>
+    <span class="zirel-public-wordmark">Zirel</span>
+  </a>
+  <div class="nav-actions"><a href="{{ url_for('main.register') }}" class="nav-back">Back to signup &rarr;</a><button class="nav-print nav-print-text" title="Print" onclick="window.print()">Print</button></div>
+</nav>
 
-    <div class="legal-mobile-toc" aria-label="Privacy sections">
-      <a href="#privacy-1" data-legal-anchor="privacy-1">01</a><a href="#privacy-2" data-legal-anchor="privacy-2">02</a><a href="#privacy-3" data-legal-anchor="privacy-3">03</a><a href="#privacy-4" data-legal-anchor="privacy-4">04</a><a href="#privacy-5" data-legal-anchor="privacy-5">05</a><a href="#privacy-6" data-legal-anchor="privacy-6">06</a><a href="#privacy-7" data-legal-anchor="privacy-7">07</a><a href="#privacy-8" data-legal-anchor="privacy-8">08</a><a href="#privacy-9" data-legal-anchor="privacy-9">09</a><a href="#privacy-10" data-legal-anchor="privacy-10">10</a>
-    </div>
+<div class="toc-mobile" id="toc-mobile" aria-label="Privacy sections">
+  {% for number in range(1, 12) %}<a href="#section-{{ number }}" data-section="section-{{ number }}">{{ "%02d"|format(number) }}</a>{% endfor %}
+</div>
 
-    <header class="legal-doc-header">
-      <div class="legal-eyebrow"><span></span> Policy</div>
-      <h1>Privacy / <em>Policy.</em></h1>
-      <p>How Zirel may store, process, export, and protect project data during the MVP stage.</p>
-      <div class="legal-meta-row"><span>EARLY MVP DRAFT</span><span>NOT LEGAL ADVICE</span><span>DATA PORTABILITY</span></div>
-    </header>
+<header class="page-header" id="top">
+  <div class="eyebrow"><span class="eyebrow-dot"></span>LEGAL</div>
+  <h1 class="page-title">Privacy / <em>Policy.</em></h1>
+  <p class="page-sub">What we collect, why we collect it, and what you can do about it. No surprises, no dark patterns.</p>
+  <div class="meta-row"><span class="meta-pill">LAST UPDATED &nbsp;&middot;&nbsp; 10 JULY 2026</span><span class="meta-sep">&middot;</span><span class="meta-pill">VERSION 1.0</span><span class="meta-sep">&middot;</span><span class="meta-pill">EARLY BETA</span></div>
+</header>
 
-    <div class="legal-doc-layout">
-      <aside class="legal-mini-toc" aria-label="On this page"><div class="legal-toc-inner">
-        <span class="legal-toc-label">On this page</span>
-        <a href="#privacy-1" data-legal-anchor="privacy-1">1. Introduction<span></span></a>
-        <a href="#privacy-2" data-legal-anchor="privacy-2">2. Data We May Store<span></span></a>
-        <a href="#privacy-3" data-legal-anchor="privacy-3">3. Project Content<span></span></a>
-        <a href="#privacy-4" data-legal-anchor="privacy-4">4. Usage Data<span></span></a>
-        <a href="#privacy-5" data-legal-anchor="privacy-5">5. Data Export<span></span></a>
-        <a href="#privacy-6" data-legal-anchor="privacy-6">6. Data Deletion<span></span></a>
-        <a href="#privacy-7" data-legal-anchor="privacy-7">7. Future AI Notice<span></span></a>
-        <a href="#privacy-8" data-legal-anchor="privacy-8">8. Security<span></span></a>
-        <a href="#privacy-9" data-legal-anchor="privacy-9">9. Changes<span></span></a>
-        <a href="#privacy-10" data-legal-anchor="privacy-10">10. Contact<span></span></a>
-        <a class="legal-toc-back" href="{{ url_for('main.terms') }}">Read Terms of Service &rarr;</a>
-      </div></aside>
+<div class="body-wrap">
+  <aside class="mini-toc" id="mini-toc">
+    <span class="toc-label">ON THIS PAGE</span>
+    <ul class="toc-list" id="toc-list">
+      <li class="toc-item"><a href="#section-1" data-section="section-1"><span>1. What this policy covers</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-2" data-section="section-2"><span>2. Data we collect</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-3" data-section="section-3"><span>3. How we use it</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-4" data-section="section-4"><span>4. Where it is stored</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-5" data-section="section-5"><span>5. Who we share it with</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-6" data-section="section-6"><span>6. Cookies and tracking</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-7" data-section="section-7"><span>7. Your rights and choices</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-8" data-section="section-8"><span>8. Data retention</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-9" data-section="section-9"><span>9. Security</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-10" data-section="section-10"><span>10. International processing</span><span class="toc-dot"></span></a></li>
+      <li class="toc-item"><a href="#section-11" data-section="section-11"><span>11. Changes and contact</span><span class="toc-dot"></span></a></li>
+    </ul>
+    <a class="toc-back" id="toc-back-top" href="#top">&#x2191; Back to top</a>
+  </aside>
 
-      <article class="legal-document">
-        <section id="privacy-1" class="legal-doc-section"><div class="legal-section-heading"><span>01</span><h2>Introduction</h2></div><p>This Privacy Policy explains the basic types of data Zirel may store or process while helping users organize fictional worldbuilding projects.</p><p>The policy may change as hosting, accounts, collaboration, payments, or AI features are added later.</p><div class="legal-callout"><strong>Early MVP draft</strong><p>This page is a plain-language draft for beta use and is not legal advice.</p></div></section>
-        <section id="privacy-2" class="legal-doc-section"><div class="legal-section-heading"><span>02</span><h2>Data We May Store</h2></div><p>The current MVP may store project data locally or in the app database.</p><p>This may include project names, descriptions, characters, factions, events, relations, and related notes.</p><p>Account data may include username, email address, password hash, role, admin status, and creation date.</p></section>
-        <section id="privacy-3" class="legal-doc-section"><div class="legal-section-heading"><span>03</span><h2>Project Content</h2></div><p>Project data may include characters, factions, events, relations, descriptions, and dynamically generated logic warnings.</p><p>Logic warnings are generated from your project content when viewed or exported and are not currently stored as separate warning records.</p></section>
-        <section id="privacy-4" class="legal-doc-section"><div class="legal-section-heading"><span>04</span><h2>Usage Data</h2></div><p>Future versions may collect limited usage information to understand which features are used and to improve reliability.</p><p>This MVP does not currently include payments or payment-processing data.</p></section>
-        <section id="privacy-5" class="legal-doc-section"><div class="legal-section-heading"><span>05</span><h2>Data Export</h2></div><p>You can export project data using the JSON export feature.</p><p>Exports may include project details, entities, relations, and current logic warnings.</p><p>Export/import is intended to support backups and portability.</p></section>
-        <section id="privacy-6" class="legal-doc-section"><div class="legal-section-heading"><span>06</span><h2>Data Deletion</h2></div><p>You can delete projects and related project data from within the app.</p><p>Deleting a project removes its associated characters, factions, events, and relations from the app database.</p><p>During beta, you may contact the project owner for broader deletion questions or requests.</p></section>
-        <section id="privacy-7" class="legal-doc-section"><div class="legal-section-heading"><span>07</span><h2>AI Features Notice for the Future</h2></div><p>Zirel does not add AI functionality in this MVP unless clearly enabled in a later release.</p><p>Future AI features may require a separate AI data notice explaining what content is sent to AI systems and how it is processed.</p></section>
-        <section id="privacy-8" class="legal-doc-section"><div class="legal-section-heading"><span>08</span><h2>Data Security</h2></div><p>We aim to handle project data responsibly, but this is an early MVP and no system can be guaranteed perfectly secure.</p><p>Avoid storing highly sensitive personal information or irreplaceable writing material in Zirel during beta.</p></section>
-        <section id="privacy-9" class="legal-doc-section"><div class="legal-section-heading"><span>09</span><h2>Changes to this Policy</h2></div><p>This policy may be updated as Zirel grows, especially if hosting, accounts, collaboration, payments, or AI features are added.</p></section>
-        <section id="privacy-10" class="legal-doc-section"><div class="legal-section-heading"><span>10</span><h2>Contact</h2></div><p>For questions about privacy, contact the Zirel project owner or maintainer through the <a href="{{ url_for('main.contact') }}">Contact page</a>.</p><div class="legal-bottom-actions"><a href="{{ url_for('main.register') }}">Back to signup</a><a href="{{ url_for('main.terms') }}">Terms of Service</a></div></section>
-      </article>
-    </div>
+  <article class="document">
+    <section class="doc-section" id="section-1"><h2 class="section-heading"><span class="section-num">01</span><span><em>What</em> this policy covers</span></h2><p class="doc-p">This Privacy Policy applies when you visit Zirel, join the waitlist, create an account, build a project, submit feedback, or contact the project operator.</p><p class="doc-p">During the early beta, the Zirel project operator is responsible for the processing described here. Formal operator identity and direct privacy contact details must be added before a broad public or commercial launch.</p><p class="doc-p">When we say “project content,” we mean fictional worlds, characters, factions, events, relations, descriptions, dates, locations, and other creative material entered into Zirel. Your creative content remains yours.</p></section>
 
-    <button class="legal-back-top" type="button" data-legal-top aria-label="Back to top">&uarr;</button>
+    <section class="doc-section" id="section-2"><h2 class="section-heading"><span class="section-num">02</span><span><em>Data</em> we collect</span></h2><p class="doc-p">We collect the information needed to operate Zirel, secure accounts, provide the worldbuilding workflow, and understand the early beta.</p><div class="glass glass-inner-glow" style="overflow-x:auto"><table class="glass-table"><thead><tr><th>Category</th><th>What we collect</th><th>Why</th><th>Current basis</th></tr></thead><tbody><tr><td><span class="chip chip-purple"><span class="chip-dot"></span>Account</span></td><td>Username, email, role, password hash, admin status</td><td>Create and secure an account</td><td>Service requested</td></tr><tr><td><span class="chip chip-blue"><span class="chip-dot"></span>Project</span></td><td>Worlds, entities, relations, dates, locations, notes</td><td>Provide Zirel features</td><td>Service requested</td></tr><tr><td><span class="chip chip-muted"><span class="chip-dot"></span>Messages</span></td><td>Feedback, contact and waitlist submissions</td><td>Operate and improve the beta</td><td>Request / legitimate interest</td></tr><tr><td><span class="chip chip-purple"><span class="chip-dot"></span>Technical</span></td><td>Session and operational records</td><td>Authentication, diagnostics and security</td><td>Legitimate interest</td></tr><tr><td><span class="chip chip-blue"><span class="chip-dot"></span>Analytics</span></td><td>Page, session, approximate device and location data</td><td>Understand website use</td><td>Consent where required</td></tr></tbody></table></div><p class="table-footnote">Passwords are stored as hashes, not readable passwords. Zirel does not currently collect payment information.</p></section>
+
+    <section class="doc-section" id="section-3"><h2 class="section-heading"><span class="section-num">03</span><span><em>How</em> we use it</span></h2><p class="doc-p">Zirel uses data to provide private projects, entity and relation tools, rule-based warnings, graph views, import and export; authenticate users and enforce ownership; respond to messages and requests; diagnose failures; secure the service; and understand aggregate beta use.</p><ul class="doc-list"><li><strong>Service delivery.</strong> Project content is processed to render workspaces, resolve relations, generate warnings, and build visual views.</li><li><strong>Account and security.</strong> Account and session data support authentication, ownership checks, and administrator permissions.</li><li><strong>Beta operation.</strong> Feedback, contact, and waitlist data help evaluate bugs, requests, and interest.</li><li><strong>Measurement.</strong> Google Analytics 4 is currently included for website measurement.</li></ul><p class="doc-p">Zirel does not currently sell personal data or creative project content, process payments, or run AI analysis as a core feature.</p></section>
+
+    <section class="doc-section" id="section-4"><h2 class="section-heading"><span class="section-num">04</span><span><em>Where</em> it is stored</span></h2><p class="doc-p">Production Zirel currently uses Render for application hosting and a managed PostgreSQL database. Local development may use SQLite on the developer's machine.</p><p class="doc-p">Hosting providers may process data in locations different from your own. Their infrastructure, recovery, and backup behavior is governed by their services and the configuration selected by the Zirel operator.</p><div class="callout"><span class="callout-label">BETA INFRASTRUCTURE</span><p class="callout-body">Do not assume that an early beta provides permanent archival storage. Export important projects as JSON and keep independent copies.</p></div></section>
+
+    <section class="doc-section" id="section-5"><h2 class="section-heading"><span class="section-num">05</span><span><em>Who</em> we share it with</span></h2><p class="doc-p">Zirel uses a small number of providers that may process limited information for their operational role. Data may also be disclosed when required by law, needed to investigate abuse or security issues, protect users, or complete a legitimate organizational transfer.</p><div class="callout"><span class="callout-label">CURRENT SERVICE PROVIDERS</span><p class="callout-body">These providers support the current beta. Zirel does not share creative project content for advertising.</p><div class="processor-pills"><a href="https://render.com/privacy" target="_blank" rel="noopener noreferrer" class="processor-pill">Render <span class="pill-arrow">&#x2197;</span></a><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="processor-pill">Google Analytics <span class="pill-arrow">&#x2197;</span></a></div></div></section>
+
+    <section class="doc-section" id="section-6"><h2 class="section-heading"><span class="section-num">06</span><span><em>Cookies</em> and tracking</span></h2><p class="doc-p">The application uses session technology required for login and authenticated navigation. It also currently includes Google Analytics 4, which commonly uses first-party analytics cookies.</p><div class="glass" style="overflow-x:auto;margin-top:20px"><table class="glass-table"><thead><tr><th>Cookie</th><th>Purpose</th><th>Typical duration</th><th>Type</th></tr></thead><tbody><tr><td class="mono-cell">session</td><td>Keeps authenticated navigation working</td><td>Session-dependent</td><td><span class="chip chip-muted">Essential</span></td></tr><tr><td class="mono-cell">_ga</td><td>Distinguishes analytics clients</td><td>Up to 2 years by default</td><td><span class="chip chip-purple">Analytics</span></td></tr><tr><td class="mono-cell">_ga_&lt;id&gt;</td><td>Maintains analytics session state</td><td>Up to 2 years by default</td><td><span class="chip chip-purple">Analytics</span></td></tr></tbody></table></div><p class="doc-p">Where law requires consent before analytics storage or access, analytics should run only after a valid choice. A dedicated consent control is not yet part of this beta and remains necessary before broad testing in affected jurisdictions.</p></section>
+
+    <section class="doc-section" id="section-7"><h2 class="section-heading"><span class="section-num">07</span><span><em>Your</em> rights and choices</span></h2><p class="doc-p">Depending on where you live, you may have rights to access, correct, delete, restrict, object to, or obtain a portable copy of personal data, and to withdraw consent where processing depends on consent.</p><div class="rights-panel"><span class="rights-label">YOUR PRIVACY CONTROLS</span><h3 class="rights-heading">Control the information connected to <em>your account.</em></h3><div class="rights-grid"><div class="right-item"><div class="right-text"><div class="right-name">Access</div><div class="right-desc">Request a copy of personal data.</div></div></div><div class="right-item"><div class="right-text"><div class="right-name">Correction</div><div class="right-desc">Correct inaccurate information.</div></div></div><div class="right-item"><div class="right-text"><div class="right-name">Deletion</div><div class="right-desc">Request account or data deletion.</div></div></div><div class="right-item"><div class="right-text"><div class="right-name">Portability</div><div class="right-desc">Export supported project JSON.</div></div></div><div class="right-item"><div class="right-text"><div class="right-name">Restriction</div><div class="right-desc">Request limits on processing.</div></div></div><div class="right-item"><div class="right-text"><div class="right-name">Objection</div><div class="right-desc">Object where the law provides it.</div></div></div></div><a class="request-cta request-cta-link" href="{{ url_for('main.contact') }}">Submit a privacy request &rarr;</a><p class="cta-confirm">We may verify your identity before completing a request.</p></div></section>
+
+    <section class="doc-section" id="section-8"><h2 class="section-heading"><span class="section-num">08</span><span><em>Data</em> retention</span></h2><p class="doc-p">Information is retained only while reasonably necessary for beta operation, security, legal obligations, or the service requested.</p><div class="glass" style="overflow-x:auto;margin-top:20px"><table class="glass-table"><thead><tr><th>Data</th><th>Current approach</th><th>Deletion path</th></tr></thead><tbody><tr><td>Account</td><td>While active</td><td>Contact request during beta</td></tr><tr><td>Projects</td><td>Until project or account deletion</td><td>Self-service project deletion</td></tr><tr><td>Feedback and contact</td><td>While relevant to beta operation</td><td>Contact request</td></tr><tr><td>Waitlist</td><td>While relevant to launch communication</td><td>Contact request</td></tr><tr><td>Provider backups and logs</td><td>Limited provider or legal retention</td><td>Provider process</td></tr></tbody></table></div><p class="table-footnote">A fixed retention schedule is not yet published. Defining one is part of beta hardening.</p></section>
+
+    <section class="doc-section" id="section-9"><h2 class="section-heading"><span class="section-num">09</span><span><em>Security</em></span></h2><p class="doc-p">Zirel uses password hashing, authenticated sessions, project ownership checks, route protection, administrator authorization, and managed production infrastructure.</p><div class="callout"><span class="callout-label">SECURITY AT ZIREL</span><p class="callout-body">Passwords are stored as hashes rather than readable passwords. Ordinary users can access only their own projects, while administrator routes require admin access. Production-data access should be limited to legitimate operational needs.</p><p class="callout-body" style="margin-top:12px">No online service can guarantee absolute security or permanent data preservation. Avoid highly sensitive or irreplaceable material during beta and keep independent exports.</p></div></section>
+
+    <section class="doc-section" id="section-10"><h2 class="section-heading"><span class="section-num">10</span><span><em>International</em> processing and children</span></h2><p class="doc-p">Hosting and analytics providers may process data in countries other than your own, where privacy protections may differ. Applicable transfer mechanisms and provider commitments must be documented for target markets before broad launch.</p><p class="doc-p">Zirel is not intentionally directed to children who cannot legally consent to data processing in their location. If you believe a child submitted personal data without appropriate authorization, contact us.</p><p class="doc-p">AI analysis is not currently active as a core feature. If introduced later, Zirel will explain what content is sent, which provider processes it, retention choices, and how users review suggestions before saving them.</p></section>
+
+    <section class="doc-section" id="section-11"><h2 class="section-heading"><span class="section-num">11</span><span><em>Changes</em> and contact</span></h2><p class="doc-p">This policy may change as Zirel's hosting, analytics, security, collaboration, AI, or commercial features change. The updated date and version at the top will be revised, and material changes should be communicated where required.</p><p class="doc-p">For privacy questions, account concerns, or deletion requests, use the <a href="{{ url_for('main.contact') }}">Contact page</a>. This is an early beta draft and not legal advice.</p></section>
+  </article>
+</div>
+
+<footer class="zirel-public-footer legal-public-footer">
+  <div class="zirel-public-footer-inner">
+    <div class="zirel-public-footer-brand"><a class="zirel-public-brand" href="{{ url_for('main.index') }}"><span class="zirel-public-brand-mark" aria-hidden="true"></span><span class="zirel-public-wordmark">Zirel</span></a><p>A quiet logic layer for creators of connected fictional worlds.</p></div>
+    <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
+    <div><h2>Workspace</h2><a href="{{ url_for('main.projects') }}">Projects</a><a href="{{ url_for('main.login') }}">Log in</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
+    <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a></div>
   </div>
+  <div class="zirel-public-footer-bottom"><span>&copy; 2026 Zirel. All rights reserved.</span><span>Early MVP. Product direction may change with beta feedback.</span></div>
+</footer>
 
-  <script>
-    (function () {
-      const progress = document.querySelector("[data-legal-progress]");
-      const links = Array.from(document.querySelectorAll("[data-legal-anchor]"));
-      const sections = links.map((link) => document.getElementById(link.dataset.legalAnchor)).filter(Boolean);
-      const backTop = document.querySelector("[data-legal-top]");
-      function updateLegalNav() {
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const max = document.documentElement.scrollHeight - window.innerHeight;
-        if (progress) progress.style.transform = "scaleX(" + (max > 0 ? scrollTop / max : 0) + ")";
-        if (backTop) backTop.classList.toggle("visible", scrollTop > 500);
-        let active = sections[0] && sections[0].id;
-        sections.forEach((section) => { if (section.getBoundingClientRect().top <= 150) active = section.id; });
-        links.forEach((link) => link.classList.toggle("active", link.dataset.legalAnchor === active));
-      }
-      window.addEventListener("scroll", updateLegalNav, { passive: true });
-      window.addEventListener("resize", updateLegalNav);
-      if (backTop) backTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
-      updateLegalNav();
-    })();
-  </script>
+<button id="back-top" aria-label="Back to top"><span>&uarr;</span></button>
+
+<script>
+(function(){
+  var bar=document.getElementById('progress-bar');var backTop=document.getElementById('back-top');var ticking=false;
+  function updateProgress(){var scrollTop=window.pageYOffset||document.documentElement.scrollTop;var docH=document.documentElement.scrollHeight-window.innerHeight;bar.style.transform='scaleX('+(docH>0?scrollTop/docH:0)+')';backTop.classList.toggle('visible',scrollTop>400);ticking=false;}
+  window.addEventListener('scroll',function(){if(!ticking){requestAnimationFrame(updateProgress);ticking=true;}},{passive:true});backTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});document.getElementById('toc-back-top').addEventListener('click',function(event){event.preventDefault();window.scrollTo({top:0,behavior:'smooth'});});
+  document.querySelectorAll('a[href^="#section-"]').forEach(function(anchor){anchor.addEventListener('click',function(event){event.preventDefault();var id=this.getAttribute('href').substring(1);var element=document.getElementById(id);if(!element)return;window.scrollTo({top:element.getBoundingClientRect().top+window.pageYOffset-96,behavior:'smooth'});if(history.replaceState)history.replaceState(null,'','#'+id);});});
+  var links=document.querySelectorAll('#toc-list .toc-item a');var mobileLinks=document.querySelectorAll('#toc-mobile a[data-section]');function setActive(id){links.forEach(function(link){link.classList.toggle('active',link.dataset.section===id);});mobileLinks.forEach(function(link){link.classList.toggle('active',link.dataset.section===id);});}
+  var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){if(entry.isIntersecting)setActive(entry.target.id);});},{rootMargin:'-100px 0px -60% 0px',threshold:0});document.querySelectorAll('.doc-section[id]').forEach(function(section){observer.observe(section);});setActive('section-1');updateProgress();
+})();
+</script>
 {% endblock %}

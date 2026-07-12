@@ -1,30 +1,22 @@
 {% extends "base.html" %}
-
 {% block title %}{% if is_edit %}Edit Project{% else %}Create Project{% endif %} - Zirel{% endblock %}
-
 {% block content %}
-  <section class="app-workspace project-form-page workspace-shell">
-    <header class="workspace-header project-form-header">
-      <div>
-        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a>{% if is_edit %}<span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a>{% endif %}<span>/</span><span>{% if is_edit %}Edit{% else %}New world{% endif %}</span></nav>
-        <div class="workspace-eyebrow">Project workspace</div>
-        <h1>{% if is_edit %}Edit project{% else %}Create a new world{% endif %}</h1>
-        <p>{% if is_edit %}Update the name and description of your world.{% else %}Start a new Zirel project for your story, campaign, game, or fictional universe.{% endif %}</p>
+  {% include "_projects_global_topbar.html" %}
+  <section class="project-setup-page">
+    <div class="project-setup-orbit" aria-hidden="true"></div>
+    <div class="project-setup-inner">
+      <nav class="record-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a>{% if is_edit %}<span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a>{% endif %}<span>/</span><b>{% if is_edit %}Edit world{% else %}New world{% endif %}</b></nav>
+      <header class="project-setup-header"><div><span>Project workspace</span><h1>{% if is_edit %}Refine your<br><em>world.</em>{% else %}Begin a new<br><em>world.</em>{% endif %}</h1><p>{% if is_edit %}Update how this world is named and introduced. Its existing records remain untouched.{% else %}Create a private space for the characters, powers, events, and threads of your next fictional universe.{% endif %}</p></div><a href="{{ url_for('main.project_detail', project_id=project.id) if is_edit else url_for('main.projects') }}">{% if is_edit %}Back to project{% else %}Back to projects{% endif %}</a></header>
+      <div class="project-setup-grid">
+        <form method="post" class="project-setup-form">
+          <div class="project-setup-step"><b>01</b><div><h2>World identity</h2><p>Choose a name that makes the project immediately recognizable.</p></div></div>
+          <label for="name">Project name <span>Required</span></label><input type="text" id="name" name="name" value="{{ project.name if project else '' }}" placeholder="e.g. Kingdom of Ardan" required autofocus>
+          <div class="project-setup-step"><b>02</b><div><h2>Creative direction</h2><p>A short premise helps frame every record you add later.</p></div></div>
+          <label for="description">Description <span>Optional</span></label><textarea id="description" name="description" rows="6" placeholder="What kind of world are you building?">{{ project.description if project else '' }}</textarea>
+          <div class="project-setup-actions"><button type="submit">{% if is_edit %}Save changes{% else %}Create project{% endif %} <span>&rarr;</span></button><a href="{{ url_for('main.project_detail', project_id=project.id) if is_edit else url_for('main.projects') }}">Cancel</a></div>
+        </form>
+        <aside class="project-setup-aside"><span>{% if is_edit %}Project details{% else %}Starting point{% endif %}</span><h2>{% if is_edit %}Keep the world<br>recognizable.{% else %}A name is the first<br>thread.{% endif %}</h2><p>{% if is_edit %}Editing this page changes only the project name and description. Characters, factions, events, relations, warnings, and graph data remain intact.{% else %}You can begin with a kingdom, a campaign, a screenplay setting, or any connected fictional universe.{% endif %}</p>{% if not is_edit %}<div class="project-example-list"><span>Kingdom of Ardan</span><span>Dark Academy</span><span>Space Colony Europa</span><span>The Ashen Empire</span></div>{% endif %}</aside>
       </div>
-    </header>
-
-    <div class="project-form-shell">
-      <form method="post" class="project-form-card">
-        <div class="mb-3"><label for="name" class="form-label">Project name</label><input type="text" class="form-control" id="name" name="name" value="{{ project.name if project else '' }}" required autofocus></div>
-        <div class="mb-0"><label for="description" class="form-label">Description</label><p class="project-form-field-help">A short summary helps you recognize this world later.</p><textarea class="form-control" id="description" name="description" rows="6" placeholder="What kind of world are you building?">{{ project.description if project else '' }}</textarea></div>
-        <div class="form-actions"><button type="submit" class="btn-workspace-primary">{% if is_edit %}Save Changes{% else %}Create Project{% endif %}</button><a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) if is_edit else url_for('main.projects') }}">{% if is_edit %}Back to Project{% else %}Back to Projects{% endif %}</a></div>
-      </form>
-
-      {% if is_edit %}
-        <aside class="project-helper-card form-callout"><div class="workspace-eyebrow">Project details</div><h2>Keep the world recognizable.</h2><p>Editing this information changes the project name and description only. Characters, factions, events, and relations stay untouched.</p></aside>
-      {% else %}
-        <aside class="project-helper-card"><div class="workspace-eyebrow">Project examples</div><h2>Begin with a clear world name.</h2><ul><li>Kingdom of Ardan</li><li>Dark Academy</li><li>Space Colony Europa</li><li>The Ashen Empire</li></ul></aside>
-      {% endif %}
     </div>
   </section>
 {% endblock %}

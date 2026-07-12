@@ -50,6 +50,7 @@
       </div>
 
       <form method="post" class="auth-form auth-modal-form">
+        {% if invites_required %}<div class="auth-invite-note"><span>Closed beta</span><strong>{{ beta_capacity.claimed }} / {{ beta_capacity.limit }} places claimed</strong><p>Registration requires a single-use invitation from the Zirel team.</p></div><div class="auth-field"><label for="invite">Invitation code</label><div class="auth-input-wrap"><input type="text" id="invite" name="invite" value="{{ invite_code }}" placeholder="Enter your beta code" required autocomplete="off"></div></div>{% endif %}
         <div class="auth-field">
           <label for="username">Creator name</label>
           <div class="auth-input-wrap">
@@ -115,7 +116,7 @@
           </div>
         </div>
         <label class="auth-agreement"><input type="checkbox" name="terms_agreed" value="accepted" {% if request.form.get('terms_agreed') %}checked{% endif %} required><span>I agree to the <a href="{{ url_for('main.terms') }}">Terms of Service</a> and <a href="{{ url_for('main.privacy') }}">Privacy Policy</a></span></label>
-        <button class="btn auth-submit" type="submit">Create account <span aria-hidden="true">&rarr;</span></button>
+        <button class="btn auth-submit" type="submit" {% if beta_capacity.full %}disabled{% endif %}>{% if beta_capacity.full %}Beta is full{% else %}Create account <span aria-hidden="true">&rarr;</span>{% endif %}</button>
       </form>
       <div class="auth-modal-footer">
         <p>Already have an account? <a href="{{ url_for('main.login') }}">Sign in &rarr;</a></p>

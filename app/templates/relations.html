@@ -1,63 +1,31 @@
 {% extends "base.html" %}
-
 {% block title %}Relations - {{ project.name }}{% endblock %}
-
 {% block content %}
-  <section class="app-workspace relation-page workspace-shell">
-    <header class="workspace-header relation-header">
-      <div>
-        <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><span>Relations</span></nav>
-        <div class="workspace-eyebrow">World structure</div>
-        <h1>Relations</h1>
-        <p>Connect characters, factions, and events into a living world structure.</p>
-      </div>
-      <div class="workspace-actions">
-        <a class="btn-workspace-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Back to Project</a>
-        <a class="btn-workspace-secondary" href="{{ url_for('main.graph', project_id=project.id) }}">Graph Workspace</a>
-        <a class="btn-workspace-secondary" href="{{ url_for('main.warnings', project_id=project.id) }}">Logic Warnings</a>
-        <a class="btn-workspace-primary" href="{{ url_for('main.create_relation', project_id=project.id) }}">Add Relation</a>
-      </div>
-    </header>
-
-    <div class="entity-stat-grid relation-stat-grid">
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-relations"></span><div><span>Total relations</span><strong>{{ relation_stats.total }}</strong></div></article>
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-characters"></span><div><span>Character relations</span><strong>{{ relation_stats.characters }}</strong></div></article>
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-factions"></span><div><span>Faction relations</span><strong>{{ relation_stats.factions }}</strong></div></article>
-      <article class="entity-stat-card"><span class="entity-stat-icon stat-events"></span><div><span>Event relations</span><strong>{{ relation_stats.events }}</strong></div></article>
-    </div>
-
+  {% set active_section = 'relations' %}{% include "_project_workspace_topbar.html" %}
+  <section class="record-workspace relation-record-workspace" data-record-workspace><div class="record-workspace-bg" aria-hidden="true"></div><div class="record-workspace-inner">
+    <nav class="record-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><b>Relations</b></nav>
+    <header class="record-hero relation-record-hero"><div><span class="record-kicker">Living structure</span><h1>Relations</h1><p>Weave characters, factions, and events into the causal and emotional structure of {{ project.name }}.</p></div><div class="record-hero-actions"><a class="record-btn-secondary" href="{{ url_for('main.project_detail', project_id=project.id) }}">Project dashboard</a><a class="record-btn-secondary" href="{{ url_for('main.warnings', project_id=project.id) }}">Logic warnings</a><a class="record-btn-secondary" href="{{ url_for('main.graph', project_id=project.id) }}">Open graph</a><a class="record-btn-primary" href="{{ url_for('main.create_relation', project_id=project.id) }}">Add relation <span>+</span></a></div></header>
+    <section class="record-stat-row"><article><i class="record-dot record-dot-relation"></i><div><small>Total threads</small><strong>{{ relation_stats.total }}</strong></div></article><article><i class="record-dot record-dot-character"></i><div><small>Character-linked</small><strong>{{ relation_stats.characters }}</strong></div></article><article><i class="record-dot record-dot-faction"></i><div><small>Faction-linked</small><strong>{{ relation_stats.factions }}</strong></div></article><article><i class="record-dot record-dot-event"></i><div><small>Event-linked</small><strong>{{ relation_stats.events }}</strong></div></article></section>
     {% if relation_rows %}
-      <div class="relation-list" data-filter-list data-list-label="relations">
-        <form id="relation-bulk-form" method="post" action="{{ url_for('main.bulk_delete_relations', project_id=project.id) }}"></form>
-        <div class="relation-toolbar">
-          <div class="workspace-search"><input type="search" placeholder="Search relations..." data-list-search aria-label="Search relations"><span aria-hidden="true"></span></div>
-          <select class="relation-filter-select" data-list-type-filter aria-label="Filter relation type">
-            <option value="">All relation types</option>
-            {% for type in ['hates', 'allied_with', 'member_of', 'loyal_to', 'participated_in', 'rules', 'located_in'] %}
-              <option value="{{ type }}">{{ relation_type_labels[type] }}</option>
-            {% endfor %}
-          </select>
-          <p class="workspace-list-count" data-list-count>Showing {{ relation_rows|length }} of {{ relation_rows|length }} relations</p>
-        </div>
-        <div class="bulk-actions-bar"><span>Select connections to manage them in one pass.</span><div><button class="btn-workspace-danger" type="submit" form="relation-bulk-form" onclick="return confirm('Delete selected relations?');">Delete selected</button><form method="post" action="{{ url_for('main.delete_all_relations', project_id=project.id) }}" onsubmit="return confirm('Delete ALL relations in this project? This cannot be undone.');"><button class="btn-workspace-danger" type="submit">Delete all</button></form></div></div>
-        <div class="empty-state relation-empty-state" data-list-empty hidden><h2>No matching relations found.</h2><p>Try another name, relationship type, or description.</p></div>
-        <div class="relation-grid">
+      <div class="record-list-shell" data-filter-list data-list-label="relations"><form id="relation-bulk-form" method="post" action="{{ url_for('main.bulk_delete_relations', project_id=project.id) }}"></form>
+        <div class="record-toolbar relation-record-toolbar"><label class="record-search"><span></span><input type="search" placeholder="Search relations..." data-list-search aria-label="Search relations"></label><select data-list-type-filter aria-label="Filter relation type"><option value="">All relation types</option>{% for type in ['hates','allied_with','member_of','loyal_to','participated_in','rules','located_in'] %}<option value="{{ type }}">{{ relation_type_labels[type] }}</option>{% endfor %}</select><p data-list-count>Showing {{ relation_rows|length }} of {{ relation_rows|length }} relations</p><div class="record-view-switch"><button class="is-active" type="button" data-record-view="grid">Cards</button><button type="button" data-record-view="list">List</button></div></div>
+        <div class="record-bulk-bar" data-bulk-bar><span><b data-selected-count>0</b> selected</span><div><button type="submit" form="relation-bulk-form" onclick="return confirm('Delete selected relations?');">Delete selected</button><form method="post" action="{{ url_for('main.delete_all_relations', project_id=project.id) }}" onsubmit="return confirm('Delete ALL relations in this project? This cannot be undone.');"><button type="submit">Delete all</button></form></div></div>
+        <div class="record-empty-match" data-list-empty hidden><h2>No matching relations.</h2><p>Try another entity, relation type, or description.</p></div>
+        <div class="relation-record-grid" data-record-collection>
           {% for row in relation_rows %}
-            <article class="relation-card" data-list-item data-relation-type="{{ row.relation.relation_type }}" data-search-text="{{ row.source_name }} {{ row.relation.relation_type }} {{ row.target_name }} {{ row.relation.description or '' }}">
-              <header class="relation-card-header"><label class="entity-select" for="relation-{{ row.relation.id }}"><input type="checkbox" form="relation-bulk-form" name="relation_ids" value="{{ row.relation.id }}" id="relation-{{ row.relation.id }}"><span>Select</span></label><span class="relation-type-badge relation-type-{{ row.relation.relation_type }}">{{ relation_type_labels[row.relation.relation_type] }}</span></header>
-              <div class="relation-flow">
-                <div class="relation-node-pill"><b>{{ row.source_name }}</b><span>{{ row.relation.source_type|capitalize }}</span></div>
-                <span class="relation-flow-arrow" aria-hidden="true">&rarr;</span>
-                <div class="relation-node-pill relation-node-target"><b>{{ row.target_name }}</b><span>{{ row.relation.target_type|capitalize }}</span></div>
+            <article class="relation-record-card relation-accent-{{ row.relation.relation_type }}" data-list-item data-relation-type="{{ row.relation.relation_type }}" data-search-text="{{ row.source_name }} {{ row.relation.relation_type }} {{ row.target_name }} {{ row.relation.description or '' }}">
+              <div class="record-card-top"><label class="record-checkbox" for="relation-{{ row.relation.id }}"><input data-record-checkbox type="checkbox" form="relation-bulk-form" name="relation_ids" value="{{ row.relation.id }}" id="relation-{{ row.relation.id }}"><span></span></label><em class="relation-record-badge">{{ relation_type_labels[row.relation.relation_type] }}</em></div>
+              <div class="relation-record-flow">
+                <div class="relation-record-node"><i class="record-dot record-dot-{{ row.relation.source_type }}"></i><span><small>{{ row.relation.source_type }}</small><strong>{{ row.source_name }}</strong></span></div>
+                <div class="relation-record-thread"><span>{{ relation_type_labels[row.relation.relation_type] }}</span><i></i><b>&rarr;</b></div>
+                <div class="relation-record-node"><i class="record-dot record-dot-{{ row.relation.target_type }}"></i><span><small>{{ row.relation.target_type }}</small><strong>{{ row.target_name }}</strong></span></div>
               </div>
-              <p class="relation-description">{{ row.relation.description or "No relation notes yet." }}</p>
-              <footer class="relation-card-footer"><a class="btn-workspace-secondary" href="{{ url_for('main.edit_relation', project_id=project.id, relation_id=row.relation.id) }}">Edit</a><form method="post" action="{{ url_for('main.delete_relation', project_id=project.id, relation_id=row.relation.id) }}" onsubmit="return confirm('Delete this relation?');"><button class="btn-workspace-danger" type="submit">Delete</button></form></footer>
+              <p>{{ row.relation.description or "No relation notes yet. Add motive, history, or consequences to strengthen this thread." }}</p>
+              <footer><a href="{{ url_for('main.edit_relation', project_id=project.id, relation_id=row.relation.id) }}">Edit connection</a><form method="post" action="{{ url_for('main.delete_relation', project_id=project.id, relation_id=row.relation.id) }}" onsubmit="return confirm('Delete this relation?');"><button type="submit">Delete</button></form></footer>
             </article>
           {% endfor %}
         </div>
       </div>
-    {% else %}
-      <div class="workspace-empty-state relation-empty-state text-center"><span class="empty-world-mark" aria-hidden="true"></span><h2>No relations yet.</h2><p>Create your first connection and start turning separate world elements into a living network.</p><a class="btn-workspace-primary" href="{{ url_for('main.create_relation', project_id=project.id) }}">Add Relation</a></div>
-    {% endif %}
-  </section>
+    {% else %}<div class="record-empty-state"><span>R</span><h2>No relations yet.</h2><p>Create the first thread and turn separate world records into a living structure.</p><a class="record-btn-primary" href="{{ url_for('main.create_relation', project_id=project.id) }}">Add first relation</a></div>{% endif %}
+  </div></section><script src="{{ url_for('static', filename='record_workspace.js') }}"></script>
 {% endblock %}

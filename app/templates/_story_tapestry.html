@@ -1,0 +1,55 @@
+<section class="zirel-tapestry" data-story-tapestry>
+  <header class="zt-header">
+    <span class="zt-eyebrow">Story Tapestry</span>
+    <div class="zt-live"><i></i><span data-tapestry-count>{{ relation_count }} threads woven</span></div>
+  </header>
+  <div class="zt-divider"></div>
+
+  <div class="zt-stage" data-tapestry-stage>
+    <div class="zt-nebula zt-nebula-one" aria-hidden="true"></div>
+    <div class="zt-nebula zt-nebula-two" aria-hidden="true"></div>
+    <canvas data-tapestry-particles aria-hidden="true"></canvas>
+    <svg data-tapestry-svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+    <div class="zt-cursor" data-tapestry-cursor aria-hidden="true"></div>
+    <div data-tapestry-fragments></div>
+    <div class="zt-tooltip" data-tapestry-tooltip hidden>
+      <button type="button" data-tapestry-close aria-label="Close fragment">&times;</button>
+      <span data-tapestry-tooltip-type>Fragment</span>
+      <strong data-tapestry-tooltip-title></strong>
+      <p data-tapestry-tooltip-copy></p>
+      <a data-tapestry-tooltip-link href="#">Open record &rarr;</a>
+    </div>
+    {% if entity_count == 0 %}
+      <div class="zt-empty">
+        <span>Your tapestry is quiet</span>
+        <p>Add a character, faction, or event to weave the first thread.</p>
+        <a href="{{ url_for('main.create_character', project_id=project.id) }}">Add first character</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <footer class="zt-footer">
+    <span data-tapestry-footer-count>Woven from {{ entity_count }} fragments</span>
+    <span>drag to disturb &middot; hover to reveal</span>
+    <div>
+      <button type="button" data-tapestry-weave>Weave new &#8635;</button>
+      <a href="{{ url_for('main.graph', project_id=project.id) }}">Open graph &rarr;</a>
+    </div>
+  </footer>
+
+  <div hidden>
+    {% for character in project.characters %}
+      <span data-tapestry-item data-id="character-{{ character.id }}" data-kind="Character" data-name="{{ character.name }}" data-copy="{{ character.description or 'A character in ' ~ project.name }}" data-href="{{ url_for('main.characters', project_id=project.id) }}"></span>
+    {% endfor %}
+    {% for faction in project.factions %}
+      <span data-tapestry-item data-id="faction-{{ faction.id }}" data-kind="Faction" data-name="{{ faction.name }}" data-copy="{{ faction.description or 'A faction in ' ~ project.name }}" data-href="{{ url_for('main.factions', project_id=project.id) }}"></span>
+    {% endfor %}
+    {% for event in project.events %}
+      <span data-tapestry-item data-id="event-{{ event.id }}" data-kind="Event" data-name="{{ event.name }}" data-copy="{{ event.description or 'An event in ' ~ project.name }}" data-href="{{ url_for('main.events', project_id=project.id) }}"></span>
+    {% endfor %}
+    {% for relation in project.relations %}
+      <span data-tapestry-relation data-source="{{ relation.source_type }}-{{ relation.source_id }}" data-target="{{ relation.target_type }}-{{ relation.target_id }}" data-type="{{ relation.relation_type }}" data-copy="{{ relation.description or '' }}"></span>
+    {% endfor %}
+  </div>
+</section>
+<script src="{{ url_for('static', filename='story_tapestry.js') }}"></script>

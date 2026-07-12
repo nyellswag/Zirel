@@ -1,7 +1,8 @@
 import json
 import math
 import re
-from datetime import datetime, timezone
+import secrets
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 
 from flask import (
@@ -17,10 +18,12 @@ from flask import (
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
+from sqlalchemy import text
 
 from app import db
 from app.logic_engine import analyze_project
 from app.models import (
+    BetaInvite,
     Character,
     ContactMessage,
     Event,
@@ -106,7 +109,18 @@ def get_admin_stats():
         "feedback": Feedback.query.count(),
         "contact": ContactMessage.query.count(),
         "wishlist": WishlistEntry.query.count(),
+        "invites": BetaInvite.query.count(),
     }
+
+
+def get_beta_capacity():
+    limit = max(1, current_app.config.get("BETA_ACCOUNT_LIMIT", 100))
+    claimed = User.query.filter_by(is_admin=False).count()
+    return {"limit": limit, "claimed": claimed, "remaining": max(0, limit - claimed), "percent": min(100, round(claimed / limit * 100)), "full": claimed >= limit}
+
+
+def normalize_invite_code(value):
+    return value.strip().upper().replace(" ", "")
 
 
 @main.before_app_request
@@ -162,7 +176,7 @@ def project_access_required(view):
 def index():
     if current_app.config.get("WISHLIST_MODE", False):
         return redirect(url_for("main.wishlist"))
-    return render_template("index.html")
+    return render_template("index.html", beta_capacity=get_beta_capacity())
 
 
 @main.route("/wishlist", methods=["GET", "POST"])
@@ -259,6 +273,13 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for("main.projects"))
 
+    invite_code = normalize_invite_code(request.values.get("invite", ""))
+    invites_required = current_app.config.get("CLOSED_BETA_INVITES", True)
+    capacity = get_beta_capacity()
+
+    def render_register():
+        return render_template("register.html", invite_code=invite_code, invites_required=invites_required, beta_capacity=capacity)
+
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         email = request.form.get("email", "").strip().lower()
@@ -267,35 +288,56 @@ def register():
         confirm_password = request.form.get("confirm_password", "")
         terms_agreed = request.form.get("terms_agreed") == "accepted"
 
+        invite = None
+        if invites_required:
+            if not invite_code:
+                flash("A beta invitation code is required.", "danger")
+                return render_register()
+            invite = BetaInvite.query.filter_by(code=invite_code).with_for_update().first()
+            if not invite or not invite.is_available:
+                flash("This beta invitation is invalid, expired, used, or revoked.", "danger")
+                return render_register()
+
+        if db.engine.dialect.name == "postgresql":
+            db.session.execute(text('LOCK TABLE "user" IN SHARE ROW EXCLUSIVE MODE'))
+        capacity = get_beta_capacity()
+        if capacity["full"]:
+            flash("The closed beta is currently full.", "danger")
+            return render_register()
+
         if not username or not email or not password or not confirm_password:
             flash("All registration fields are required.", "danger")
-            return render_template("register.html")
+            return render_register()
         if role not in USER_ROLES:
             flash("Please select what describes you best.", "danger")
-            return render_template("register.html")
+            return render_register()
         if not terms_agreed:
             flash("Please agree to the Terms of Service and Privacy Policy.", "danger")
-            return render_template("register.html")
+            return render_register()
         if password != confirm_password:
             flash("Passwords do not match.", "danger")
-            return render_template("register.html")
+            return render_register()
         if User.query.filter_by(username=username).first():
             flash("That username is already in use.", "danger")
-            return render_template("register.html")
+            return render_register()
         if User.query.filter_by(email=email).first():
             flash("That email address is already registered.", "danger")
-            return render_template("register.html")
+            return render_register()
 
         user = User(username=username, email=email, role=role)
         user.set_password(password)
         db.session.add(user)
+        db.session.flush()
+        if invite:
+            invite.used_by_id = user.id
+            invite.used_at = datetime.now(timezone.utc)
         db.session.commit()
         login_user(user)
 
         flash("Welcome to Zirel.", "success")
         return redirect(url_for("main.projects"))
 
-    return render_template("register.html")
+    return render_register()
 
 
 @main.route("/login", methods=["GET", "POST"])
@@ -483,6 +525,46 @@ def admin_contact():
 def admin_users():
     users = User.query.order_by(User.created_at.desc()).all()
     return render_template("admin_users.html", users=users, stats=get_admin_stats())
+
+
+@main.route("/admin/invites", methods=["GET", "POST"])
+@admin_required
+def admin_invites():
+    if request.method == "POST":
+        try:
+            count = min(50, max(1, int(request.form.get("count", "1"))))
+            expiry_days = min(365, max(1, int(request.form.get("expiry_days", "30"))))
+        except ValueError:
+            flash("Count and expiry must be whole numbers.", "danger")
+            return redirect(url_for("main.admin_invites"))
+        note = request.form.get("note", "").strip()[:200] or None
+        expires_at = datetime.now(timezone.utc) + timedelta(days=expiry_days)
+        created_codes = []
+        for _ in range(count):
+            code = secrets.token_urlsafe(9).replace("-", "").replace("_", "").upper()[:12]
+            while BetaInvite.query.filter_by(code=code).first():
+                code = secrets.token_urlsafe(9).replace("-", "").replace("_", "").upper()[:12]
+            db.session.add(BetaInvite(code=code, note=note, expires_at=expires_at))
+            created_codes.append(code)
+        db.session.commit()
+        flash(f"Created {len(created_codes)} beta invitation(s).", "success")
+        return redirect(url_for("main.admin_invites"))
+
+    invites = BetaInvite.query.order_by(BetaInvite.created_at.desc()).all()
+    return render_template("admin_invites.html", invites=invites, stats=get_admin_stats(), beta_capacity=get_beta_capacity())
+
+
+@main.route("/admin/invites/<int:invite_id>/revoke", methods=["POST"])
+@admin_required
+def admin_revoke_invite(invite_id):
+    invite = BetaInvite.query.get_or_404(invite_id)
+    if invite.used_by_id:
+        flash("A used invitation cannot be revoked.", "danger")
+    else:
+        invite.revoked = True
+        db.session.commit()
+        flash("Invitation revoked.", "success")
+    return redirect(url_for("main.admin_invites"))
 
 
 @main.route("/admin/users/<int:user_id>/delete", methods=["POST"])

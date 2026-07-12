@@ -3,19 +3,24 @@
 {% block title %}Edit Faction - {{ project.name }}{% endblock %}
 
 {% block content %}
-  <section class="app-workspace form-shell workspace-shell">
-    <div class="form-shell-inner">
+  {% set active_section = 'dashboard' %}
+  {% include "_project_workspace_topbar.html" %}
+  <section class="entity-composer-page" data-entity-composer data-meta-fields="created_year,destroyed_year" data-name-fallback="Unnamed faction" data-meta-fallback="Founding and destruction dates">
+    <div class="entity-composer-orb entity-composer-orb-one" aria-hidden="true"></div><div class="entity-composer-orb entity-composer-orb-two" aria-hidden="true"></div>
+    <div class="entity-composer-shell">
       <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.factions', project_id=project.id) }}">Factions</a><span>/</span><span>Edit</span></nav>
-      <div class="form-shell-heading"><div><div class="workspace-eyebrow">World entity</div><h1>Edit Faction</h1><p>Refine this organization's place in {{ project.name }}.</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.factions', project_id=project.id) }}">Back to Factions</a></div>
-      <form method="post" class="form-card">
+      <header class="entity-composer-header"><div><span>Faction studio</span><h1>Edit faction</h1><p>Refine this organization's place in {{ project.name }}.</p></div><a class="entity-quiet-link" href="{{ url_for('main.factions', project_id=project.id) }}">Back to factions</a></header>
+      <div class="entity-composer-grid"><form method="post" class="entity-composer-form">
+        <div class="entity-form-section"><span class="entity-section-index">01</span><div><h2>Identity</h2><p>Define how this organization appears throughout the world.</p></div></div>
         <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
+          <label for="name" class="form-label">Faction name <span>Required</span></label>
           <input type="text" class="form-control" id="name" name="name" value="{{ faction.name }}" required autofocus>
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" name="description" rows="4">{{ faction.description or "" }}</textarea>
+          <textarea class="form-control" id="description" name="description" rows="5">{{ faction.description or "" }}</textarea>
         </div>
+        <div class="entity-form-section"><span class="entity-section-index">02</span><div><h2>Timeline</h2><p>Optional dates let Zirel spot impossible faction activity.</p></div></div>
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="created_year" class="form-label">Created Year</label>
@@ -30,7 +35,8 @@
           <button type="submit" class="btn-workspace-primary">Save Changes</button>
           <a class="btn-workspace-secondary" href="{{ url_for('main.factions', project_id=project.id) }}">Cancel</a>
         </div>
-      </form>
+      </form><aside class="entity-preview-card"><span class="entity-preview-kicker">Live record preview</span><div class="entity-preview-symbol entity-preview-faction">F</div><h2 data-preview-name>{{ faction.name }}</h2><p data-preview-description>{{ faction.description or 'Add a description to give this faction more context.' }}</p><div class="entity-preview-meta" data-preview-meta>Founding and destruction dates</div><div class="entity-preview-progress"><div><span>Record depth</span><b data-form-progress-text>0% complete</b></div><i><span data-form-progress></span></i></div><div class="entity-preview-note">Changes remain local to this project and update related workspace views.</div></aside></div>
     </div>
   </section>
+  <script src="{{ url_for('static', filename='entity_composer.js') }}"></script>
 {% endblock %}

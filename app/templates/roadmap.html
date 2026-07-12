@@ -1,109 +1,86 @@
 {% extends "base.html" %}
 
 {% block title %}Zirel Roadmap{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='roadmap_manual.css', v='20260711-v1') }}">{% endblock %}
 
 {% block content %}
-  <div class="zv2-page roadmap-page">
-    <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
+<div class="zrm-page" data-roadmap-manual>
+  <div class="zrm-progress" data-roadmap-progress aria-hidden="true"></div>
+  <nav class="zrm-side-nav" aria-label="Roadmap phase navigation">
+    <a href="#roadmap-phase-1" data-roadmap-link><i></i><span>01</span></a>
+    <a href="#roadmap-phase-2" data-roadmap-link><i></i><span>02</span></a>
+    <a href="#roadmap-phase-3" data-roadmap-link><i></i><span>03</span></a>
+    <a href="#roadmap-phase-4" data-roadmap-link><i></i><span>04</span></a>
+  </nav>
 
-    <section class="zv2-hero zv2-reveal">
-      <div>
-        <p class="zv2-kicker">Product direction</p>
-        <h1>Zirel <em>Roadmap</em>.</h1>
-        <p>A high-level development plan for building Zirel from MVP to public beta and beyond.</p>
-      </div>
-      <div class="zv2-hero-actions">
-        <a class="zv2-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
-        <a class="zv2-btn-secondary" href="{{ url_for('main.whitepaper') }}">Whitepaper</a>
-      </div>
-    </section>
+  <div class="zrm-wrap">
+    <div class="zrm-content">
+      <section class="zrm-hero" id="roadmap-hero">
+        <p class="zrm-eyebrow">Product direction</p>
+        <h1>Zirel <em>Roadmap</em></h1>
+        <p class="zrm-hero-sub">A practical path from a working worldbuilding MVP to a reliable beta product.</p>
+        <div class="zrm-actions">
+          <a class="zrm-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
+          <a class="zrm-outline" href="#roadmap-priorities">Read the vision</a>
+        </div>
+        <div class="zrm-hero-divider"></div>
+      </section>
 
-    <div class="zv2-note zv2-reveal">This roadmap is directional and may change as the product evolves.</div>
+      <aside class="zrm-disclaimer">
+        <i></i><p>This roadmap describes priorities, not guaranteed release dates. Work may move as beta feedback, reliability needs, and technical constraints become clearer.</p><i></i>
+      </aside>
 
-    <section class="zv2-timeline" aria-label="Product roadmap">
-      <article class="zv2-timeline-card zv2-reveal">
-        <span class="zv2-status zv2-status-progress">Mostly completed / in progress</span>
-        <h2>Q1 - MVP Foundation</h2>
-        <p>Build the core product foundation and validate the basic worldbuilding workflow.</p>
-        <ul class="zv2-list">
-          <li>Project creation and management</li>
-          <li>Characters, factions, and events</li>
-          <li>Relationship builder</li>
-          <li>Logic warnings</li>
-          <li>Graph workspace</li>
-          <li>Export and import JSON</li>
-          <li>User accounts and protected projects</li>
-          <li>Admin dashboard</li>
-          <li>Legal, FAQ, beta, and feedback pages</li>
-        </ul>
-      </article>
+      <main class="zrm-phases" aria-label="Product roadmap">
+        <p class="zrm-section-label">Development phases</p>
 
-      <article class="zv2-timeline-card zv2-reveal">
-        <span class="zv2-status zv2-status-planned">Planned</span>
-        <h2>Q2 - Beta Testing &amp; UX Improvements</h2>
-        <p>Prepare Zirel for early testers and improve the core user experience.</p>
-        <ul class="zv2-list">
-          <li>Closed beta testing</li>
-          <li>Better onboarding</li>
-          <li>Improved project dashboard</li>
-          <li>More polished graph workspace</li>
-          <li>Better warning explanations</li>
-          <li>Search and filter improvements</li>
-          <li>Data deletion tools</li>
-          <li>User settings</li>
-          <li>Style system and full redesign pass</li>
-        </ul>
-      </article>
+        <article class="zrm-phase zrm-available" id="roadmap-phase-1">
+          <header><span>CH·01</span><b>Available now</b></header>
+          <h2><em>Foundation</em> — Structured worldbuilding</h2>
+          <p>The current product already supports the complete first version of the core workflow.</p>
+          <ul>
+            <li>Private user accounts and protected projects</li><li>Characters, factions, events, and typed relations</li><li>Bulk management, search, and filters</li><li>Rule-based Logic Warnings with explanations</li><li>Interactive Graph Workspace and Story Tapestry</li><li>JSON export and import for portability</li><li class="zrm-full">Feedback, contact, waitlist, and beta administration</li>
+          </ul>
+        </article>
+        <div class="zrm-connector"><i></i></div>
 
-      <article class="zv2-timeline-card zv2-reveal">
-        <span class="zv2-status zv2-status-exploration">Exploration</span>
-        <h2>Q3 - AI Assistance &amp; Advanced World Tools</h2>
-        <p>Explore AI-assisted workflows and deeper worldbuilding analysis.</p>
-        <ul class="zv2-list">
-          <li>AI scene analysis prototype</li>
-          <li>Extract possible facts from text</li>
-          <li>Suggest characters, events, and relations</li>
-          <li>User review before saving AI suggestions</li>
-          <li>Advanced consistency checks</li>
-          <li>Warning overlays on graph</li>
-          <li>Export improvements</li>
-          <li>Collaboration prototype</li>
-        </ul>
-      </article>
+        <article class="zrm-phase zrm-current" id="roadmap-phase-2">
+          <header><span>CH·02</span><b>Current priority</b></header>
+          <h2><em>Beta readiness</em> — Trust and reliability</h2>
+          <p>Prepare the existing workflow for real testers before expanding the product surface.</p>
+          <ul>
+            <li>Closed beta testing with realistic worlds</li><li>Clear onboarding and a shorter first-project flow</li><li>Production monitoring, backups, and deployment hardening</li><li>Analytics consent and privacy controls where required</li><li>Self-service account and data deletion</li><li>User settings and clearer account controls</li><li>Accessibility, mobile, and cross-browser review</li><li>Focused fixes based on tester feedback</li>
+          </ul>
+        </article>
+        <div class="zrm-connector"><i></i></div>
 
-      <article class="zv2-timeline-card zv2-reveal">
-        <span class="zv2-status zv2-status-future">Future direction</span>
-        <h2>Q4 - Public Launch &amp; Monetization Research</h2>
-        <p>Prepare Zirel for a broader public release and evaluate sustainable support models.</p>
-        <ul class="zv2-list">
-          <li>Public beta or launch preparation</li>
-          <li>Pricing experiments</li>
-          <li>Support or donation options</li>
-          <li>Possible paid plans</li>
-          <li>Team workspace research</li>
-          <li>Community launch planning</li>
-          <li>Product Hunt and writing community outreach</li>
-          <li>Trademark and IP review</li>
-        </ul>
-      </article>
-    </section>
+        <article class="zrm-phase zrm-next" id="roadmap-phase-3">
+          <header><span>CH·03</span><b>Next</b></header>
+          <h2><em>Depth</em> — Better analysis and exploration</h2>
+          <p>Improve the tools that make Zirel distinct after the beta workflow is dependable.</p>
+          <ul>
+            <li>More consistency rules with fewer noisy warnings</li><li>Warning links back to affected entities and relations</li><li>Graph readability, saved views, and stronger navigation</li><li>Richer timeline and relation context</li><li>Improved project summaries and world coverage guidance</li><li>More flexible, validated export formats</li><li class="zrm-full">Performance work for larger fictional worlds</li>
+          </ul>
+        </article>
+        <div class="zrm-connector"><i></i></div>
 
-    <section class="zv2-card zv2-callout zv2-reveal">
-      <span class="zv2-card-index">Note</span>
-      <h2>What may change</h2>
-      <p>Roadmap items may move, be removed, or be replaced based on beta feedback, technical constraints, and user needs. This is a guide to current priorities, not a guarantee of delivery dates or specific features.</p>
-    </section>
+        <article class="zrm-phase zrm-research" id="roadmap-phase-4">
+          <header><span>CH·04</span><b>Research, not committed</b></header>
+          <h2><em>Expansion</em> — Assisted and shared workflows</h2>
+          <p>These ideas require separate product, privacy, and technical decisions before implementation.</p>
+          <ul>
+            <li>AI-assisted extraction of possible facts from scenes</li><li>User review before any assisted suggestion is saved</li><li>Collaboration and shared project roles</li><li>Additional entity types and custom relation vocabularies</li><li>Optional paid plans only after value is validated</li><li>Public launch planning and long-term support model</li>
+          </ul>
+        </article>
+      </main>
 
-    <section class="zv2-cta zv2-reveal">
-      <div>
-        <p class="zv2-kicker">Help shape the next quarter</p>
-        <h2>Tell us what should matter first.</h2>
-      </div>
-      <div class="zv2-hero-actions">
-        <a class="zv2-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
-        <a class="zv2-btn-secondary" href="{{ url_for('main.whitepaper') }}">Read Whitepaper</a>
-        <a class="zv2-btn-secondary" href="{{ url_for('main.feedback') }}">Send Feedback</a>
-      </div>
-    </section>
+      <section class="zrm-priorities" id="roadmap-priorities">
+        <p>How priorities are chosen</p>
+        <h2><em>Evidence</em> before expansion.</h2>
+        <div>Beta feedback, data safety, product reliability, and the usefulness of warnings and graph exploration come before speculative features. Items may be moved, reduced, or removed when they do not help creators build more coherent worlds.</div>
+        <div class="zrm-actions"><a class="zrm-primary" href="{{ url_for('main.beta') }}">Join Beta</a><a class="zrm-outline" href="{{ url_for('main.feedback') }}">Send Feedback</a></div>
+      </section>
+    </div>
   </div>
+</div>
+<script src="{{ url_for('static', filename='roadmap_manual.js', v='20260711-v1') }}"></script>
 {% endblock %}

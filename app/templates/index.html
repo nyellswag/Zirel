@@ -25,65 +25,84 @@
       <div class="zhp-reveal" aria-label="Interactive Zirel world engine preview">
         {% include "partials/world_engine.html" %}
       </div>
+      {% if not current_user.is_authenticated %}<section class="beta-capacity-strip zhp-reveal" data-beta-capacity style="--capacity:{{ beta_capacity.percent }}%"><div class="bcs-copy"><span class="bcs-icon" aria-hidden="true">◇</span><div><small>Closed beta capacity</small><h2>Invitation-only access is now open.</h2><p>We are onboarding a limited group so feedback stays focused and useful.</p></div></div><div class="bcs-meter"><strong>{{ beta_capacity.claimed }} / {{ beta_capacity.limit }}</strong><span>beta accounts claimed</span><i><em data-capacity-fill></em></i><small><span>0</span><span>{{ beta_capacity.percent }}%</span><span>{{ beta_capacity.limit }}</span></small></div><div class="bcs-action"><i></i>{% if beta_capacity.full %}<span>Beta is currently full</span>{% else %}<a href="{{ url_for('main.register') }}">Enter invitation code →</a><small>{{ beta_capacity.remaining }} places remaining</small>{% endif %}</div></section>{% endif %}
     </section>
 
-    <section class="zhp-section" id="features">
-      <div class="zhp-section-head zhp-reveal">
-        <span class="zhp-kicker">Core workspace</span>
-        <h2>What Zirel already gives you today.</h2>
-        <p>The MVP is usable now: create a private world, add entities, connect them, inspect warnings, and export your data.</p>
-      </div>
-      <div class="zhp-card-grid zhp-grid-3">
-        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Private projects</h3><p>Create protected worlds in your account and keep each universe separate.</p></article>
-        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Core entities</h3><p>Add characters, factions, and events with simple CRUD and bulk management.</p></article>
-        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Relation builder</h3><p>Build connections like member_of, loyal_to, hates, and participated_in with a visual preview.</p></article>
-        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Logic warnings</h3><p>Review rule-based timeline and relationship warnings generated from your project data.</p></article>
-        <article class="zhp-card zhp-reveal"><span>Live</span><h3>Graph workspace</h3><p>Explore entities and relations through an interactive Cytoscape graph with filters and inspector.</p></article>
-        <article class="zhp-card zhp-reveal"><span>Live</span><h3>JSON portability</h3><p>Export and import projects so your world data can move with you.</p></article>
+    <section class="zle-section zhp-reveal" id="features" data-feature-explorer>
+      <div class="zle-shell">
+        <aside class="zle-sidebar">
+          <header><span class="zle-eyebrow"><i>✦</i> Core workspace</span><h2>What Zirel <em>already gives</em> you today</h2><p>The working MVP, explored feature by feature.</p></header>
+          <div class="zle-list" role="tablist" aria-label="Zirel features" data-feature-list></div>
+          <footer><span>6 live capabilities</span><i></i><span>Early beta</span></footer>
+        </aside>
+        <div class="zle-inspector" data-feature-inspector aria-live="polite"></div>
       </div>
     </section>
 
-    <section class="zhp-section zhp-split" id="how-it-works">
-      <div class="zhp-section-head zhp-reveal">
-        <span class="zhp-kicker">How it works</span>
-        <h2>From scattered notes to reviewable structure.</h2>
+    <section class="zlw-section zhp-reveal" id="how-it-works" data-workflow-demo>
+      <span class="zlw-eyebrow">How it works</span>
+      <h2>From scattered notes to <em>reviewable</em> structure.</h2>
+      <p class="zlw-lead">Move through the real Zirel workflow. Each step expands its details while the activity panel shows how a structured world takes shape.</p>
+
+      <div class="zlw-layout">
+        <ol class="zlw-steps" role="tablist" aria-label="Zirel workflow" data-workflow-steps></ol>
+        <div class="zlw-canvas">
+          <div class="zlw-terminal" aria-live="polite">
+            <div class="zlw-terminal-bar"><span class="zlw-window-dots"><i></i><i></i><i></i></span><span>zirel ~/projects/new-world</span><span class="zlw-status"><i></i><b data-workflow-status>ready</b></span></div>
+            <div class="zlw-log" data-workflow-log></div>
+          </div>
+          <div class="zlw-stats" data-workflow-stats>
+            <div data-key="entities"><span>entities</span><b>0</b><i><em></em></i></div>
+            <div data-key="relations"><span>relations</span><b>0</b><i><em></em></i></div>
+            <div data-key="warnings"><span>warnings</span><b>0</b><i><em></em></i></div>
+            <div data-key="resolved"><span>resolved</span><b>0</b><i><em></em></i></div>
+          </div>
+        </div>
       </div>
-      <div class="zhp-steps">
-        <article class="zhp-step zhp-reveal"><span>1</span><h3>Create</h3><p>Start a project for a story, campaign, screenplay, or game world.</p></article>
-        <article class="zhp-step zhp-reveal"><span>2</span><h3>Connect</h3><p>Add entities and map the relationships that define the setting.</p></article>
-        <article class="zhp-step zhp-reveal"><span>3</span><h3>Analyze</h3><p>Review rule-based warnings and inspect the graph for hidden consequences.</p></article>
-        <article class="zhp-step zhp-reveal"><span>4</span><h3>Refine</h3><p>Adjust your canon while the broader network stays visible.</p></article>
+
+      <div class="zlw-controls" role="toolbar" aria-label="Workflow controls">
+        <span class="zlw-progress" aria-hidden="true"><i data-workflow-progress></i></span>
+        <span class="zlw-hints"><kbd>←</kbd><kbd>→</kbd> switch <kbd>Space</kbd> pause</span>
+        <span class="zlw-buttons"><button type="button" data-workflow-prev aria-label="Previous step">←</button><button type="button" class="zlw-play" data-workflow-play><i></i><span>Pause</span></button><button type="button" data-workflow-next aria-label="Next step">→</button></span>
       </div>
     </section>
 
-    <section class="zhp-section" id="use-cases">
-      <div class="zhp-section-head zhp-reveal">
-        <span class="zhp-kicker">For creators</span>
-        <h2>Built for worlds with moving parts.</h2>
-      </div>
-      <div class="zhp-pill-grid">
-        <span>Writers</span><span>Game Masters</span><span>Worldbuilders</span><span>Screenwriters</span><span>Indie Game Developers</span><span>Narrative Designers</span>
+    <section class="zlc-stage zhp-reveal" id="use-cases" data-creator-stage>
+      <div class="zlc-orb zlc-orb-a" aria-hidden="true"></div><div class="zlc-orb zlc-orb-b" aria-hidden="true"></div><div class="zlc-orb zlc-orb-c" aria-hidden="true"></div><div class="zlc-spot" data-creator-spot aria-hidden="true"></div>
+      <div class="zlc-wrap">
+        <span class="zlc-meta"><span class="zlc-dot"></span>For creators</span>
+        <h2 class="zlc-headline" data-creator-headline>Built for worlds with <em>moving</em> parts.</h2>
+        <div class="zlc-chips" role="tablist" aria-label="Creator roles" data-creator-tabs>
+          <span class="zlc-pill" data-creator-pill aria-hidden="true"></span>
+          <button class="zlc-chip is-active" type="button" role="tab" aria-selected="true" data-role="writers">Writers</button>
+          <button class="zlc-chip" type="button" role="tab" aria-selected="false" data-role="gms">Game Masters</button>
+          <button class="zlc-chip" type="button" role="tab" aria-selected="false" data-role="worldbuilders">Worldbuilders</button>
+          <button class="zlc-chip" type="button" role="tab" aria-selected="false" data-role="screenwriters">Screenwriters</button>
+          <button class="zlc-chip" type="button" role="tab" aria-selected="false" data-role="indie">Indie Game Developers</button>
+          <button class="zlc-chip" type="button" role="tab" aria-selected="false" data-role="narrative">Narrative Designers</button>
+        </div>
+        <p class="zlc-role" aria-live="polite"><span data-creator-copy>A workspace for novels, series bibles, and ongoing sagas — keep characters, timelines, and threads coherent across a thousand pages.</span></p>
+
+        <article class="zlc-beta" id="roadmap">
+          <div class="zlc-beta-grid">
+            <div>
+              <span class="zlc-meta"><span class="zlc-dot"></span>Current beta</span>
+              <h3>Use the working MVP and tell us what breaks the flow.</h3>
+              <p>Zirel already ships with <strong>accounts</strong>, <strong>protected projects</strong>, full <strong>CRUD</strong>, <strong>warnings</strong>, a <strong>graph workspace</strong>, <strong>export/import</strong>, <strong>feedback</strong>, and admin tools. The beta is about making that foundation clearer and stronger — one workflow at a time.</p>
+            </div>
+            <nav class="zlc-actions" aria-label="Beta resources">
+              <a class="zlc-action" href="{{ url_for('main.beta') }}"><span>Beta guide<small>Read the guide →</small></span><i aria-hidden="true">↗</i></a>
+              <a class="zlc-action" href="{{ url_for('main.roadmap') }}"><span>Roadmap<small>See the priorities →</small></span><i aria-hidden="true">↗</i></a>
+              <a class="zlc-action" href="{{ url_for('main.whitepaper') }}"><span>Whitepaper<small>Read the product vision →</small></span><i aria-hidden="true">↗</i></a>
+              <a class="zlc-action" href="{{ url_for('main.feedback') }}"><span>Feedback<small>Tell us what hurts →</small></span><i aria-hidden="true">↗</i></a>
+            </nav>
+          </div>
+        </article>
       </div>
     </section>
 
-    <section class="zhp-section zhp-beta-panel" id="roadmap">
-      <div class="zhp-reveal">
-        <span class="zhp-kicker">Current beta</span>
-        <h2>Use the working MVP and tell us what breaks the flow.</h2>
-        <p>Zirel already has accounts, protected projects, CRUD, warnings, graph view, export/import, feedback, and admin tools. The beta is about making that foundation clearer and stronger.</p>
-      </div>
-      <div class="zhp-beta-list zhp-reveal">
-        <a href="{{ url_for('main.beta') }}">Beta guide</a>
-        <a href="{{ url_for('main.roadmap') }}">Roadmap</a>
-        <a href="{{ url_for('main.whitepaper') }}">Whitepaper</a>
-        <a href="{{ url_for('main.feedback') }}">Feedback</a>
-      </div>
-    </section>
-
-    <section class="zhp-final zhp-reveal">
-      <span class="zhp-kicker">Start small</span>
-      <h2>Create a test world and see the current workflow in action.</h2>
-      <a class="zhp-btn-primary" href="{{ url_for('main.beta') }}">Join Beta</a>
-    </section>
   </div>
+  <script src="{{ url_for('static', filename='landing_creators.js', v='20260710-v2') }}"></script>
+  <script src="{{ url_for('static', filename='landing_workflow.js', v='20260710-v2') }}"></script>
+  <script src="{{ url_for('static', filename='landing_explorer.js', v='20260711-v1') }}"></script>
 {% endblock %}

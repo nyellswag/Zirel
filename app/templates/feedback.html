@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Feedback - Zirel{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='public_forms.css', v='20260712-v1') }}">{% endblock %}
 
 {% block content %}
-  <div class="zv2-page zv2-form-page">
+  <div class="zv2-page zv2-form-page zform-page zform-feedback" data-public-form>
     <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
 
     <section class="zv2-hero zv2-reveal">
@@ -16,7 +17,7 @@
     </section>
 
     <div class="zv2-form-layout">
-      <form method="post" class="zv2-form-card zv2-reveal">
+      <form method="post" class="zv2-form-card zv2-reveal" data-form-card>
         <div class="zv2-form-grid">
           <div>
             <label class="form-label" for="name">Name <span>(optional)</span></label>
@@ -29,7 +30,7 @@
           <div class="zv2-form-wide">
             <label class="form-label" for="role">I am a...</label>
             <select class="form-select" id="role" name="role">
-              {% for option in ["Writer", "Game Master", "World-builder", "Game Developer", "Screenwriter", "Other"] %}
+              {% for option in ["Writer", "Game Master", "Worldbuilder", "Screenwriter", "Game Developer", "Narrative Designer", "Other"] %}
                 <option value="{{ option }}" {% if request.form.get('role') == option %}selected{% endif %}>{{ option }}</option>
               {% endfor %}
             </select>
@@ -44,7 +45,7 @@
           </div>
           <div class="zv2-form-wide">
             <label class="form-label" for="message">Feedback</label>
-            <textarea class="form-control" id="message" name="message" required placeholder="What would make Zirel more useful for your world?">{{ request.form.get('message', '') }}</textarea>
+            <textarea class="form-control" id="message" name="message" maxlength="1000" required placeholder="What would make Zirel more useful for your world?" data-form-message>{{ request.form.get('message', '') }}</textarea><small class="zform-counter" data-form-counter>0 / 1000</small>
           </div>
         </div>
         <div class="zv2-form-note"><strong>Useful feedback:</strong> confusing flows, missing features, bugs, and whether the graph or warnings help your process.</div>
@@ -65,4 +66,5 @@
       </aside>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='public_forms.js', v='20260712-v1') }}"></script>
 {% endblock %}

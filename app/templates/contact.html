@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}Contact - Zirel{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='public_forms.css', v='20260712-v1') }}">{% endblock %}
 
 {% block content %}
-  <div class="zv2-page zv2-form-page">
+  <div class="zv2-page zv2-form-page zform-page zform-contact" data-public-form>
     <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
 
     <section class="zv2-hero zv2-reveal">
@@ -17,7 +18,7 @@
 
 
     <div class="zv2-form-layout">
-      <form method="post" class="zv2-form-card zv2-reveal">
+      <form method="post" class="zv2-form-card zv2-reveal" data-form-card>
         <div class="zv2-form-grid">
           <div>
             <label class="form-label" for="name">Name <span>(optional)</span></label>
@@ -41,7 +42,7 @@
           </div>
           <div class="zv2-form-wide">
             <label class="form-label" for="message">Message</label>
-            <textarea class="form-control" id="message" name="message" required placeholder="How can we help?">{{ request.form.get('message', '') }}</textarea>
+            <textarea class="form-control" id="message" name="message" maxlength="1000" required placeholder="How can we help?" data-form-message>{{ request.form.get('message', '') }}</textarea><small class="zform-counter" data-form-counter>0 / 1000</small>
           </div>
         </div>
         <div class="zv2-form-actions">
@@ -57,4 +58,5 @@
       </aside>
     </div>
   </div>
+  <script src="{{ url_for('static', filename='public_forms.js', v='20260712-v1') }}"></script>
 {% endblock %}

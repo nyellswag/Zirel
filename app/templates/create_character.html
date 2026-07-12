@@ -3,19 +3,27 @@
 {% block title %}{% if is_edit %}Edit Character{% else %}Create Character{% endif %} - {{ project.name }}{% endblock %}
 
 {% block content %}
-  <section class="app-workspace form-shell workspace-shell">
-    <div class="form-shell-inner">
+  {% set active_section = 'dashboard' %}
+  {% include "_project_workspace_topbar.html" %}
+  <section class="entity-composer-page" data-entity-composer data-meta-fields="status,birth_year,death_year" data-name-fallback="Unnamed character" data-meta-fallback="Status and timeline details">
+    <div class="entity-composer-orb entity-composer-orb-one" aria-hidden="true"></div>
+    <div class="entity-composer-orb entity-composer-orb-two" aria-hidden="true"></div>
+    <div class="entity-composer-shell">
       <nav class="workspace-breadcrumb" aria-label="Breadcrumb"><a href="{{ url_for('main.projects') }}">Projects</a><span>/</span><a href="{{ url_for('main.project_detail', project_id=project.id) }}">{{ project.name }}</a><span>/</span><a href="{{ url_for('main.characters', project_id=project.id) }}">Characters</a><span>/</span><span>{% if is_edit %}Edit{% else %}New{% endif %}</span></nav>
-      <div class="form-shell-heading"><div><div class="workspace-eyebrow">World entity</div><h1>{% if is_edit %}Edit Character{% else %}Create Character{% endif %}</h1><p>{% if is_edit %}Refine this character's role in the world.{% else %}Add a person, creature, or key figure to {{ project.name }}.{% endif %}</p></div><a class="btn-workspace-secondary" href="{{ url_for('main.characters', project_id=project.id) }}">Back to Characters</a></div>
-      <form method="post" class="form-card">
+      {% if not is_edit %}{% set create_type = 'character' %}{% include '_entity_create_tabs.html' %}{% endif %}
+      <header class="entity-composer-header"><div><span>Character studio</span><h1>{% if is_edit %}Edit character{% else %}Create a character{% endif %}</h1><p>{% if is_edit %}Refine this character's identity and place in the world.{% else %}Add a person, creature, or key figure to {{ project.name }}.{% endif %}</p></div><a class="entity-quiet-link" href="{{ url_for('main.characters', project_id=project.id) }}">Back to characters</a></header>
+      <div class="entity-composer-grid">
+      <form method="post" class="entity-composer-form">
+        <div class="entity-form-section"><span class="entity-section-index">01</span><div><h2>Identity</h2><p>The name readers and connected records will use.</p></div></div>
         <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
-          <input type="text" class="form-control" id="name" name="name" value="{{ character.name if character else '' }}" required autofocus>
+          <label for="name" class="form-label">Character name <span>Required</span></label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ character.name if character else '' }}" placeholder="e.g. Duke Bors" required autofocus>
         </div>
         <div class="mb-3">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" id="description" name="description" rows="4">{{ character.description if character else '' }}</textarea>
+          <textarea class="form-control" id="description" name="description" rows="5" placeholder="Role, motives, personality, or important history...">{{ character.description if character else '' }}</textarea>
         </div>
+        <div class="entity-form-section"><span class="entity-section-index">02</span><div><h2>Life record</h2><p>These values help Zirel test timeline consistency.</p></div></div>
         <div class="mb-3">
           <label for="status" class="form-label">Status</label>
           <select class="form-select" id="status" name="status">
@@ -39,6 +47,17 @@
           <a class="btn-workspace-secondary" href="{{ url_for('main.characters', project_id=project.id) }}">Cancel</a>
         </div>
       </form>
+      <aside class="entity-preview-card">
+        <span class="entity-preview-kicker">Live record preview</span>
+        <div class="entity-preview-symbol">C</div>
+        <h2 data-preview-name>Unnamed character</h2>
+        <p data-preview-description>Add a description to give this character more context.</p>
+        <div class="entity-preview-meta" data-preview-meta>Status and timeline details</div>
+        <div class="entity-preview-progress"><div><span>Record depth</span><b data-form-progress-text>0% complete</b></div><i><span data-form-progress></span></i></div>
+        <div class="entity-preview-note">Character dates are used by Logic Warnings when this character participates in an event.</div>
+      </aside>
+      </div>
     </div>
   </section>
+  <script src="{{ url_for('static', filename='entity_composer.js') }}"></script>
 {% endblock %}

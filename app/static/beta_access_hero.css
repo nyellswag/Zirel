@@ -1,0 +1,27 @@
+.zhp-hero > .beta-capacity-strip {
+  grid-column: 1 / -1;
+  margin: 0;
+  max-width: none;
+  width: 100%;
+}
+
+.zirel-homepage:has(.beta-capacity-strip) .zhp-hero {
+  align-content: center;
+  gap: clamp(20px, 3vw, 38px);
+  padding-bottom: 32px;
+  padding-top: 34px;
+}
+
+@media (max-width: 900px) {
+  .zhp-hero > .beta-capacity-strip { margin: 0; }
+  .zirel-homepage:has(.beta-capacity-strip) .zhp-hero { padding-bottom: 30px; }
+}
+
+@media (max-width: 600px) {
+  .zhp-hero > .beta-capacity-strip { margin: 0; }
+  .zirel-homepage:has(.beta-capacity-strip) .zhp-hero {
+    gap: 24px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
