@@ -3,12 +3,12 @@
   var root = document.querySelector("[data-feature-explorer]");
   if (!root) return;
   var features = [
-    {label:"Private projects",desc:"Create protected worlds in your account and keep every universe separate.",kind:"projects"},
-    {label:"Core entities",desc:"Create, edit, search, filter, and bulk-manage characters, factions, and events.",kind:"entities"},
-    {label:"Relation builder",desc:"Connect records with typed relations and preview source → relation → target before saving.",kind:"relations"},
-    {label:"Logic warnings",desc:"Review explainable timeline and relationship warnings generated from current project data.",kind:"warnings"},
-    {label:"Graph workspace",desc:"Explore real entities and relations through the interactive constellation map and inspector.",kind:"graph"},
-    {label:"JSON portability",desc:"Export and import supported project data as JSON for backup and portability.",kind:"json"}
+    {label:"Organize your world",desc:"Create, edit, search, filter, and bulk-manage characters, factions, and events.",kind:"entities"},
+    {label:"Connect everything",desc:"Connect records with typed relations and preview source → relation → target before saving.",kind:"relations"},
+    {label:"Catch contradictions",desc:"Review explainable timeline and relationship warnings generated from current project data.",kind:"warnings"},
+    {label:"Explore the graph",desc:"Explore real entities and relations through the interactive constellation map and inspector.",kind:"graph"},
+    {label:"Keep projects private",desc:"Create protected worlds in your account and keep every universe separate.",kind:"projects"},
+    {label:"Export and back up your work",desc:"Export and import supported project data as JSON for backup and portability.",kind:"json"}
   ];
   var list=root.querySelector("[data-feature-list]"), inspector=root.querySelector("[data-feature-inspector]"), current=0;
   features.forEach(function(feature,index){var button=document.createElement("button");button.type="button";button.className="zle-item";button.dataset.index=index;button.setAttribute("role","tab");button.innerHTML='<span>'+String(index+1).padStart(2,"0")+'</span><i>'+["◆","◫","↗","!","⌘","{ }"][index]+'</i><b>'+feature.label+'</b><em></em>';list.appendChild(button);});
