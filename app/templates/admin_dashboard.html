@@ -27,7 +27,7 @@
     <a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a>
     <a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a>
     <a href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a>
-    <a href="{{ url_for('main.admin_wishlist') }}">Wishlist <span>{{ stats.wishlist }}</span></a>
+    <a href="{{ url_for('main.admin_wishlist') }}">Applications <span>{{ stats.wishlist }}</span></a>
   </nav>
 
   <div class="zadmin-main">
@@ -46,7 +46,7 @@
       <article class="zadmin-kpi"><span>Relations</span><strong>{{ stats.relations }}</strong><small>World links</small></article>
       <article class="zadmin-kpi"><span>Feedback</span><strong>{{ stats.feedback }}</strong><small>Tester notes</small></article>
       <article class="zadmin-kpi"><span>Contact</span><strong>{{ stats.contact }}</strong><small>Messages</small></article>
-      <article class="zadmin-kpi zadmin-kpi-wide"><span>Wishlist</span><strong>{{ stats.wishlist }}</strong><small>Pre-launch requests</small></article>
+      <article class="zadmin-kpi zadmin-kpi-wide"><span>Applications</span><strong>{{ stats.wishlist }}</strong><small>Beta candidates</small></article>
     </section>
 
     <section class="zadmin-dashboard-grid">
@@ -72,7 +72,7 @@
       </article>
 
       <article class="zadmin-panel">
-        <header><div><span>Latest</span><h2>Wishlist</h2></div><a href="{{ url_for('main.admin_wishlist') }}">View all</a></header>
+        <header><div><span>Latest</span><h2>Beta applications</h2></div><a href="{{ url_for('main.admin_wishlist') }}">View all</a></header>
         {% if wishlist_entries %}
           <div class="zadmin-feed">
             {% for entry in wishlist_entries %}
@@ -88,7 +88,7 @@
             {% endfor %}
           </div>
         {% else %}
-          <div class="zadmin-empty">No wishlist entries yet.</div>
+          <div class="zadmin-empty">No beta applications yet.</div>
         {% endif %}
       </article>
 

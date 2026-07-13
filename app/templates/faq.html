@@ -5,7 +5,7 @@
 {% block content %}
 <div class="zfq-page" data-faq>
   <div class="zfq-progress" data-faq-progress></div>
-  <header class="zfq-hero"><div><p>Zirel beta</p><h1>Frequently asked <em>questions.</em></h1><span>Answers about Zirel, beta testing, data ownership, working features, and future research.</span></div><div class="zfq-actions"><a class="zfq-primary" href="{{ url_for('main.beta') }}">Join Beta</a><a class="zfq-outline" href="{{ url_for('main.contact') }}">Contact</a></div></header>
+  <header class="zfq-hero"><div><p>Zirel beta</p><h1>Frequently asked <em>questions.</em></h1><span>Answers about Zirel, beta testing, data ownership, working features, and future research.</span></div><div class="zfq-actions"><a class="zfq-primary" href="{{ url_for('main.beta_apply') }}">Apply for Beta</a><a class="zfq-outline" href="{{ url_for('main.contact') }}">Contact</a></div></header>
   <nav class="zfq-chips" aria-label="FAQ categories"><a href="#faq-general">General</a><a href="#faq-data">Data &amp; Ownership</a><a href="#faq-beta">Beta &amp; Safety</a><a href="#faq-features">Features</a><a href="#faq-future">Future Plans</a></nav>
   <div class="zfq-layout">
     <aside class="zfq-sidebar"><p>On this page</p><nav><a href="#faq-general">General</a><a href="#faq-data">Data &amp; Ownership</a><a href="#faq-beta">Beta &amp; Safety</a><a href="#faq-features">Features</a><a href="#faq-future">Future Plans</a></nav><hr><span data-faq-count>21 questions</span><label><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"></circle><path d="m10.5 10.5 3 3"></path></svg><input type="search" data-faq-search placeholder="Search questions..." autocomplete="off"></label><a href="{{ url_for('main.contact') }}">Still curious? Contact →</a></aside>

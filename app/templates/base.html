@@ -1,15 +1,6 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9JG8J2FMPP"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-9JG8J2FMPP');
-    </script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Zirel{% endblock %}</title>
@@ -27,8 +18,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='beta_access_hero.css', v='20260712-v1') }}">
     {% block extra_head %}{% endblock %}
     <link rel="stylesheet" href="{{ url_for('static', filename='mobile_public_fixes.css', v='20260712-v1') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='beta_application_admin.css', v='20260713-v2') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='cookie_consent.css', v='20260713-v2') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='destructive_confirm.css', v='20260713-v1') }}">
   </head>
-  {% set public_endpoints = ['main.index', 'main.beta', 'main.faq', 'main.whitepaper', 'main.roadmap', 'main.feedback', 'main.contact', 'main.terms', 'main.privacy'] %}
+  {% set public_endpoints = ['main.index', 'main.beta', 'main.beta_apply', 'main.faq', 'main.whitepaper', 'main.roadmap', 'main.feedback', 'main.contact', 'main.terms', 'main.privacy'] %}
   {% set legal_document_endpoints = ['main.terms', 'main.privacy'] %}
   {% set wishlist_page = request.endpoint == 'main.wishlist' %}
   {% set graph_workspace_page = request.endpoint == 'main.graph' %}
@@ -66,7 +60,7 @@
                 <li class="nav-item"><a class="btn btn-landing-login btn-sm" href="{{ url_for('main.logout') }}">Logout</a></li>
               {% else %}
                 <li class="nav-item"><a class="btn btn-landing-login btn-sm" href="{{ url_for('main.login') }}">Log in</a></li>
-                <li class="nav-item"><a class="btn btn-landing-primary btn-sm" href="{{ url_for('main.beta') }}">Join Beta</a></li>
+                <li class="nav-item"><a class="btn btn-landing-primary btn-sm" href="{{ url_for('main.beta_apply') }}">Apply</a></li>
               {% endif %}
             </ul>
           {% else %}
@@ -116,7 +110,7 @@
           </div>
           <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
           <div><h2>Workspace</h2><a href="{{ url_for('main.projects') }}">Projects</a><a href="{{ url_for('main.login') }}">Log in</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
-          <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a></div>
+          <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a><button type="button" class="cookie-settings-link" data-cookie-settings>Cookie settings</button></div>
         </div>
         <div class="zirel-public-footer-bottom"><span>© 2026 Zirel. All rights reserved.</span><span>Early MVP. Product direction may change with beta feedback.</span></div>
       </footer>
@@ -129,15 +123,24 @@
           </div>
           <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
           <div><h2>Workspace</h2><a href="{{ url_for('main.projects') }}">Projects</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
-          <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a></div>
+          <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a><button type="button" class="cookie-settings-link" data-cookie-settings>Cookie settings</button></div>
         </div>
         <div class="zirel-public-footer-bottom"><span>© 2026 Zirel. All rights reserved.</span><span>Early MVP. Product direction may change with beta feedback.</span></div>
       </footer>
     {% endif %}
 
+    <section class="cookie-consent" data-cookie-consent aria-live="polite" hidden>
+      <div><small>Privacy controls</small><h2>Your choices, clearly.</h2><p>Zirel uses necessary cookies for sign-in and security. With your permission, analytics cookies help us understand which pages are useful.</p><a href="{{ url_for('main.privacy') }}">Read Privacy Policy</a></div>
+      <div class="cookie-consent-actions"><button type="button" data-cookie-reject>Necessary only</button><button type="button" data-cookie-customize>Customize</button><button type="button" class="primary" data-cookie-accept>Accept analytics</button></div>
+    </section>
+    <div class="cookie-modal" data-cookie-modal hidden><section role="dialog" aria-modal="true" aria-labelledby="cookie-settings-title"><header><div><small>Cookie settings</small><h2 id="cookie-settings-title">Control your data.</h2></div><button type="button" data-cookie-close aria-label="Close">×</button></header><article><div><strong>Necessary</strong><span>Always active</span><p>Required for authentication, security, and remembering your privacy choice.</p></div><div><strong>Analytics</strong><label class="cookie-switch"><input type="checkbox" data-cookie-analytics><i></i><span>Allow</span></label><p>Lets Google Analytics measure visits and page usage. Disabled until you consent.</p></div></article><footer><button type="button" data-cookie-save>Save preferences</button></footer></section></div>
+    <div class="zconfirm" data-zconfirm hidden><section role="alertdialog" aria-modal="true" aria-labelledby="zconfirm-title" aria-describedby="zconfirm-message"><button type="button" class="zconfirm-close" data-zconfirm-cancel aria-label="Close">×</button><i class="zconfirm-mark" aria-hidden="true"><span></span></i><small>Destructive action</small><h2 id="zconfirm-title">Confirm deletion</h2><p id="zconfirm-message" data-zconfirm-message>This action cannot be undone.</p><footer><button type="button" data-zconfirm-cancel>Cancel</button><button type="button" class="danger" data-zconfirm-accept>Delete permanently</button></footer></section></div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='cookie_consent.js', v='20260713-v1') }}"></script>
+    <script src="{{ url_for('static', filename='destructive_confirm.js', v='20260713-v1') }}"></script>
     <script src="{{ url_for('static', filename='list_filters.js') }}"></script>
-    <script src="{{ url_for('static', filename='form_system.js', v='20260712-v2') }}"></script>
+    <script src="{{ url_for('static', filename='form_system.js', v='20260713-v3') }}"></script>
     <script src="{{ url_for('static', filename='entity_create_refresh.js', v='20260712-v1') }}"></script>
     <script src="{{ url_for('static', filename='beta_access.js', v='20260712-v2') }}"></script>
     <script>

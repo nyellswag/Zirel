@@ -34,6 +34,8 @@ Zirel — Flask-монолит.
 
 - `SECRET_KEY`;
 - `WISHLIST_MODE`;
+- `BETA_APPLICATION_MODE` (новое имя режима; `WISHLIST_MODE` временно поддерживается как legacy alias);
+- `BETA_PROJECT_LIMIT` (по умолчанию 2 для обычного beta-пользователя; администраторы не ограничены);
 - `DATABASE_URL`.
 
 Если `DATABASE_URL` не задан, используется локальная SQLite-база `zirel.db`.
@@ -63,7 +65,7 @@ Zirel — Flask-монолит.
 Публичные маршруты:
 
 - `/`
-- `/wishlist`
+- `/beta/apply` (`/wishlist` перенаправляет сюда для обратной совместимости)
 - `/beta`
 - `/faq`
 - `/whitepaper`
@@ -91,7 +93,7 @@ Zirel — Flask-монолит.
 - `/admin/users`
 - `/admin/feedback`
 - `/admin/contact`
-- `/admin/wishlist`
+- `/admin/applications` (`/admin/wishlist` сохранён как legacy URL)
 - маршруты удаления пользователей, заявок wishlist, feedback-сообщений и contact-сообщений.
 
 ## Контроль доступа
@@ -105,9 +107,9 @@ Zirel — Flask-монолит.
 
 Админские страницы используют `admin_required`.
 
-В режиме `WISHLIST_MODE=true`:
+В режиме `BETA_APPLICATION_MODE=true` (или legacy `WISHLIST_MODE=true`):
 
-- большинство публичных и внутренних маршрутов перенаправляются на `/wishlist`;
+- большинство публичных и внутренних маршрутов перенаправляются на `/beta/apply`;
 - `/login` остается доступен;
 - админские маршруты доступны только авторизованному администратору.
 

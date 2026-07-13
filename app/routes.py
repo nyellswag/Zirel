@@ -96,6 +96,12 @@ FEEDBACK_TOPICS = [
     "Design / UX",
     "Other",
 ]
+BETA_EXPERIENCE_LEVELS = ["Just starting", "Less than 1 year", "1–3 years", "4–7 years", "8+ years"]
+BETA_ACTIVE_PROJECTS = ["One active world", "Two active worlds", "Three to five", "More than five"]
+BETA_FEEDBACK_OPTIONS = ["Every few days", "Weekly", "Once after testing", "When I find an issue"]
+BETA_ALPHA_OPTIONS = ["Yes", "Maybe", "No"]
+BETA_APPLICATION_STATUSES = ["pending", "reviewing", "approved", "waitlisted", "declined"]
+BETA_TOOL_OPTIONS = ["Notion", "Obsidian", "Scrivener", "World Anvil", "Google Docs", "Sheets", "Trello", "Pen & paper", "Other"]
 
 
 def get_admin_stats():
@@ -123,14 +129,45 @@ def normalize_invite_code(value):
     return value.strip().upper().replace(" ", "")
 
 
+def is_valid_email(value):
+    if not value or len(value) > 254 or value.count("@") != 1:
+        return False
+    local, domain = value.rsplit("@", 1)
+    if not local or len(local) > 64 or local.startswith(".") or local.endswith(".") or ".." in local:
+        return False
+    if not re.fullmatch(r"[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+", local):
+        return False
+    if len(domain) > 253 or "." not in domain:
+        return False
+    labels = domain.split(".")
+    return all(label and len(label) <= 63 and not label.startswith("-") and not label.endswith("-") and re.fullmatch(r"[A-Za-z0-9-]+", label) for label in labels)
+
+
+def get_project_limit_state(user=None):
+    user = user or current_user
+    limit = max(1, current_app.config.get("BETA_PROJECT_LIMIT", 2))
+    if not user.is_authenticated or user.is_admin:
+        return {"limit": limit, "count": 0, "remaining": limit, "reached": False}
+    count = Project.query.filter_by(user_id=user.id).count()
+    return {"limit": limit, "count": count, "remaining": max(0, limit - count), "reached": count >= limit}
+
+
+def lock_and_check_project_limit():
+    if current_user.is_admin:
+        return False
+    if db.engine.dialect.name == "postgresql":
+        db.session.execute(text('LOCK TABLE project IN SHARE ROW EXCLUSIVE MODE'))
+    return get_project_limit_state()["reached"]
+
+
 @main.before_app_request
 def restrict_routes_during_wishlist_mode():
     """Keep the pre-launch site focused while retaining admin access."""
-    if not current_app.config.get("WISHLIST_MODE", False):
+    if not current_app.config.get("BETA_APPLICATION_MODE", False):
         return None
 
     endpoint = request.endpoint or ""
-    if endpoint in {"static", "main.index", "main.wishlist", "main.login", "main.logout"}:
+    if endpoint in {"static", "main.index", "main.wishlist", "main.beta_apply", "main.login", "main.logout", "main.privacy", "main.terms"}:
         return None
 
     if endpoint.startswith("main.admin_"):
@@ -174,68 +211,84 @@ def project_access_required(view):
 
 @main.route("/")
 def index():
-    if current_app.config.get("WISHLIST_MODE", False):
-        return redirect(url_for("main.wishlist"))
+    if current_app.config.get("BETA_APPLICATION_MODE", False):
+        return redirect(url_for("main.beta_apply"))
     return render_template("index.html", beta_capacity=get_beta_capacity())
 
 
 @main.route("/wishlist", methods=["GET", "POST"])
 def wishlist():
-    def render_wishlist():
-        joined_email = request.args.get("email", "").strip().lower()
-        joined_entry = None
-        if request.args.get("joined") == "1" and joined_email:
-            joined_entry = WishlistEntry.query.filter_by(email=joined_email).first()
-        wishlist_position = None
-        wishlist_reference = None
-        if joined_entry:
-            wishlist_position = WishlistEntry.query.filter(
-                WishlistEntry.id <= joined_entry.id
-            ).count()
-            wishlist_reference = f"ZR-{joined_entry.id:04d}"
+    return redirect(url_for("main.beta_apply"), code=301)
 
+
+@main.route("/beta/apply", methods=["GET", "POST"])
+def beta_apply():
+    def render_application(submitted=False):
         return render_template(
-            "wishlist.html",
-            wishlist_roles=USER_ROLES,
-            wishlist_count=WishlistEntry.query.count(),
-            recent_wishlist_entries=WishlistEntry.query.order_by(
-                WishlistEntry.created_at.desc()
-            )
-            .limit(3)
-            .all(),
-            joined_entry=joined_entry,
-            wishlist_position=wishlist_position,
-            wishlist_reference=wishlist_reference,
+            "beta_application.html",
+            roles=USER_ROLES,
+            experience_levels=BETA_EXPERIENCE_LEVELS,
+            active_project_options=BETA_ACTIVE_PROJECTS,
+            feedback_options=BETA_FEEDBACK_OPTIONS,
+            alpha_options=BETA_ALPHA_OPTIONS,
+            tool_options=BETA_TOOL_OPTIONS,
+            recent_applications=WishlistEntry.query.filter(WishlistEntry.status != "legacy").order_by(WishlistEntry.created_at.desc()).limit(4).all(),
+            application_count=WishlistEntry.query.filter(WishlistEntry.status != "legacy").count(),
+            submitted=submitted,
         )
 
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         name = request.form.get("name", "").strip()
         role = request.form.get("role", "").strip()
-        message = request.form.get("message", "").strip()
-
-        if not email:
-            flash("Please enter your email address.", "danger")
-            return render_wishlist()
-
-        if WishlistEntry.query.filter_by(email=email).first():
-            flash("You are already on the Zirel wishlist.", "info")
-            return redirect(url_for("main.wishlist", joined=1, email=email))
-
-        if role and role not in USER_ROLES:
-            role = None
+        required = {
+            "name": name,
+            "email": email,
+            "role": role,
+            "experience": request.form.get("experience", "").strip(),
+            "active_projects": request.form.get("active_projects", "").strip(),
+            "frustration": request.form.get("frustration", "").strip(),
+            "alpha_comfort": request.form.get("alpha_comfort", "").strip(),
+            "beta_goal": request.form.get("beta_goal", "").strip(),
+            "feedback_frequency": request.form.get("feedback_frequency", "").strip(),
+        }
+        if not all(required.values()):
+            flash("Please complete every required field.", "danger")
+            return render_application()
+        if not is_valid_email(email):
+            flash("Please enter a valid email address.", "danger")
+            return render_application()
+        if request.form.get("application_terms") != "accepted":
+            flash("Please confirm the beta and privacy notice.", "danger")
+            return render_application()
+        if role not in USER_ROLES or required["experience"] not in BETA_EXPERIENCE_LEVELS or required["active_projects"] not in BETA_ACTIVE_PROJECTS or required["alpha_comfort"] not in BETA_ALPHA_OPTIONS or required["feedback_frequency"] not in BETA_FEEDBACK_OPTIONS:
+            flash("Please use the available application choices.", "danger")
+            return render_application()
+        if WishlistEntry.query.filter(db.func.lower(WishlistEntry.email) == email).first():
+            flash("An application has already been submitted for this email.", "info")
+            return render_application(submitted=True)
 
         entry = WishlistEntry(
             email=email,
-            name=name or None,
-            role=role or None,
-            message=message or None,
+            name=name,
+            role=role,
+            timezone=request.form.get("timezone", "").strip() or None,
+            experience=required["experience"],
+            active_projects=required["active_projects"],
+            frustration=required["frustration"][:2000],
+            alpha_comfort=required["alpha_comfort"],
+            heard_from=request.form.get("heard_from", "").strip() or None,
+            beta_goal=required["beta_goal"][:2000],
+            feedback_frequency=required["feedback_frequency"],
+            current_tools=", ".join([item for item in request.form.getlist("current_tools") if item in BETA_TOOL_OPTIONS]) or None,
+            product_updates=request.form.get("product_updates") == "yes",
+            status="pending",
         )
         db.session.add(entry)
         db.session.commit()
-        return redirect(url_for("main.wishlist", joined=1, email=email))
+        return redirect(url_for("main.beta_apply", submitted="1"))
 
-    return render_wishlist()
+    return render_application(submitted=request.args.get("submitted") == "1")
 
 
 @main.route("/terms")
@@ -584,6 +637,7 @@ def admin_delete_user(user_id):
     return redirect(url_for("main.admin_users"))
 
 
+@main.route("/admin/applications")
 @main.route("/admin/wishlist")
 @admin_required
 def admin_wishlist():
@@ -595,13 +649,29 @@ def admin_wishlist():
     )
 
 
+@main.route("/admin/applications/<int:entry_id>/update", methods=["POST"])
+@admin_required
+def admin_update_beta_application(entry_id):
+    entry = WishlistEntry.query.get_or_404(entry_id)
+    status = request.form.get("status", "pending").strip().lower()
+    if status not in BETA_APPLICATION_STATUSES:
+        abort(400)
+    entry.status = status
+    entry.wave = request.form.get("wave", "").strip()[:40] or None
+    entry.admin_notes = request.form.get("admin_notes", "").strip()[:2000] or None
+    db.session.commit()
+    flash("Beta application updated.", "success")
+    return redirect(url_for("main.admin_wishlist"))
+
+
+@main.route("/admin/applications/<int:entry_id>/delete", methods=["POST"])
 @main.route("/admin/wishlist/<int:entry_id>/delete", methods=["POST"])
 @admin_required
 def admin_delete_wishlist_entry(entry_id):
     entry = WishlistEntry.query.get_or_404(entry_id)
     db.session.delete(entry)
     db.session.commit()
-    flash("Wishlist entry deleted.", "success")
+    flash("Beta application deleted.", "success")
     return redirect(url_for("main.admin_wishlist"))
 
 
@@ -648,13 +718,21 @@ def projects():
         projects=all_projects,
         project_stats=project_stats,
         project_warning_counts=project_warning_counts,
+        project_limit=get_project_limit_state(),
     )
 
 
 @main.route("/projects/import", methods=["GET", "POST"])
 @login_required
 def import_project():
+    if request.method == "GET" and get_project_limit_state()["reached"]:
+        flash("Beta accounts can keep up to 2 projects. Delete a project before importing another.", "warning")
+        return redirect(url_for("main.projects"))
     if request.method == "POST":
+        if lock_and_check_project_limit():
+            db.session.rollback()
+            flash("Your beta project limit is 2. Delete a project before importing another.", "warning")
+            return redirect(url_for("main.projects"))
         uploaded_file = request.files.get("import_file")
 
         if not uploaded_file or uploaded_file.filename == "":
@@ -862,7 +940,14 @@ def graph_data(project_id):
 @main.route("/projects/create", methods=["GET", "POST"])
 @login_required
 def create_project():
+    if request.method == "GET" and get_project_limit_state()["reached"]:
+        flash("Beta accounts can keep up to 2 projects. Delete one before creating another.", "warning")
+        return redirect(url_for("main.projects"))
     if request.method == "POST":
+        if lock_and_check_project_limit():
+            db.session.rollback()
+            flash("Your beta project limit is 2. Delete one before creating another.", "warning")
+            return redirect(url_for("main.projects"))
         name = request.form.get("name", "").strip()
         description = request.form.get("description", "").strip()
 

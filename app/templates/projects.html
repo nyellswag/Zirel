@@ -79,6 +79,7 @@
         </section>
 
         <div class="zpw-action-row">
+          {% if project_limit.reached %}<span class="zpw-limit-note">Beta limit reached · {{ project_limit.count }}/{{ project_limit.limit }} projects</span>{% endif %}
           <a class="zpw-btn-primary" href="{{ url_for('main.create_project') }}">New project</a>
           <a class="zpw-btn-secondary" href="{{ url_for('main.import_project') }}">Import project</a>
           <div class="zpw-search-wrap">

@@ -202,6 +202,70 @@ Zirel — Flask-монолит для worldbuilding workflow: пользоват
 
 ---
 
+## Global destructive confirmation dialog — 13 July 2026
+
+- Добавлен единый адаптивный Zirel confirm-dialog вместо верхнего browser `confirm()`.
+- Компонент автоматически перехватывает delete forms и delete buttons во всех публичных, пользовательских и административных шаблонах.
+- Покрыты: projects, characters, factions, events, relations, bulk/delete-all, Users, Contact, Feedback и Beta Applications.
+- `Discard application` использует тот же компонент с отдельным текстом действия.
+- Диалог поддерживает Escape, клик по backdrop, возврат focus, индивидуальный текст предупреждения и mobile layout.
+- Проверены JavaScript syntax, Python compilation и глобальное подключение dialog assets через `base.html`.
+
+---
+
+## Beta application review and identity fixes — 13 July 2026
+
+- В Admin Applications рядом с `Save review` добавлена отдельная `Delete application` с подтверждением и постоянным удалением записи.
+- Recent applications теперь показывает имя в формате `Имя Ф.` вместо технического номера `0001`.
+- Удалён `novalidate`, поэтому browser email validation снова активна; дополнительно добавлена независимая server-side проверка длины, local-part, домена, точек и domain labels.
+- Проверено: `nonsense`, `a@b`, `a..b@example.com` и пустой local-part отклоняются; корректные адреса и `+alias` принимаются.
+
+---
+
+## Beta Application reference rebuild — 13 July 2026
+
+- `/beta/apply` полностью перестроен по `ZirelBetaApplicationForm.html`: editorial hero, Recent applications, пять секций, capsule/radio controls и sticky live-preview `Your Application`.
+- По запросу не перенесены Workspace sidebar и публичный Wave; wave остаётся только административным полем.
+- Сохранены кастомные dropdown Zirel/Contact и ссылка Privacy Policy в обязательном consent.
+- Добавлены Current Tools, optional product updates, character counters, Save draft, Discard и Application Strength.
+- Recent applications публично показывают только внутренний номер и инициал, без email или полного имени.
+- Добавлена миграция `c93e82fa1b21` для `current_tools` и `product_updates`; локальная база обновлена.
+- Проверено на desktop и `390×844`: два custom selects активны, overflow отсутствует, console errors отсутствуют.
+
+---
+
+## Beta application UI corrections — 13 July 2026
+
+- Beta Application selects подключены к общей кастомной `zf-select` системе вместо нативного browser dropdown.
+- Feedback cadence capsules получили устойчивую сетку, увеличенную внутреннюю высоту и отдельный mobile layout.
+- `Cookie settings` визуально выровнен с остальными ссылками публичного footer.
+- Повреждённые кодировкой символы удаления в Users и Contact заменены CSS-крестиком, не зависящим от текстовой кодировки.
+- Legacy `/wishlist` намеренно сохранён как `301` redirect на `/beta/apply`: это переводит старые поисковые результаты и внешние ссылки на новую страницу; удаление route дало бы 404 и замедлило переиндексацию.
+
+---
+
+## Beta applications, consent and project limits — 13 July 2026
+
+- Wishlist UI полностью заменён публичной формой `/beta/apply`; старый `/wishlist` теперь выполняет постоянный redirect для совместимости.
+- `WISHLIST_MODE=true` временно работает как alias нового `BETA_APPLICATION_MODE=true`, чтобы существующий Render environment не сломался при деплое.
+- Существующие wishlist email не удаляются: миграция расширяет таблицу до beta applications и маркирует прежние записи как `legacy`.
+- Новая заявка хранит имя, уникальный нормализованный email, роль, timezone, опыт, словесное количество активных проектов, проблему workflow, готовность к alpha, цель теста, источник и короткий feedback cadence.
+- Администратор управляет status, wave и private notes через `/admin/applications`; wave не показывается и не выбирается заявителем.
+- Для всех `input[type=number]` скрыты браузерные spinner arrows; в beta application количество проектов выбирается словесно.
+- Добавлен Basic Consent Mode: GA4 не загружается до явного согласия. Доступны Necessary only, Accept analytics, Customize и повторное открытие Cookie settings из footer.
+- Privacy Policy обновлена до версии 1.1 от 13 July 2026 и описывает работающий consent control.
+- Обычным beta-пользователям разрешено максимум 2 проекта, включая импорт; администраторы не ограничены. Значение настраивается через `BETA_PROJECT_LIMIT`.
+- Добавлена миграция `b82d71e9fa10`; локальная база обновлена.
+
+### Проверки
+
+- Первая beta application сохраняется, повторный email отклоняется.
+- Третий проект блокируется server-side.
+- На viewport `390×844` форма не имеет горизонтального overflow.
+- До consent Google tag отсутствует; Necessary only скрывает баннер и не загружает GA; Cookie settings повторно открывает preferences.
+
+---
+
 ## Mobile public layout fixes — 12 July 2026
 
 - Исправлен селектор графического preview на главной: после добавления beta capacity strip стили больше не применяются к ошибочному последнему элементу hero.

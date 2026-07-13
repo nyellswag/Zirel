@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Admin Contact - Zirel{% endblock %}
 
@@ -10,7 +10,7 @@
     <div class="zadmin-topbar-center">Admin / Contact</div>
     <div class="zadmin-topbar-actions"><span class="zadmin-live"><i></i>{{ contact_messages|length }} messages</span><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.logout') }}">Logout</a><span class="zadmin-avatar">{{ current_user.username[:2]|upper }}</span></div>
   </header>
-  <nav class="zadmin-tabbar" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a class="active" href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a href="{{ url_for('main.admin_wishlist') }}">Wishlist <span>{{ stats.wishlist }}</span></a></nav>
+  <nav class="zadmin-tabbar" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a class="active" href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a href="{{ url_for('main.admin_wishlist') }}">Applications <span>{{ stats.wishlist }}</span></a></nav>
 
   <div class="zadmin-main">
     <section class="zadmin-hero zadmin-hero-row"><div><span>Inbound messages</span><h1>Contact Messages</h1><p>Review contact requests, bug reports, collaboration messages, and partnership inquiries.</p></div><p class="zadmin-count" data-list-count>Showing {{ contact_messages|length }} of {{ contact_messages|length }} contact messages</p></section>
@@ -22,13 +22,13 @@
         <div class="zadmin-message-grid">
           {% for contact_message in contact_messages %}
             <article class="zadmin-message-card" data-list-item data-reason="{{ contact_message.reason or 'Other' }}" data-search-text="{{ contact_message.name or '' }} {{ contact_message.email }} {{ contact_message.reason or '' }} {{ contact_message.subject or '' }} {{ contact_message.message }}">
-              <button class="zadmin-message-main zadmin-detail-trigger" type="button" data-title="{{ contact_message.subject or contact_message.reason or 'Contact message' }}" data-meta="{{ contact_message.name or 'Anonymous visitor' }} · {{ contact_message.email }}" data-body="Submitted: {{ contact_message.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Name: {{ contact_message.name or 'Anonymous visitor' }} | Email: {{ contact_message.email }} | Reason: {{ contact_message.reason or 'Other' }} | Subject: {{ contact_message.subject or 'No subject' }} | Message: {{ contact_message.message }}">
+              <button class="zadmin-message-main zadmin-detail-trigger" type="button" data-title="{{ contact_message.subject or contact_message.reason or 'Contact message' }}" data-meta="{{ contact_message.name or 'Anonymous visitor' }} В· {{ contact_message.email }}" data-body="Submitted: {{ contact_message.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Name: {{ contact_message.name or 'Anonymous visitor' }} | Email: {{ contact_message.email }} | Reason: {{ contact_message.reason or 'Other' }} | Subject: {{ contact_message.subject or 'No subject' }} | Message: {{ contact_message.message }}">
                 <header><span class="zadmin-badge">{{ contact_message.reason or "Other" }}</span><time>{{ contact_message.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</time></header>
                 <h2>{{ contact_message.subject or contact_message.name or "Contact message" }}</h2>
                 <p>{{ contact_message.message }}</p>
                 <small>{{ contact_message.email }}</small>
               </button>
-              <form method="post" action="{{ url_for('main.admin_delete_contact_message', message_id=contact_message.id) }}" onsubmit="return confirm('Delete this contact message?');"><button class="zadmin-delete floating" type="submit" aria-label="Delete contact message">×</button></form>
+              <form method="post" action="{{ url_for('main.admin_delete_contact_message', message_id=contact_message.id) }}" onsubmit="return confirm('Delete this contact message?');"><button class="zadmin-delete floating" type="submit" aria-label="Delete contact message"><span aria-hidden="true"></span></button></form>
             </article>
           {% endfor %}
         </div>

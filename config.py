@@ -34,8 +34,10 @@ def get_engine_options():
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key")
     WISHLIST_MODE = env_flag("WISHLIST_MODE", default=False)
+    BETA_APPLICATION_MODE = env_flag("BETA_APPLICATION_MODE", default=False) or WISHLIST_MODE
     CLOSED_BETA_INVITES = env_flag("CLOSED_BETA_INVITES", default=True)
     BETA_ACCOUNT_LIMIT = int(os.environ.get("BETA_ACCOUNT_LIMIT", "100"))
+    BETA_PROJECT_LIMIT = int(os.environ.get("BETA_PROJECT_LIMIT", "2"))
     SQLALCHEMY_DATABASE_URI = get_database_uri()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_ENGINE_OPTIONS = get_engine_options()

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Admin Users - Zirel{% endblock %}
 
@@ -10,7 +10,7 @@
     <div class="zadmin-topbar-center">Admin / Users</div>
     <div class="zadmin-topbar-actions"><span class="zadmin-live"><i></i>Protected</span><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.logout') }}">Logout</a><span class="zadmin-avatar">{{ current_user.username[:2]|upper }}</span></div>
   </header>
-  <nav class="zadmin-tabbar" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a class="active" href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a href="{{ url_for('main.admin_wishlist') }}">Wishlist <span>{{ stats.wishlist }}</span></a></nav>
+  <nav class="zadmin-tabbar" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a class="active" href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a href="{{ url_for('main.admin_wishlist') }}">Applications <span>{{ stats.wishlist }}</span></a></nav>
 
   <div class="zadmin-main">
     <section class="zadmin-hero zadmin-hero-row">
@@ -35,7 +35,7 @@
                   <td><span class="zadmin-badge {% if user.is_admin %}admin{% endif %}">{{ "Admin" if user.is_admin else "User" }}</span></td>
                   <td>{{ user.projects|length }}</td>
                   <td class="mono">{{ user.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</td>
-                  <td>{% if user.id != current_user.id %}<form method="post" action="{{ url_for('main.admin_delete_user', user_id=user.id) }}" onsubmit="return confirm('Delete this user account and all of their projects?');"><button class="zadmin-delete" type="submit" aria-label="Delete user">×</button></form>{% endif %}</td>
+                  <td>{% if user.id != current_user.id %}<form method="post" action="{{ url_for('main.admin_delete_user', user_id=user.id) }}" onsubmit="return confirm('Delete this user account and all of their projects?');"><button class="zadmin-delete" type="submit" aria-label="Delete user"><span aria-hidden="true"></span></button></form>{% endif %}</td>
                 </tr>
               {% endfor %}
             </tbody>

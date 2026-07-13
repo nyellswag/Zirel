@@ -194,6 +194,19 @@ class WishlistEntry(db.Model):
     name = db.Column(db.String(120), nullable=True)
     role = db.Column(db.String(50), nullable=True)
     message = db.Column(db.Text, nullable=True)
+    timezone = db.Column(db.String(80), nullable=True)
+    experience = db.Column(db.String(80), nullable=True)
+    active_projects = db.Column(db.String(120), nullable=True)
+    frustration = db.Column(db.Text, nullable=True)
+    alpha_comfort = db.Column(db.String(20), nullable=True)
+    heard_from = db.Column(db.String(80), nullable=True)
+    beta_goal = db.Column(db.Text, nullable=True)
+    feedback_frequency = db.Column(db.String(80), nullable=True)
+    status = db.Column(db.String(30), nullable=False, default="pending")
+    wave = db.Column(db.String(40), nullable=True)
+    admin_notes = db.Column(db.Text, nullable=True)
+    current_tools = db.Column(db.Text, nullable=True)
+    product_updates = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(
         db.DateTime,
         default=lambda: datetime.now(timezone.utc),

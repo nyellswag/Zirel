@@ -1,5 +1,5 @@
 (() => {
-  const selector = [".zv2-form-card select", ".entity-composer-form select", ".project-setup-form select", ".auth-form select", ".bfm-feedback-layout select"].join(",");
+  const selector = [".zv2-form-card select", ".entity-composer-form select", ".project-setup-form select", ".auth-form select", ".bfm-feedback-layout select", ".zba-ref-form select"].join(",");
   const closeAll = except => document.querySelectorAll(".zf-select.is-open").forEach(wrapper => { if (wrapper !== except) { wrapper.classList.remove("is-open"); wrapper.querySelector(".zf-select-button")?.setAttribute("aria-expanded", "false"); } });
   const enhance = select => {
     if (select.dataset.zfEnhanced || select.multiple) return;

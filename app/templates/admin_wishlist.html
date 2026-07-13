@@ -1,43 +1,11 @@
-{% extends "base.html" %}
-
-{% block title %}Admin Wishlist - Zirel{% endblock %}
-
+﻿{% extends "base.html" %}
+{% block title %}Beta Applications - Zirel Admin{% endblock %}
 {% block content %}
 <section class="zadmin-page">
   <div class="zadmin-atmo" aria-hidden="true"><span></span><span></span><i></i></div>
-  <header class="zadmin-topbar">
-    <a class="zadmin-brand" href="{{ url_for('main.index') }}"><span class="zirel-public-brand-mark zadmin-brand-mark" aria-hidden="true"></span><strong>Zirel</strong><em>staff console</em></a>
-    <div class="zadmin-topbar-center">Admin / Wishlist</div>
-    <div class="zadmin-topbar-actions"><span class="zadmin-live"><i></i>{{ wishlist_entries|length }} requests</span><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.logout') }}">Logout</a><span class="zadmin-avatar">{{ current_user.username[:2]|upper }}</span></div>
-  </header>
-  <nav class="zadmin-tabbar" aria-label="Admin navigation"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a class="active" href="{{ url_for('main.admin_wishlist') }}">Wishlist <span>{{ stats.wishlist }}</span></a></nav>
-
-  <div class="zadmin-main">
-    <section class="zadmin-hero zadmin-hero-row"><div><span>Pre-launch queue</span><h1>Wishlist</h1><p>Review early access requests and creator signals before the public launch.</p></div><p class="zadmin-count" data-list-count>Showing {{ wishlist_entries|length }} of {{ wishlist_entries|length }} wishlist entries</p></section>
-
-    {% if wishlist_entries %}
-      <section class="zadmin-list-shell" data-filter-list data-list-label="wishlist entries">
-        <div class="zadmin-filter-row"><input class="zadmin-search" type="search" placeholder="Search wishlist..." data-list-search aria-label="Search wishlist"><select class="zadmin-select" data-list-role-filter aria-label="Filter wishlist role"><option value="">All roles</option>{% for role in ['Writer', 'Game Master', 'Worldbuilder', 'Screenwriter', 'Game Developer', 'Narrative Designer', 'Other'] %}<option value="{{ role }}">{{ role }}</option>{% endfor %}</select><p class="zadmin-count" data-list-count>Showing {{ wishlist_entries|length }} of {{ wishlist_entries|length }} wishlist entries</p></div>
-        <div class="zadmin-empty" data-list-empty hidden>No wishlist entries match your filters.</div>
-        <div class="zadmin-message-grid">
-          {% for entry in wishlist_entries %}
-            <article class="zadmin-message-card" data-list-item data-role="{{ entry.role or '' }}" data-search-text="{{ entry.email }} {{ entry.name or '' }} {{ entry.role or '' }} {{ entry.message or '' }}">
-              <button class="zadmin-message-main zadmin-detail-trigger" type="button" data-title="{{ entry.name or 'Anonymous creator' }}" data-meta="{{ entry.role or 'No role' }} · {{ entry.email }}" data-body="Submitted: {{ entry.created_at.strftime('%Y-%m-%d %H:%M') }} UTC | Name: {{ entry.name or 'Anonymous creator' }} | Email: {{ entry.email }} | Role: {{ entry.role or 'No role' }} | Message: {{ entry.message or 'No message provided.' }}">
-                <header><span class="zadmin-badge">{{ entry.role or "No role" }}</span><time>{{ entry.created_at.strftime("%Y-%m-%d %H:%M") }} UTC</time></header>
-                <h2>{{ entry.name or "Anonymous creator" }}</h2>
-                <p>{{ entry.message or "No message provided." }}</p>
-                <small>{{ entry.email }}</small>
-              </button>
-              <form method="post" action="{{ url_for('main.admin_delete_wishlist_entry', entry_id=entry.id) }}" onsubmit="return confirm('Delete this wishlist entry?');"><button class="zadmin-delete floating" type="submit" aria-label="Delete wishlist entry">×</button></form>
-            </article>
-          {% endfor %}
-        </div>
-      </section>
-    {% else %}
-      <div class="zadmin-empty big">No wishlist entries yet.</div>
-    {% endif %}
-  </div>
-
-  <aside class="zadmin-drawer" id="zadminDrawer" aria-hidden="true"><button type="button" class="zadmin-drawer-close" data-zadmin-close aria-label="Close inspector">&times;</button><span>Inspector</span><h2 data-zadmin-title>Select a wishlist entry</h2><p data-zadmin-meta>Click an entry to inspect details.</p><div data-zadmin-body></div></aside>
+  <header class="zadmin-topbar"><a class="zadmin-brand" href="{{ url_for('main.index') }}"><span class="zirel-public-brand-mark zadmin-brand-mark"></span><strong>Zirel</strong><em>staff console</em></a><div class="zadmin-topbar-center">Admin / Beta applications</div><div class="zadmin-topbar-actions"><span class="zadmin-live"><i></i>{{ wishlist_entries|length }} applications</span><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.logout') }}">Logout</a><span class="zadmin-avatar">{{ current_user.username[:2]|upper }}</span></div></header>
+  <nav class="zadmin-tabbar"><a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a><a href="{{ url_for('main.admin_users') }}">Users <span>{{ stats.users }}</span></a><a href="{{ url_for('main.admin_invites') }}">Invites <span>{{ stats.invites }}</span></a><a href="{{ url_for('main.admin_feedback') }}">Feedback <span>{{ stats.feedback }}</span></a><a href="{{ url_for('main.admin_contact') }}">Contact <span>{{ stats.contact }}</span></a><a class="active" href="{{ url_for('main.admin_wishlist') }}">Applications <span>{{ stats.wishlist }}</span></a></nav>
+  <div class="zadmin-main"><section class="zadmin-hero zadmin-hero-row"><div><span>Closed beta intake</span><h1>Applications</h1><p>Review candidates, assign a testing wave, and keep private staff notes.</p></div></section>
+  {% if wishlist_entries %}<div class="zadmin-message-grid">{% for entry in wishlist_entries %}<article class="zadmin-message-card beta-application-admin-card"><div class="zadmin-message-main"><header><span class="zadmin-badge">{{ entry.status or 'legacy' }}</span><time>{{ entry.created_at.strftime('%Y-%m-%d %H:%M') }} UTC</time></header><h2>{{ entry.name or 'Legacy applicant' }}</h2><p>{{ entry.frustration or entry.message or 'Legacy wishlist record вЂ” no full application answers.' }}</p><small>{{ entry.email }} В· {{ entry.role or 'No role' }} В· {{ entry.feedback_frequency or 'No feedback cadence' }}</small><div class="beta-application-details"><span>Experience: {{ entry.experience or 'вЂ”' }}</span><span>Projects: {{ entry.active_projects or 'вЂ”' }}</span><span>Alpha comfort: {{ entry.alpha_comfort or 'вЂ”' }}</span><span>Goal: {{ entry.beta_goal or 'вЂ”' }}</span></div></div><form class="beta-application-review" method="post" action="{{ url_for('main.admin_update_beta_application', entry_id=entry.id) }}"><label>Status<select name="status">{% for item in ['pending','reviewing','approved','waitlisted','declined'] %}<option value="{{ item }}" {% if entry.status == item %}selected{% endif %}>{{ item|title }}</option>{% endfor %}</select></label><label>Wave<input name="wave" value="{{ entry.wave or '' }}" placeholder="e.g. Wave 1"></label><label>Private notes<textarea name="admin_notes" rows="2">{{ entry.admin_notes or '' }}</textarea></label><button type="submit">Save review</button><button class="danger" type="submit" formaction="{{ url_for('main.admin_delete_wishlist_entry', entry_id=entry.id) }}" formmethod="post" formnovalidate onclick="return confirm('Delete this beta application permanently?');">Delete application</button></form></article>{% endfor %}</div>{% else %}<div class="zadmin-empty big">No beta applications yet.</div>{% endif %}</div>
 </section>
 {% endblock %}

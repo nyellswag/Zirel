@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 
 {% block title %}Terms of Service - Zirel{% endblock %}
 {% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='terms_of_service_reference.css', v='20260710-brand-footer-v3') }}">{% endblock %}
@@ -68,7 +68,7 @@
     <section class="doc-section" id="section-6"><div class="section-heading"><span class="section-num">06</span><h2><em>Logic</em> analysis</h2></div><p>Logic Warnings are rule-based suggestions generated from project facts and relations. They may miss contradictions, misunderstand incomplete data, or flag an intentional creative choice.</p><div class="callout"><span class="callout-label">Please read</span><p>Zirel does not guarantee that a world, manuscript, campaign, screenplay, or game is accurate, original, publishable, legally safe, commercially viable, or error-free. You remain responsible for reviewing every result.</p></div><p>AI analysis is not part of the current core service. If it is added later, its operation and data handling will be explained separately.</p></section>
     <span class="section-rule"></span>
 
-    <section class="doc-section" id="section-7"><div class="section-heading"><span class="section-num">07</span><h2><em>Privacy</em> and data</h2></div><p>Our handling of account data, project content, analytics, messages, cookies, providers, retention, and privacy requests is described in the <a href="{{ url_for('main.privacy') }}" class="inline-code">Privacy Policy</a>.</p><p>Zirel currently uses Render for application and PostgreSQL hosting and Google Analytics for website measurement. No system can guarantee absolute security, so avoid highly sensitive or irreplaceable material during beta.</p></section>
+    <section class="doc-section" id="section-7"><div class="section-heading"><span class="section-num">07</span><h2><em>Privacy</em> and data</h2></div><p>Our handling of account data, project content, analytics, messages, cookies, providers, retention, and privacy requests is described in the <a href="{{ url_for('main.privacy') }}" class="inline-code">Privacy Policy</a>.</p><p>Zirel currently uses Render for application and PostgreSQL hosting and, only after analytics consent, Google Analytics for website measurement. No system can guarantee absolute security, so avoid highly sensitive or irreplaceable material during beta.</p></section>
     <span class="section-rule"></span>
 
     <section class="doc-section" id="section-8"><div class="section-heading"><span class="section-num">08</span><h2><em>Export</em> and termination</h2></div><p>You may stop using Zirel at any time. Projects can be deleted from the application and exported in the supported JSON format. Self-service account deletion is not yet available; broader deletion requests can be submitted through Contact.</p><p>Zirel may suspend or terminate access for serious misuse, security needs, legal obligations, or discontinuation of the beta. Export important projects before deleting them or closing access.</p><p>Deleted information may remain temporarily in provider backups, security logs, or records required by law.</p></section>
@@ -89,7 +89,7 @@
     <div class="zirel-public-footer-brand"><a class="zirel-public-brand" href="{{ url_for('main.index') }}"><span class="zirel-public-brand-mark" aria-hidden="true"></span><span class="zirel-public-wordmark">Zirel</span></a><p>A quiet logic layer for creators of connected fictional worlds.</p></div>
     <div><h2>Product</h2><a href="{{ url_for('main.beta') }}">Beta</a><a href="{{ url_for('main.roadmap') }}">Roadmap</a><a href="{{ url_for('main.whitepaper') }}">Whitepaper</a><a href="{{ url_for('main.faq') }}">FAQ</a></div>
     <div><h2>Workspace</h2><a href="{{ url_for('main.projects') }}">Projects</a><a href="{{ url_for('main.login') }}">Log in</a><a href="{{ url_for('main.feedback') }}">Feedback</a></div>
-    <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a></div>
+    <div><h2>Policies</h2><a href="{{ url_for('main.terms') }}">Terms</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.contact') }}">Contact</a><button type="button" class="cookie-settings-link" data-cookie-settings>Cookie settings</button></div>
   </div>
   <div class="zirel-public-footer-bottom"><span>&copy; 2026 Zirel. All rights reserved.</span><span>Early MVP. Product direction may change with beta feedback.</span></div>
 </footer>
