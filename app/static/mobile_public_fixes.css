@@ -6,19 +6,16 @@
     backdrop-filter: none;
     isolation: isolate;
   }
-
   .zirel-public-topbar .navbar-collapse {
     background: #08080d;
     box-shadow: 0 18px 36px rgba(0, 0, 0, 0.45);
   }
-
   .zhp-hero {
     align-items: start;
     gap: 30px;
     min-height: 0;
     padding: 28px 0 42px;
   }
-
   .zhp-hero > .zhp-reveal[aria-label="Interactive Zirel world engine preview"] {
     margin: 0 auto;
     max-width: 520px;
@@ -30,38 +27,31 @@
   .zirel-homepage {
     padding-top: 34px;
   }
-
   .zhp-hero {
     gap: 26px;
     padding-top: 18px;
   }
-
   .zhp-hero h1 {
     font-size: clamp(44px, 13.5vw, 58px);
     line-height: 0.98;
   }
-
   .zhp-hero p {
     font-size: 15px;
     line-height: 1.65;
     margin-top: 18px;
   }
-
   .zhp-actions {
     margin-top: 24px;
   }
-
   .zhp-hero .engine {
     height: min(88vw, 350px);
     max-height: min(88vw, 350px);
     max-width: min(88vw, 350px);
     width: min(88vw, 350px);
   }
-
   .zhp-hero > .beta-capacity-strip {
     padding: 18px;
   }
-
   .zle-section {
     margin-top: 64px;
   }
@@ -75,7 +65,6 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-
   .legal-doc-body .body-wrap,
   .legal-doc-body .body-wrapper {
     grid-template-columns: minmax(0, 1fr);
@@ -83,7 +72,6 @@
     min-width: 0;
     overflow: hidden;
   }
-
   .legal-doc-body .document,
   .legal-doc-body .doc-section,
   .legal-doc-body .section-heading,
@@ -93,7 +81,6 @@
     overflow-wrap: anywhere;
     width: 100%;
   }
-
   .legal-doc-body .glass,
   .legal-doc-body .legal-glass-table-wrap {
     max-width: 100%;
@@ -102,12 +89,10 @@
     width: 100%;
     -webkit-overflow-scrolling: touch;
   }
-
   .legal-doc-body .glass-table,
   .legal-doc-body .legal-glass-table {
     min-width: 560px;
   }
-
   .legal-doc-body .processor-pills,
   .legal-doc-body .meta-row,
   .legal-doc-body .legal-meta-row {

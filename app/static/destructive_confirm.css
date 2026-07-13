@@ -1,1 +1,121 @@
-.zconfirm[hidden]{display:none}.zconfirm{position:fixed;z-index:6000;inset:0;display:grid;place-items:center;padding:18px;background:rgba(2,2,5,.76);backdrop-filter:blur(8px)}.zconfirm>section{position:relative;width:min(450px,100%);padding:30px;border:1px solid rgba(248,113,113,.2);border-radius:17px;background:radial-gradient(circle at 50% 0,rgba(127,29,29,.12),transparent 48%),#0c0b11;box-shadow:0 32px 100px #000c;color:#ececec;text-align:center}.zconfirm-close{position:absolute;right:12px;top:10px;border:0;background:transparent;color:#696271;font-size:22px}.zconfirm-mark{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 17px;border:1px solid rgba(248,113,113,.28);border-radius:50%;background:rgba(248,113,113,.07);box-shadow:0 0 30px rgba(248,113,113,.08)}.zconfirm-mark span{position:relative;width:18px;height:18px}.zconfirm-mark span:before,.zconfirm-mark span:after{content:"";position:absolute;left:2px;top:8px;width:14px;height:1px;background:#fda4af;transform:rotate(45deg)}.zconfirm-mark span:after{transform:rotate(-45deg)}.zconfirm small{color:#f87171;font:9px "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase}.zconfirm h2{margin:7px 0 9px;font:300 30px Fraunces,serif}.zconfirm p{max-width:350px;margin:0 auto;color:#8f8997;font-size:12px;line-height:1.6}.zconfirm footer{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:25px}.zconfirm footer button{min-height:42px;border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.035);color:#aaa4b2;font:10px "JetBrains Mono",monospace}.zconfirm footer .danger{border-color:rgba(248,113,113,.35);background:linear-gradient(135deg,#991b1b,#e11d48);box-shadow:0 10px 28px rgba(190,24,93,.2);color:#fff}@media(max-width:480px){.zconfirm>section{padding:26px 18px}.zconfirm footer{grid-template-columns:1fr}}
+.zconfirm[hidden] {
+  display:none
+}
+
+.zconfirm {
+  position:fixed;
+  z-index:6000;
+  inset:0;
+  display:grid;
+  place-items:center;
+  padding:18px;
+  background:rgba(2,2,5,.76);
+  backdrop-filter:blur(8px)
+}
+
+.zconfirm>section {
+  position:relative;
+  width:min(450px,100%);
+  padding:30px;
+  border:1px solid rgba(248,113,113,.2);
+  border-radius:17px;
+  background:radial-gradient(circle at 50% 0,rgba(127,29,29,.12),transparent 48%),#0c0b11;
+  box-shadow:0 32px 100px #000c;
+  color:#ececec;
+  text-align:center
+}
+
+.zconfirm-close {
+  position:absolute;
+  right:12px;
+  top:10px;
+  border:0;
+  background:transparent;
+  color:#696271;
+  font-size:22px
+}
+
+.zconfirm-mark {
+  display:grid;
+  place-items:center;
+  width:54px;
+  height:54px;
+  margin:0 auto 17px;
+  border:1px solid rgba(248,113,113,.28);
+  border-radius:50%;
+  background:rgba(248,113,113,.07);
+  box-shadow:0 0 30px rgba(248,113,113,.08)
+}
+
+.zconfirm-mark span {
+  position:relative;
+  width:18px;
+  height:18px
+}
+
+.zconfirm-mark span:before,.zconfirm-mark span:after {
+  content:"";
+  position:absolute;
+  left:2px;
+  top:8px;
+  width:14px;
+  height:1px;
+  background:#fda4af;
+  transform:rotate(45deg)
+}
+
+.zconfirm-mark span:after {
+  transform:rotate(-45deg)
+}
+
+.zconfirm small {
+  color:#f87171;
+  font:9px "JetBrains Mono",monospace;
+  letter-spacing:.14em;
+  text-transform:uppercase
+}
+
+.zconfirm h2 {
+  margin:7px 0 9px;
+  font:300 30px Fraunces,serif
+}
+
+.zconfirm p {
+  max-width:350px;
+  margin:0 auto;
+  color:#8f8997;
+  font-size:12px;
+  line-height:1.6
+}
+
+.zconfirm footer {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin-top:25px
+}
+
+.zconfirm footer button {
+  min-height:42px;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:9px;
+  background:rgba(255,255,255,.035);
+  color:#aaa4b2;
+  font:10px "JetBrains Mono",monospace
+}
+
+.zconfirm footer .danger {
+  border-color:rgba(248,113,113,.35);
+  background:linear-gradient(135deg,#991b1b,#e11d48);
+  box-shadow:0 10px 28px rgba(190,24,93,.2);
+  color:#fff
+}
+
+@media(max-width:480px) {
+  .zconfirm>section {
+    padding:26px 18px
+  }
+  .zconfirm footer {
+    grid-template-columns:1fr
+  }
+}

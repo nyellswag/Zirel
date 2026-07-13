@@ -1,17 +1,115 @@
-.beta-application-admin-card { display: grid; grid-template-columns: minmax(0, 1fr) 300px; }
-.beta-application-details { display: grid; gap: 5px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.06); color: #777184; font-size: 10px; }
-.beta-application-review { display: grid; gap: 10px; padding: 18px; border-left: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.015); }
-.beta-application-review label { display: grid; gap: 5px; color: #716b7c; font: 9px "JetBrains Mono", monospace; text-transform: uppercase; }
-.beta-application-review input, .beta-application-review select, .beta-application-review textarea { border: 1px solid rgba(255,255,255,.08); border-radius: 7px; background: #08070c; color: #ddd; padding: 8px; font: 11px Inter, sans-serif; text-transform: none; }
-.beta-application-review button { border: 1px solid rgba(139,92,246,.35); border-radius: 7px; background: rgba(139,92,246,.12); color: #c4b5fd; padding: 9px; font: 10px "JetBrains Mono", monospace; }
-.beta-application-review button.danger { border-color: rgba(248,113,113,.3); background: rgba(248,113,113,.08); color: #fda4af; }
-.beta-application-review button.danger:hover { border-color: rgba(248,113,113,.55); background: rgba(248,113,113,.14); color: #fff; }
-@media (max-width: 800px) { .beta-application-admin-card { grid-template-columns: 1fr; } .beta-application-review { border-left: 0; border-top: 1px solid rgba(255,255,255,.07); } }
+.beta-application-admin-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
 
-.zba-form fieldset:nth-of-type(3) .zba-choice { padding-bottom: 5px; }
-.zba-form fieldset:nth-of-type(3) .zba-choice > div { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.zba-form fieldset:nth-of-type(3) .zba-choice label { align-items: center; min-height: 42px; line-height: 1.35; padding: 9px 12px; }
-.zadmin-delete > span { display: block; height: 12px; position: relative; width: 12px; }
-.zadmin-delete > span::before, .zadmin-delete > span::after { background: currentColor; content: ""; height: 1px; left: 1px; position: absolute; top: 5px; transform: rotate(45deg); width: 10px; }
-.zadmin-delete > span::after { transform: rotate(-45deg); }
-@media (max-width: 520px) { .zba-form fieldset:nth-of-type(3) .zba-choice > div { grid-template-columns: 1fr; } }
+.beta-application-details {
+  display: grid;
+  gap: 5px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.06);
+  color: #777184;
+  font-size: 10px;
+}
+
+.beta-application-review {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+  border-left: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.015);
+}
+
+.beta-application-review label {
+  display: grid;
+  gap: 5px;
+  color: #716b7c;
+  font: 9px "JetBrains Mono", monospace;
+  text-transform: uppercase;
+}
+
+.beta-application-review input, .beta-application-review select, .beta-application-review textarea {
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 7px;
+  background: #08070c;
+  color: #ddd;
+  padding: 8px;
+  font: 11px Inter, sans-serif;
+  text-transform: none;
+}
+
+.beta-application-review button {
+  border: 1px solid rgba(139,92,246,.35);
+  border-radius: 7px;
+  background: rgba(139,92,246,.12);
+  color: #c4b5fd;
+  padding: 9px;
+  font: 10px "JetBrains Mono", monospace;
+}
+
+.beta-application-review button.danger {
+  border-color: rgba(248,113,113,.3);
+  background: rgba(248,113,113,.08);
+  color: #fda4af;
+}
+
+.beta-application-review button.danger:hover {
+  border-color: rgba(248,113,113,.55);
+  background: rgba(248,113,113,.14);
+  color: #fff;
+}
+
+@media (max-width: 800px) {
+  .beta-application-admin-card {
+    grid-template-columns: 1fr;
+  }
+  .beta-application-review {
+    border-left: 0;
+    border-top: 1px solid rgba(255,255,255,.07);
+  }
+}
+
+.zba-form fieldset:nth-of-type(3) .zba-choice {
+  padding-bottom: 5px;
+}
+
+.zba-form fieldset:nth-of-type(3) .zba-choice > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.zba-form fieldset:nth-of-type(3) .zba-choice label {
+  align-items: center;
+  min-height: 42px;
+  line-height: 1.35;
+  padding: 9px 12px;
+}
+
+.zadmin-delete > span {
+  display: block;
+  height: 12px;
+  position: relative;
+  width: 12px;
+}
+
+.zadmin-delete > span::before, .zadmin-delete > span::after {
+  background: currentColor;
+  content: "";
+  height: 1px;
+  left: 1px;
+  position: absolute;
+  top: 5px;
+  transform: rotate(45deg);
+  width: 10px;
+}
+
+.zadmin-delete > span::after {
+  transform: rotate(-45deg);
+}
+
+@media (max-width: 520px) {
+  .zba-form fieldset:nth-of-type(3) .zba-choice > div {
+    grid-template-columns: 1fr;
+  }
+}

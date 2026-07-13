@@ -13,12 +13,18 @@
 }
 
 @media (max-width: 900px) {
-  .zhp-hero > .beta-capacity-strip { margin: 0; }
-  .zirel-homepage:has(.beta-capacity-strip) .zhp-hero { padding-bottom: 30px; }
+  .zhp-hero > .beta-capacity-strip {
+    margin: 0;
+  }
+  .zirel-homepage:has(.beta-capacity-strip) .zhp-hero {
+    padding-bottom: 30px;
+  }
 }
 
 @media (max-width: 600px) {
-  .zhp-hero > .beta-capacity-strip { margin: 0; }
+  .zhp-hero > .beta-capacity-strip {
+    margin: 0;
+  }
   .zirel-homepage:has(.beta-capacity-strip) .zhp-hero {
     gap: 24px;
     padding-left: 16px;
