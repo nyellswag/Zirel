@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 
 {% block title %}Contact - Zirel{% endblock %}
-{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='public_forms.css', v='20260712-v1') }}">{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{{ url_for('static', filename='public_forms.css', v='20260714-v2') }}">{% endblock %}
 
 {% block content %}
   <div class="zv2-page zv2-form-page zform-page zform-contact" data-public-form>
     <div class="zv2-atmos" aria-hidden="true"><span></span><span></span><span></span></div>
 
-    <section class="zv2-hero zv2-reveal">
+    <section class="zv2-hero zcontact-hero zv2-reveal">
       <div>
         <p class="zv2-kicker">Get in touch</p>
         <h1>Contact <em>Zirel</em>.</h1>
         <p>Questions, bug reports, beta access, and collaboration ideas are all welcome.</p>
       </div>
-      <a class="zv2-btn-secondary" href="{{ url_for('main.index') }}">Back Home</a>
+      <div class="zcontact-hero-meta"><span><i></i>Messages are reviewed during beta</span><a class="zv2-btn-secondary" href="{{ url_for('main.index') }}">Back Home</a></div>
     </section>
 
 
     <div class="zv2-form-layout">
       <form method="post" class="zv2-form-card zv2-reveal" data-form-card>
+        <header class="zcontact-form-head"><div><span>Secure message form</span><h2>What can we help with?</h2><p>Give us enough context to understand the request. Required fields are kept intentionally minimal.</p></div><div class="zcontact-progress"><b data-contact-progress>0%</b><i><em data-contact-progress-fill></em></i><small>Message readiness</small></div></header>
         <div class="zv2-form-grid">
           <div>
             <label class="form-label" for="name">Name <span>(optional)</span></label>
@@ -30,7 +31,7 @@
           </div>
           <div>
             <label class="form-label" for="reason">Reason</label>
-            <select class="form-select" id="reason" name="reason">
+            <select class="form-select" id="reason" name="reason" data-contact-reason>
               {% for option in ["General question", "Beta access", "Bug report", "Collaboration", "Business / partnership", "Other"] %}
                 <option value="{{ option }}" {% if request.form.get('reason') == option %}selected{% endif %}>{{ option }}</option>
               {% endfor %}
@@ -51,12 +52,14 @@
         </div>
       </form>
 
-      <aside class="zv2-side-card zv2-reveal">
-        <p class="zv2-kicker">Response context</p>
-        <h2>Tell us what you need.</h2>
-        <p>For bug reports, include what page you were on and what you expected to happen. For beta or collaboration messages, a short context is enough.</p>
+      <aside class="zv2-side-card zcontact-context zv2-reveal" data-contact-context>
+        <div class="zcontact-context-status"><i></i><span>Response context<small data-contact-route>General inquiry</small></span></div>
+        <h2 data-contact-title>Tell us what you need.</h2>
+        <p data-contact-copy>A short explanation of your question and the outcome you want is enough to begin.</p>
+        <div class="zcontact-context-list" data-contact-tips><span>Useful details</span><ul><li>What you are trying to do</li><li>Where you need clarification</li><li>How we can respond</li></ul></div>
+        <footer><span>Privacy note</span><p>Do not include passwords, invitation codes, or sensitive world content. Your email is used to respond to this message.</p><a href="{{ url_for('main.privacy') }}">Read Privacy Policy &rarr;</a></footer>
       </aside>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='public_forms.js', v='20260712-v1') }}"></script>
+  <script src="{{ url_for('static', filename='public_forms.js', v='20260714-v2') }}"></script>
 {% endblock %}

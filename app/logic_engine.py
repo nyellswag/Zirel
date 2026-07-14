@@ -1,19 +1,65 @@
 from app.models import Character, Event, Faction
 
 
+STRONGLY_MUTUAL_TYPES = {
+    "allied_with",
+    "friends_with",
+    "siblings_with",
+    "married_to",
+    "rivals_with",
+    "enemies_with",
+    "partners_with",
+    "trades_with",
+    "at_war_with",
+    "related_to",
+    "connected_to",
+}
+
+INVERSE_RELATION_TYPES = {
+    "parent_of", "child_of", "teacher_of", "student_of", "mentor_of", "mentored_by",
+    "leader_of", "led_by", "member_of", "has_member", "rules", "ruled_by", "owns",
+    "owned_by", "serves", "served_by", "employs", "employed_by", "created", "created_by",
+    "located_in", "contains", "participated_in", "has_participant", "descendant_of",
+    "ancestor_of", "successor_to", "predecessor_to", "founded", "founded_by", "born_in",
+    "birthplace_of", "died_in", "death_place_of", "precedes", "follows", "part_of",
+    "includes", "guardian_of", "protected_by",
+}
+
+
 def analyze_project(project):
     warnings = []
     relations = list(project.relations)
-    relation_keys = {
-        (
-            relation.source_type,
-            relation.source_id,
-            relation.relation_type,
-            relation.target_type,
-            relation.target_id,
+    relation_keys = set()
+    for relation in relations:
+        relation_keys.add(
+            (
+                relation.source_type,
+                relation.source_id,
+                relation.relation_type,
+                relation.target_type,
+                relation.target_id,
+            )
         )
-        for relation in relations
-    }
+        if relation.direction_mode == "mutual":
+            relation_keys.add(
+                (
+                    relation.target_type,
+                    relation.target_id,
+                    relation.relation_type,
+                    relation.source_type,
+                    relation.source_id,
+                )
+            )
+        elif relation.direction_mode == "inverse" and relation.inverse_relation_type:
+            relation_keys.add(
+                (
+                    relation.target_type,
+                    relation.target_id,
+                    relation.inverse_relation_type,
+                    relation.source_type,
+                    relation.source_id,
+                )
+            )
 
     for relation in relations:
         source = resolve_entity(project, relation.source_type, relation.source_id)
@@ -50,6 +96,80 @@ def analyze_project(project):
                         ],
                     )
                 )
+
+        if relation.relation_type in STRONGLY_MUTUAL_TYPES and relation.direction_mode == "one_way" and source and target:
+            warnings.append(
+                build_warning(
+                    warning_type="mutual_type_is_one_way",
+                    category="Relationships",
+                    severity="low",
+                    title="Mutual relation is stored as one-way",
+                    message=f"{source.name} is {relation.relation_type.replace('_', ' ')} {target.name}, but the relation is visible in one direction only.",
+                    explanation="This relation type usually describes a shared connection. One-way may be intentional, but it can make the graph and entity views imply an uneven relationship.",
+                    suggestions=[
+                        "Change the direction mode to Mutual if both sides share the same relation.",
+                        "Keep One-way if the asymmetry is intentional and explain it in the relation notes.",
+                        "Use an inverse pair if each side describes the connection differently.",
+                    ],
+                )
+            )
+
+        if relation.relation_type in INVERSE_RELATION_TYPES and relation.direction_mode == "mutual" and source and target:
+            warnings.append(
+                build_warning(
+                    warning_type="directional_type_is_mutual",
+                    category="Relationships",
+                    severity="medium",
+                    title="Directional relation is marked mutual",
+                    message=f"{source.name} and {target.name} share the same “{relation.relation_type.replace('_', ' ')}” label in both directions.",
+                    explanation="This type normally changes meaning when read backwards. Mutual mode can incorrectly describe both entities as having the same role.",
+                    suggestions=[
+                        "Change the direction mode to Inverse pair.",
+                        "Add the correct reverse label, such as parent/child or teacher/student.",
+                        "Keep Mutual only if this custom world intentionally gives both sides the same role.",
+                    ],
+                )
+            )
+
+    reciprocal_seen = set()
+    for relation in relations:
+        if relation.direction_mode != "one_way":
+            continue
+        reverse = next(
+            (
+                candidate
+                for candidate in relations
+                if candidate.id != relation.id
+                and candidate.direction_mode == "one_way"
+                and candidate.relation_type == relation.relation_type
+                and candidate.source_type == relation.target_type
+                and candidate.source_id == relation.target_id
+                and candidate.target_type == relation.source_type
+                and candidate.target_id == relation.source_id
+            ),
+            None,
+        )
+        pair = tuple(sorted((relation.id, reverse.id))) if reverse else None
+        if not reverse or pair in reciprocal_seen:
+            continue
+        reciprocal_seen.add(pair)
+        source = resolve_entity(project, relation.source_type, relation.source_id)
+        target = resolve_entity(project, relation.target_type, relation.target_id)
+        if source and target:
+            warnings.append(
+                build_warning(
+                    warning_type="duplicate_reciprocal_relations",
+                    category="Structure",
+                    severity="low",
+                    title="Two one-way relations can be simplified",
+                    message=f"{source.name} and {target.name} have matching “{relation.relation_type.replace('_', ' ')}” relations in both directions.",
+                    explanation="Two separate rows describe the same symmetric connection. A single Mutual relation is easier to edit, delete, export, and inspect.",
+                    suggestions=[
+                        "Keep one relation, change it to Mutual, and delete the duplicate reverse row.",
+                        "Keep both one-way rows if their notes or meanings are intentionally different.",
+                    ],
+                )
+            )
 
     check_internal_faction_conflicts(warnings, project)
     return warnings

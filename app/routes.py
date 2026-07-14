@@ -64,6 +64,81 @@ RELATION_TYPE_HELPERS = {
     "rules": "Usually character/faction -> faction/location-like entity.",
     "located_in": "Usually character/faction/event -> event or location-like entity.",
 }
+RELATION_DIRECTION_MODES = {"one_way", "mutual", "inverse"}
+RELATION_TYPE_CATALOG = {
+    "knows": ("Knows", "one_way", None),
+    "supports": ("Supports", "one_way", None),
+    "opposes": ("Opposes", "one_way", None),
+    "protects": ("Protects", "one_way", None),
+    "betrayed": ("Betrayed", "one_way", None),
+    "influences": ("Influences", "one_way", None),
+    "admires": ("Admires", "one_way", None),
+    "fears": ("Fears", "one_way", None),
+    "loves": ("Loves", "one_way", None),
+    "trusts": ("Trusts", "one_way", None),
+    "distrusts": ("Distrusts", "one_way", None),
+    "owes_a_debt_to": ("Owes a debt to", "one_way", None),
+    "commands": ("Commands", "one_way", None),
+    "worships": ("Worships", "one_way", None),
+    "haunts": ("Haunts", "one_way", None),
+    "caused": ("Caused", "one_way", None),
+    "destroyed": ("Destroyed", "one_way", None),
+    "discovered": ("Discovered", "one_way", None),
+    "appears_in": ("Appears in", "one_way", None),
+    "hates": ("Hates", "one_way", None),
+    "loyal_to": ("Loyal to", "one_way", None),
+    "allied_with": ("Allied with", "mutual", None),
+    "friends_with": ("Friends with", "mutual", None),
+    "siblings_with": ("Siblings with", "mutual", None),
+    "married_to": ("Married to", "mutual", None),
+    "rivals_with": ("Rivals with", "mutual", None),
+    "enemies_with": ("Enemies with", "mutual", None),
+    "partners_with": ("Partners with", "mutual", None),
+    "trades_with": ("Trades with", "mutual", None),
+    "at_war_with": ("At war with", "mutual", None),
+    "related_to": ("Related to", "mutual", None),
+    "connected_to": ("Connected to", "mutual", None),
+    "parent_of": ("Parent of", "inverse", "child_of"),
+    "child_of": ("Child of", "inverse", "parent_of"),
+    "teacher_of": ("Teacher of", "inverse", "student_of"),
+    "student_of": ("Student of", "inverse", "teacher_of"),
+    "mentor_of": ("Mentor of", "inverse", "mentored_by"),
+    "mentored_by": ("Mentored by", "inverse", "mentor_of"),
+    "leader_of": ("Leader of", "inverse", "led_by"),
+    "led_by": ("Led by", "inverse", "leader_of"),
+    "member_of": ("Member of", "inverse", "has_member"),
+    "has_member": ("Has member", "inverse", "member_of"),
+    "rules": ("Rules", "inverse", "ruled_by"),
+    "ruled_by": ("Ruled by", "inverse", "rules"),
+    "owns": ("Owns", "inverse", "owned_by"),
+    "owned_by": ("Owned by", "inverse", "owns"),
+    "serves": ("Serves", "inverse", "served_by"),
+    "served_by": ("Served by", "inverse", "serves"),
+    "employs": ("Employs", "inverse", "employed_by"),
+    "employed_by": ("Employed by", "inverse", "employs"),
+    "created": ("Created", "inverse", "created_by"),
+    "created_by": ("Created by", "inverse", "created"),
+    "located_in": ("Located in", "inverse", "contains"),
+    "contains": ("Contains", "inverse", "located_in"),
+    "participated_in": ("Participated in", "inverse", "has_participant"),
+    "has_participant": ("Has participant", "inverse", "participated_in"),
+    "descendant_of": ("Descendant of", "inverse", "ancestor_of"),
+    "ancestor_of": ("Ancestor of", "inverse", "descendant_of"),
+    "successor_to": ("Successor to", "inverse", "predecessor_to"),
+    "predecessor_to": ("Predecessor to", "inverse", "successor_to"),
+    "founded": ("Founded", "inverse", "founded_by"),
+    "founded_by": ("Founded by", "inverse", "founded"),
+    "born_in": ("Born in", "inverse", "birthplace_of"),
+    "birthplace_of": ("Birthplace of", "inverse", "born_in"),
+    "died_in": ("Died in", "inverse", "death_place_of"),
+    "death_place_of": ("Death place of", "inverse", "died_in"),
+    "precedes": ("Precedes", "inverse", "follows"),
+    "follows": ("Follows", "inverse", "precedes"),
+    "part_of": ("Part of", "inverse", "includes"),
+    "includes": ("Includes", "inverse", "part_of"),
+    "guardian_of": ("Guardian of", "inverse", "protected_by"),
+    "protected_by": ("Protected by", "inverse", "guardian_of"),
+}
 GRAPH_NODE_STYLES = {
     "character": {"color": "#8b5cf6", "glyph": "§"},
     "faction": {"color": "#5eead4", "glyph": "◇"},
@@ -127,6 +202,107 @@ def get_beta_capacity():
 
 def normalize_invite_code(value):
     return value.strip().upper().replace(" ", "")
+
+
+def normalize_relation_type(value):
+    value = re.sub(r"[\s-]+", "_", str(value or "").strip().casefold())
+    value = re.sub(r"[^\w]+", "", value, flags=re.UNICODE)
+    return value.strip("_")[:80]
+
+
+def relation_type_label(value):
+    if value in RELATION_TYPE_CATALOG:
+        return RELATION_TYPE_CATALOG[value][0]
+    return str(value or "").replace("_", " ").strip().title()
+
+
+def get_relation_type_options(project, include_catalog=True):
+    values = set(RELATION_TYPE_CATALOG) if include_catalog else set()
+    for relation in project.relations:
+        values.add(relation.relation_type)
+        if relation.inverse_relation_type:
+            values.add(relation.inverse_relation_type)
+    return [
+        {
+            "value": value,
+            "label": relation_type_label(value),
+            "mode": RELATION_TYPE_CATALOG.get(value, (None, "one_way", None))[1],
+            "inverse": RELATION_TYPE_CATALOG.get(value, (None, None, None))[2] or "",
+            "inverse_label": relation_type_label(
+                RELATION_TYPE_CATALOG.get(value, (None, None, None))[2]
+            ) if RELATION_TYPE_CATALOG.get(value, (None, None, None))[2] else "",
+        }
+        for value in sorted(values, key=relation_type_label)
+    ]
+
+
+def parse_relation_semantics(form):
+    relation_type = normalize_relation_type(form.get("relation_type", ""))
+    if not relation_type:
+        return None, None, None, "Choose or create a relation type."
+
+    catalog = RELATION_TYPE_CATALOG.get(relation_type)
+    direction_mode = form.get("direction_mode", "").strip()
+    if direction_mode not in RELATION_DIRECTION_MODES:
+        direction_mode = catalog[1] if catalog else "one_way"
+
+    inverse_relation_type = None
+    if direction_mode == "inverse":
+        inverse_relation_type = normalize_relation_type(form.get("inverse_relation_type", ""))
+        if not inverse_relation_type and catalog:
+            inverse_relation_type = catalog[2]
+        if not inverse_relation_type:
+            return None, None, None, "Add the reverse relation name for an inverse pair."
+        if inverse_relation_type == relation_type:
+            return None, None, None, "Use Mutual when both directions have the same relation name."
+
+    return relation_type, direction_mode, inverse_relation_type, None
+
+
+def build_relation_suggestions(project, limit=6):
+    adjacency = {}
+    direct_pairs = set()
+    for relation in project.relations:
+        source = (relation.source_type, relation.source_id)
+        target = (relation.target_type, relation.target_id)
+        if source == target:
+            continue
+        adjacency.setdefault(source, set()).add(target)
+        adjacency.setdefault(target, set()).add(source)
+        direct_pairs.add(frozenset((source, target)))
+
+    candidates = {}
+    for source, neighbors in adjacency.items():
+        for bridge in neighbors:
+            for target in adjacency.get(bridge, set()):
+                pair = frozenset((source, target))
+                if source == target or pair in direct_pairs:
+                    continue
+                ordered = tuple(sorted((source, target)))
+                candidates.setdefault(ordered, set()).add(bridge)
+
+    suggestions = []
+    for (source, target), bridges in candidates.items():
+        source_entity = get_entity(project.id, *source)
+        target_entity = get_entity(project.id, *target)
+        if not source_entity or not target_entity:
+            continue
+        bridge_names = [
+            resolve_entity_name(project.id, bridge[0], bridge[1])
+            for bridge in sorted(bridges)
+        ]
+        suggestions.append(
+            {
+                "source_value": f"{source[0]}:{source[1]}",
+                "target_value": f"{target[0]}:{target[1]}",
+                "source_name": source_entity.name,
+                "target_name": target_entity.name,
+                "bridge_names": bridge_names,
+                "score": len(bridge_names),
+            }
+        )
+    suggestions.sort(key=lambda item: (-item["score"], item["source_name"], item["target_name"]))
+    return suggestions[:limit]
 
 
 def is_valid_email(value):
@@ -836,7 +1012,12 @@ def graph(project_id):
         "relations": len(project.relations),
         "warnings": warning_count,
     }
-    return render_template("graph.html", project=project, graph_summary=graph_summary)
+    return render_template(
+        "graph.html",
+        project=project,
+        graph_summary=graph_summary,
+        relation_type_options=get_relation_type_options(project, include_catalog=False),
+    )
 
 
 @main.route("/projects/<int:project_id>/graph/data")
@@ -913,7 +1094,7 @@ def graph_data(project_id):
         if source not in node_ids or target not in node_ids:
             continue
 
-        relation_label = relation.relation_type.replace("_", " ")
+        relation_label = relation_type_label(relation.relation_type)
         relation_color = GRAPH_RELATION_COLORS.get(relation.relation_type, "#c4b5fd")
         edge_data = {
             "id": f"relation-{relation.id}",
@@ -922,6 +1103,9 @@ def graph_data(project_id):
             "label": relation_label,
             "relation": relation_label,
             "relation_type": relation.relation_type,
+            "direction_mode": relation.direction_mode,
+            "inverse_relation_type": relation.inverse_relation_type,
+            "inverse_label": relation_type_label(relation.inverse_relation_type),
             "description": relation.description or "",
             "source_label": node_labels[source],
             "target_label": node_labels[target],
@@ -1462,6 +1646,8 @@ def relations(project_id):
     relation_rows = [
         {
             "relation": relation,
+            "relation_label": relation_type_label(relation.relation_type),
+            "inverse_label": relation_type_label(relation.inverse_relation_type),
             "source_name": resolve_entity_name(
                 project.id,
                 relation.source_type,
@@ -1480,7 +1666,7 @@ def relations(project_id):
         project=project,
         relation_rows=relation_rows,
         relation_stats=relation_stats,
-        relation_type_labels=RELATION_TYPE_LABELS,
+        relation_type_options=get_relation_type_options(project, include_catalog=False),
     )
 
 
@@ -1494,11 +1680,11 @@ def create_relation(project_id):
     if request.method == "POST":
         source = parse_entity_choice(request.form.get("source_entity", ""))
         target = parse_entity_choice(request.form.get("target_entity", ""))
-        relation_type = request.form.get("relation_type", "")
+        relation_type, direction_mode, inverse_relation_type, semantics_error = parse_relation_semantics(request.form)
         description = request.form.get("description", "").strip()
 
-        if not source or not target or relation_type not in RELATION_TYPES:
-            flash("Source, relation type, and target are required.", "danger")
+        if not source or not target or semantics_error:
+            flash(semantics_error or "Source and target are required.", "danger")
             return render_template(
                 "create_relation.html",
                 project=project,
@@ -1507,6 +1693,7 @@ def create_relation(project_id):
                 relation_types=RELATION_TYPES,
                 relation_type_labels=RELATION_TYPE_LABELS,
                 relation_type_helpers=RELATION_TYPE_HELPERS,
+                relation_type_options=get_relation_type_options(project),
             )
 
         source_type, source_id = source
@@ -1525,13 +1712,32 @@ def create_relation(project_id):
                 relation_types=RELATION_TYPES,
                 relation_type_labels=RELATION_TYPE_LABELS,
                 relation_type_helpers=RELATION_TYPE_HELPERS,
+                relation_type_options=get_relation_type_options(project),
             )
+
+        if source == target:
+            flash("Choose two different entities for a relation.", "danger")
+            return redirect(url_for("main.create_relation", project_id=project.id))
+
+        duplicate = Relation.query.filter_by(
+            project_id=project.id,
+            source_type=source_type,
+            source_id=source_id,
+            relation_type=relation_type,
+            target_type=target_type,
+            target_id=target_id,
+        ).first()
+        if duplicate:
+            flash("This exact relation already exists. Edit the existing connection instead.", "warning")
+            return redirect(url_for("main.edit_relation", project_id=project.id, relation_id=duplicate.id))
 
         relation = Relation(
             project=project,
             source_type=source_type,
             source_id=source_id,
             relation_type=relation_type,
+            direction_mode=direction_mode,
+            inverse_relation_type=inverse_relation_type,
             target_type=target_type,
             target_id=target_id,
             description=description,
@@ -1550,6 +1756,8 @@ def create_relation(project_id):
         relation_types=RELATION_TYPES,
         relation_type_labels=RELATION_TYPE_LABELS,
         relation_type_helpers=RELATION_TYPE_HELPERS,
+        relation_type_options=get_relation_type_options(project),
+        relation_suggestions=build_relation_suggestions(project),
     )
 
 
@@ -1601,11 +1809,11 @@ def edit_relation(project_id, relation_id):
     if request.method == "POST":
         source = parse_entity_choice(request.form.get("source_entity", ""))
         target = parse_entity_choice(request.form.get("target_entity", ""))
-        relation_type = request.form.get("relation_type", "")
+        relation_type, direction_mode, inverse_relation_type, semantics_error = parse_relation_semantics(request.form)
         description = request.form.get("description", "").strip()
 
-        if not source or not target or relation_type not in RELATION_TYPES:
-            flash("Source, relation type, and target are required.", "danger")
+        if not source or not target or semantics_error:
+            flash(semantics_error or "Source and target are required.", "danger")
             return render_template(
                 "edit_relation.html",
                 project=project,
@@ -1615,6 +1823,7 @@ def edit_relation(project_id, relation_id):
                 relation_types=RELATION_TYPES,
                 relation_type_labels=RELATION_TYPE_LABELS,
                 relation_type_helpers=RELATION_TYPE_HELPERS,
+                relation_type_options=get_relation_type_options(project),
             )
 
         source_type, source_id = source
@@ -1634,11 +1843,18 @@ def edit_relation(project_id, relation_id):
                 relation_types=RELATION_TYPES,
                 relation_type_labels=RELATION_TYPE_LABELS,
                 relation_type_helpers=RELATION_TYPE_HELPERS,
+                relation_type_options=get_relation_type_options(project),
             )
+
+        if source == target:
+            flash("Choose two different entities for a relation.", "danger")
+            return redirect(url_for("main.edit_relation", project_id=project.id, relation_id=relation.id))
 
         relation.source_type = source_type
         relation.source_id = source_id
         relation.relation_type = relation_type
+        relation.direction_mode = direction_mode
+        relation.inverse_relation_type = inverse_relation_type
         relation.target_type = target_type
         relation.target_id = target_id
         relation.description = description
@@ -1656,6 +1872,7 @@ def edit_relation(project_id, relation_id):
         relation_types=RELATION_TYPES,
         relation_type_labels=RELATION_TYPE_LABELS,
         relation_type_helpers=RELATION_TYPE_HELPERS,
+        relation_type_options=get_relation_type_options(project),
     )
 
 
@@ -1787,7 +2004,7 @@ def entity_exists(project_id, entity_type, entity_id):
 def build_project_export(project):
     return {
         "app_name": "Zirel",
-        "export_version": "1.0",
+        "export_version": "1.1",
         "exported_at": datetime.now(timezone.utc).isoformat(),
         "project": {
             "id": project.id,
@@ -1837,6 +2054,8 @@ def build_project_export(project):
                     relation.source_id,
                 ),
                 "relation_type": relation.relation_type,
+                "direction_mode": relation.direction_mode,
+                "inverse_relation_type": relation.inverse_relation_type,
                 "target_type": relation.target_type,
                 "target_id": relation.target_id,
                 "target_label": resolve_export_entity_label(
@@ -1995,8 +2214,16 @@ def import_relations(project, relations, id_maps):
 
         if source_type not in id_maps or target_type not in id_maps:
             continue
-        if relation_type not in RELATION_TYPES:
+        relation_type = normalize_relation_type(relation_type)
+        if not relation_type:
             continue
+
+        direction_mode = item.get("direction_mode") or "one_way"
+        if direction_mode not in RELATION_DIRECTION_MODES:
+            direction_mode = "one_way"
+        inverse_relation_type = normalize_relation_type(item.get("inverse_relation_type")) or None
+        if direction_mode == "inverse" and not inverse_relation_type:
+            direction_mode = "one_way"
 
         source_id = get_imported_id(id_maps[source_type], item.get("source_id"))
         target_id = get_imported_id(id_maps[target_type], item.get("target_id"))
@@ -2008,6 +2235,8 @@ def import_relations(project, relations, id_maps):
             source_type=source_type,
             source_id=source_id,
             relation_type=relation_type,
+            direction_mode=direction_mode,
+            inverse_relation_type=inverse_relation_type,
             target_type=target_type,
             target_id=target_id,
             description=item.get("description") or "",

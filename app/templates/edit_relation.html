@@ -34,17 +34,7 @@
 
         <div class="relation-arrow relation-arrow-one" aria-hidden="true">&rarr;</div>
 
-        <div class="relation-field relation-builder-type">
-          <label for="relation_type" class="form-label">Relation type</label>
-          <select class="form-select relation-watch" id="relation_type" name="relation_type" required>
-            {% for relation_type in relation_types %}
-              <option value="{{ relation_type }}" data-helper="{{ relation_type_helpers[relation_type] }}" {% if relation.relation_type == relation_type %}selected{% endif %}>
-                {{ relation_type_labels[relation_type] }}
-              </option>
-            {% endfor %}
-          </select>
-          <div class="relation-helper" id="relation-helper">Choose a relation type to see guidance.</div>
-        </div>
+        {% include '_relation_semantics_fields.html' %}
 
         <div class="relation-arrow relation-arrow-two" aria-hidden="true">&rarr;</div>
 
@@ -63,6 +53,8 @@
           </select>
         </div>
       </div>
+
+      {% include '_relation_direction_fields.html' %}
 
       <div class="relation-preview-box relation-preview" aria-live="polite">
         <div class="relation-preview-label">Live preview</div>

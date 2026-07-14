@@ -22,7 +22,7 @@
               {% if choices %}
                 <optgroup label="{{ group_label }}">
                   {% for choice in choices %}
-                    <option value="{{ choice.value }}">{{ choice.label }}</option>
+                    <option value="{{ choice.value }}" {% if request.args.get('source') == choice.value %}selected{% endif %}>{{ choice.label }}</option>
                   {% endfor %}
                 </optgroup>
               {% endif %}
@@ -32,18 +32,7 @@
 
         <div class="relation-arrow relation-arrow-one" aria-hidden="true">&rarr;</div>
 
-        <div class="relation-field relation-builder-type">
-          <label for="relation_type" class="form-label">Relation type</label>
-          <select class="form-select relation-watch" id="relation_type" name="relation_type" required>
-            <option value="">Choose relation type</option>
-            {% for relation_type in relation_types %}
-              <option value="{{ relation_type }}" data-helper="{{ relation_type_helpers[relation_type] }}">
-                {{ relation_type_labels[relation_type] }}
-              </option>
-            {% endfor %}
-          </select>
-          <div class="relation-helper" id="relation-helper">Choose a relation type to see guidance.</div>
-        </div>
+        {% include '_relation_semantics_fields.html' %}
 
         <div class="relation-arrow relation-arrow-two" aria-hidden="true">&rarr;</div>
 
@@ -55,7 +44,7 @@
               {% if choices %}
                 <optgroup label="{{ group_label }}">
                   {% for choice in choices %}
-                    <option value="{{ choice.value }}">{{ choice.label }}</option>
+                    <option value="{{ choice.value }}" {% if request.args.get('target') == choice.value %}selected{% endif %}>{{ choice.label }}</option>
                   {% endfor %}
                 </optgroup>
               {% endif %}
@@ -63,6 +52,8 @@
           </select>
         </div>
       </div>
+
+      {% include '_relation_direction_fields.html' %}
 
       <div class="relation-preview-box relation-preview" aria-live="polite">
         <div class="relation-preview-label">Live preview</div>
@@ -78,6 +69,10 @@
       </div>
 
       <aside class="common-patterns"><h2>Common patterns</h2><ul><li>Character &rarr; member_of &rarr; Faction</li><li>Character &rarr; participated_in &rarr; Event</li><li>Faction &rarr; loyal_to &rarr; Character</li><li>Character &rarr; hates &rarr; Character</li></ul></aside>
+
+      {% if relation_suggestions %}
+        <aside class="relation-suggestions"><header><span>Suggested connections</span><h2>Two steps apart</h2><p>These records share a neighbor but are not directly connected. Zirel never creates the relation automatically.</p></header><div>{% for suggestion in relation_suggestions %}<a href="{{ url_for('main.create_relation', project_id=project.id, source=suggestion.source_value, target=suggestion.target_value) }}"><b>{{ suggestion.source_name }} <i>+</i> {{ suggestion.target_name }}</b><small>Connected through {{ suggestion.bridge_names|join(', ') }}</small><em>Use suggestion &rarr;</em></a>{% endfor %}</div></aside>
+      {% endif %}
 
       <div class="form-card-actions">
         <button type="submit" class="btn-workspace-primary" {% if not entity_choices %}disabled{% endif %}>Create Relation</button>

@@ -1,0 +1,15 @@
+{% set active_direction_mode = relation.direction_mode if relation is defined else 'one_way' %}
+{% set active_inverse_type = relation.inverse_relation_type if relation is defined else '' %}
+<fieldset class="relation-direction-picker" data-direction-picker>
+  <legend>Direction <small>Optional — one-way by default</small></legend>
+  <div>
+    <label><input type="radio" name="direction_mode" value="one_way" {% if active_direction_mode == 'one_way' %}checked{% endif %}><span><b>One-way</b><small>A → B</small></span></label>
+    <label><input type="radio" name="direction_mode" value="mutual" {% if active_direction_mode == 'mutual' %}checked{% endif %}><span><b>Mutual</b><small>A ↔ B</small></span></label>
+    <label><input type="radio" name="direction_mode" value="inverse" {% if active_direction_mode == 'inverse' %}checked{% endif %}><span><b>Inverse pair</b><small>A → B / B → A</small></span></label>
+  </div>
+  <label class="relation-inverse-field" data-inverse-field {% if active_direction_mode != 'inverse' %}hidden{% endif %}>
+    <span>Reverse relation name</span>
+    <input class="form-control" id="inverse_relation_type" name="inverse_relation_type" type="text" value="{{ active_inverse_type|replace('_', ' ')|title }}" placeholder="e.g. Child of">
+  </label>
+  <div class="relation-direction-feedback" data-direction-feedback data-state="neutral"><i></i><span><b>Direction feedback</b><small>One-way is the safe default for a new relation.</small></span></div>
+</fieldset>

@@ -18,6 +18,17 @@ Zirel — Flask-монолит для worldbuilding workflow: пользоват
 
 ## Изменения, ожидающие просмотра
 
+- В отдельной ветке `codex/relation-prototype` собран прототип расширенных отношений без дублирования строк в базе: `one_way`, `mutual` и `inverse` с отдельным обратным названием.
+- Relation Builder получил searchable/createable каталог типов, пользовательские типы проекта, визуальный выбор направления и live preview обеих сторон inverse-связи.
+- Добавлен начальный словарь общих, взаимных и обратных пар; Graph Workspace, карточки Relations, Logic Engine и JSON export/import адаптированы к новой семантике.
+- Добавлены необязательные Suggested connections: система находит A–B–C, предлагает A–C через общего соседа, но никогда не создаёт такую связь автоматически.
+- Миграция `e4c91a7d5b20` успешно применена локально; старые отношения сохраняются как `one_way`, старый export 1.0 импортируется, новый export использует версию 1.1.
+- Изолированный Flask-сценарий проверил custom, mutual, inverse, A–B–C suggestions, graph data, старый и новый import/export; Python, Jinja, JavaScript и `git diff --check` проходят.
+- Каталог прототипа расширен дополнительными сюжетными, политическими, временными, географическими и обратными типами; searchable/createable выбор сохранён.
+- В Relation Builder добавлен live feedback о рекомендуемом направлении: стандартный выбор подтверждается, а нетипичный one-way/mutual/inverse помечается как требующий просмотра до сохранения.
+- Logic Engine прототипа теперь предупреждает о mutual-типе, сохранённом one-way, направленном inverse-типе в mutual-режиме и двух зеркальных one-way строках, которые можно заменить одной mutual-связью; mutual `hates` не вызывает ложную one-sided hostility.
+- Contact переработан в компактный form workspace с live response context по причине обращения, readiness progress, privacy guidance и исправленной mobile-геометрией без пустого hero-пространства.
+- Contact проверен во встроенном браузере при 1280×720 и 390×844: переполнения нет; reason context, message counter и readiness progress обновляются интерактивно.
 - Google Tag Manager в `base.html` заменен на Google Analytics gtag.js с идентификатором `G-9JG8J2FMPP`; старый noscript-блок GTM удален.
 - Начат новый редизайн внутренних workspace-страниц по HTML-референсам: Project Dashboard, Relations, Characters, Factions и Events переведены на новый темный dashboard/card workspace.
 - Для Characters/Factions/Events добавлен общий шаблонный JS `app/templates/partials/entity_workspace.js` для client-side search, grid/list view и bulk-selection состояния.

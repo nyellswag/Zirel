@@ -1,84 +1,143 @@
 <script>
   (() => {
     const sourceSelect = document.getElementById("source_entity");
-    const relationSelect = document.getElementById("relation_type");
     const targetSelect = document.getElementById("target_entity");
+    const picker = document.querySelector("[data-relation-type-picker]");
+    const displayInput = document.getElementById("relation_type_display");
+    const typeInput = document.getElementById("relation_type");
+    const menu = picker?.querySelector(".relation-type-menu");
+    const createButton = picker?.querySelector("[data-create]");
+    const noType = picker?.querySelector("[data-no-type]");
+    const typeButtons = [...(menu?.querySelectorAll("button[data-value]") || [])];
+    const modeInputs = [...document.querySelectorAll('input[name="direction_mode"]')];
+    const inverseField = document.querySelector("[data-inverse-field]");
+    const inverseInput = document.getElementById("inverse_relation_type");
+    const directionFeedback = document.querySelector("[data-direction-feedback]");
     const preview = document.getElementById("relation-preview");
     const helper = document.getElementById("relation-helper");
     const tip = document.getElementById("relation-tip");
+    if (!sourceSelect || !targetSelect || !picker || !displayInput || !typeInput) return;
 
-    const relationLabels = {
-      hates: "Hates",
-      allied_with: "Allied with",
-      member_of: "Member of",
-      loyal_to: "Loyal to",
-      participated_in: "Participated in",
-      rules: "Rules",
-      located_in: "Located in"
-    };
+    const normalize = value => value.normalize("NFKC").trim().toLowerCase().replace(/[\s-]+/g, "_").replace(/[^\p{L}\p{N}_]+/gu, "").replace(/^_+|_+$/g, "").slice(0, 80);
+    const pretty = value => value.replaceAll("_", " ").replace(/\b\p{L}/gu, letter => letter.toUpperCase());
+    const selectedMode = () => modeInputs.find(input => input.checked)?.value || "one_way";
+    const selectedLabel = select => select.value ? select.options[select.selectedIndex]?.text.trim() || "" : "";
 
-    function selectedLabel(select) {
-      if (!select.value) {
-        return "";
-      }
-      return select.options[select.selectedIndex].text.trim();
+    function setMenu(open) {
+      menu.hidden = !open;
+      displayInput.setAttribute("aria-expanded", String(open));
     }
 
-    function selectedType(select) {
-      if (!select.value || !select.value.includes(":")) {
-        return "";
-      }
-      return select.value.split(":")[0];
+    function filterTypes() {
+      const query = displayInput.value.trim().toLocaleLowerCase();
+      let matches = 0;
+      typeButtons.forEach(button => {
+        const visible = !query || button.textContent.toLocaleLowerCase().includes(query);
+        button.hidden = !visible;
+        if (visible) matches += 1;
+      });
+      const normalized = normalize(displayInput.value);
+      const exact = typeButtons.some(button => button.dataset.value === normalized);
+      createButton.hidden = !normalized || exact;
+      createButton.textContent = normalized ? `Create “${displayInput.value.trim()}”` : "";
+      noType.hidden = matches > 0 || !createButton.hidden;
+      typeInput.value = normalized;
+      setMenu(true);
+      updatePreview();
     }
 
-    function updateRelationBuilder() {
+    function chooseType(button, custom = false) {
+      const value = custom ? normalize(displayInput.value) : button.dataset.value;
+      if (!value) return;
+      typeInput.value = value;
+      displayInput.value = custom ? displayInput.value.trim() : button.childNodes[0].textContent.trim();
+      if (!custom && button.dataset.mode) {
+        const mode = modeInputs.find(input => input.value === button.dataset.mode);
+        if (mode) mode.checked = true;
+        if (button.dataset.inverse && inverseInput) inverseInput.value = pretty(button.dataset.inverse);
+      }
+      setMenu(false);
+      updateDirection();
+      updatePreview();
+    }
+
+    function updateDirection() {
+      const inverse = selectedMode() === "inverse";
+      inverseField.hidden = !inverse;
+      if (inverseInput) inverseInput.required = inverse;
+      updatePreview();
+    }
+
+    function updateDirectionFeedback() {
+      if (!directionFeedback) return;
+      const mode = selectedMode();
+      const catalogType = typeButtons.find(button => button.dataset.value === typeInput.value);
+      const recommended = catalogType?.dataset.mode || "one_way";
+      let state = "neutral";
+      let title = "Custom relation";
+      let message = mode === "one_way" ? "This connection will exist from source to target only." : mode === "mutual" ? "One logical relation will be visible from both entities." : "The reverse direction will use its own relation name.";
+      if (catalogType && mode === recommended) {
+        state = "good";
+        title = "Recommended direction";
+        message = mode === "mutual" ? "This type normally describes the same connection in both directions." : mode === "inverse" ? `The reverse side is ${pretty(catalogType.dataset.inverse || inverseInput?.value || "the paired type")}.` : "This type normally describes a directional connection.";
+      } else if (catalogType && mode !== recommended) {
+        state = "review";
+        title = "Review this direction";
+        message = recommended === "mutual" ? "This type is usually mutual. One-way may be intentional, but Zirel will flag it for review." : recommended === "inverse" ? `This type usually has a distinct reverse meaning: ${pretty(catalogType.dataset.inverse || "paired relation")}.` : "This type is normally one-way; mutual mode may change its meaning.";
+      }
+      directionFeedback.dataset.state = state;
+      directionFeedback.querySelector("b").textContent = title;
+      directionFeedback.querySelector("small").textContent = message;
+    }
+
+    function updatePreview() {
       const sourceLabel = selectedLabel(sourceSelect);
-      const relationType = relationSelect.value;
       const targetLabel = selectedLabel(targetSelect);
-      const targetType = selectedType(targetSelect);
-      const selectedRelationOption = relationSelect.options[relationSelect.selectedIndex];
-
-      helper.textContent = selectedRelationOption?.dataset.helper || "Choose a relation type to see guidance.";
+      const relationType = typeInput.value;
+      const mode = selectedMode();
+      const inverseType = normalize(inverseInput?.value || "");
+      helper.textContent = relationType
+        ? `${pretty(relationType)} · ${mode === "mutual" ? "mutual in both directions" : mode === "inverse" ? `reverse: ${pretty(inverseType || "add a reverse name")}` : "one-way relation"}`
+        : "Search the shared catalog or type a new relation and press Enter.";
 
       if (sourceLabel && relationType && targetLabel) {
-        const source = document.createElement("span");
-        source.className = "relation-preview-node";
-        source.textContent = sourceLabel;
-        const relation = document.createElement("span");
-        relation.className = "relation-preview-type";
-        relation.textContent = relationLabels[relationType];
-        const target = document.createElement("span");
-        target.className = "relation-preview-node";
-        target.textContent = targetLabel;
-        const arrowOne = document.createElement("span");
-        arrowOne.className = "relation-preview-arrow";
-        arrowOne.textContent = "->";
-        const arrowTwo = arrowOne.cloneNode(true);
-
-        preview.replaceChildren(source, arrowOne, relation, arrowTwo, target);
+        const arrow = mode === "mutual" ? "↔" : "→";
+        preview.textContent = `${sourceLabel} ${arrow} ${pretty(relationType)} ${arrow} ${targetLabel}`;
+        if (mode === "inverse" && inverseType) preview.textContent += ` · ${targetLabel} → ${pretty(inverseType)} → ${sourceLabel}`;
       } else {
         preview.textContent = "Select a source, relation type, and target to preview the connection.";
       }
 
-      let tipText = "";
-      if (relationType === "member_of" && targetType && targetType !== "faction") {
-        tipText = "Tip: member_of usually points to a faction.";
-      }
-      if (relationType === "participated_in" && targetType && targetType !== "event") {
-        tipText = "Tip: participated_in usually points to an event.";
-      }
-      if (relationType === "hates" && targetType && targetType !== "character") {
-        tipText = "Tip: hates usually connects a character to another character.";
-      }
-
-      tip.textContent = tipText;
-      tip.hidden = !tipText;
+      tip.textContent = sourceSelect.value && sourceSelect.value === targetSelect.value ? "A relation cannot connect an entity to itself." : "";
+      tip.hidden = !tip.textContent;
+      updateDirectionFeedback();
     }
 
-    [sourceSelect, relationSelect, targetSelect].forEach((select) => {
-      select.addEventListener("change", updateRelationBuilder);
+    displayInput.addEventListener("focus", filterTypes);
+    displayInput.addEventListener("input", filterTypes);
+    displayInput.addEventListener("keydown", event => {
+      const exact = typeButtons.find(button => button.dataset.value === normalize(displayInput.value));
+      if (event.key === "Enter" && exact) {
+        event.preventDefault();
+        chooseType(exact);
+        return;
+      }
+      if (event.key === "Enter" && !createButton.hidden) {
+        event.preventDefault();
+        chooseType(createButton, true);
+      }
+      if (event.key === "Escape") setMenu(false);
     });
-
-    updateRelationBuilder();
+    typeButtons.forEach(button => button.addEventListener("click", () => chooseType(button)));
+    createButton.addEventListener("click", () => chooseType(createButton, true));
+    modeInputs.forEach(input => input.addEventListener("change", updateDirection));
+    [sourceSelect, targetSelect, inverseInput].filter(Boolean).forEach(field => {
+      field.addEventListener("input", updatePreview);
+      field.addEventListener("change", updatePreview);
+    });
+    document.addEventListener("click", event => { if (!picker.contains(event.target)) setMenu(false); });
+    picker.closest("form")?.addEventListener("submit", () => { typeInput.value = normalize(typeInput.value || displayInput.value); });
+    updateDirection();
+    updatePreview();
   })();
 </script>

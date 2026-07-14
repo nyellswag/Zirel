@@ -20383,6 +20383,292 @@ hr {
   background:rgba(255,255,255,.018)
 }
 
+.relation-type-prototype {
+  position:relative;
+  z-index:8
+}
+
+.relation-type-combobox {
+  position:relative
+}
+
+.relation-type-combobox .form-control {
+  width:100%
+}
+
+.relation-type-menu {
+  position:absolute;
+  z-index:40;
+  top:calc(100% + 7px);
+  left:0;
+  right:0;
+  max-height:250px;
+  overflow:auto;
+  padding:7px;
+  border:1px solid rgba(167,139,250,.3);
+  border-radius:10px;
+  background:rgba(7,5,14,.98);
+  box-shadow:0 22px 55px rgba(0,0,0,.52),0 0 32px rgba(124,58,237,.12)
+}
+
+.relation-type-menu button {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  width:100%;
+  padding:9px 10px;
+  border:0;
+  border-radius:7px;
+  background:transparent;
+  color:#ddd8e7;
+  font:500 12px Inter,sans-serif;
+  text-align:left;
+  cursor:pointer
+}
+
+.relation-type-menu button:hover,.relation-type-menu button:focus {
+  outline:0;
+  background:linear-gradient(90deg,rgba(124,58,237,.19),rgba(59,130,246,.08));
+  color:#fff
+}
+
+.relation-type-menu button small {
+  color:#726a80;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase
+}
+
+.relation-type-menu .relation-type-create {
+  margin-top:5px;
+  border:1px solid rgba(139,92,246,.25);
+  color:#bfaeff
+}
+
+.relation-type-menu p {
+  margin:8px;
+  color:#6f6879;
+  font-size:11px
+}
+
+.relation-direction-picker {
+  margin:0 0 20px;
+  padding:16px;
+  border:1px solid rgba(196,181,253,.11);
+  border-radius:11px;
+  background:rgba(255,255,255,.018)
+}
+
+.relation-direction-picker legend {
+  padding:0 7px;
+  color:#dcd7e6;
+  font-size:12px;
+  font-weight:600
+}
+
+.relation-direction-picker legend small {
+  margin-left:8px;
+  color:#756d80;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.06em;
+  text-transform:uppercase
+}
+
+.relation-direction-picker>div {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px
+}
+
+.relation-direction-picker>div>label {
+  cursor:pointer
+}
+
+.relation-direction-picker input[type="radio"] {
+  position:absolute;
+  opacity:0;
+  pointer-events:none
+}
+
+.relation-direction-picker>div span {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:48px;
+  padding:0 13px;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:9px;
+  background:rgba(5,4,10,.52);
+  transition:.2s ease
+}
+
+.relation-direction-picker>div b {
+  color:#aaa2b5;
+  font-size:11px
+}
+
+.relation-direction-picker>div small {
+  color:#6f667d;
+  font:9px "JetBrains Mono",monospace
+}
+
+.relation-direction-picker input:checked+span {
+  border-color:rgba(139,92,246,.48);
+  background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(59,130,246,.08));
+  box-shadow:inset 0 1px rgba(255,255,255,.04),0 0 24px rgba(124,58,237,.09)
+}
+
+.relation-direction-picker input:checked+span b {
+  color:#f0ecf7
+}
+
+.relation-inverse-field {
+  display:grid;
+  grid-template-columns:180px minmax(0,1fr);
+  align-items:center;
+  gap:12px;
+  margin-top:12px
+}
+
+.relation-inverse-field[hidden] {
+  display:none
+}
+
+.relation-inverse-field>span {
+  color:#8f879c;
+  font-size:11px
+}
+
+.relation-direction-feedback {
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-top:12px;
+  padding:11px 12px;
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:9px;
+  background:rgba(5,4,10,.42)
+}
+
+.relation-direction-feedback>i {
+  flex:0 0 7px;
+  width:7px;
+  height:7px;
+  margin-top:4px;
+  border-radius:50%;
+  background:#77717f;
+  box-shadow:0 0 12px rgba(119,113,127,.32)
+}
+
+.relation-direction-feedback span {
+  display:grid;
+  gap:3px
+}
+
+.relation-direction-feedback b {
+  color:#b8b1c2;
+  font-size:10px
+}
+
+.relation-direction-feedback small {
+  color:#756e80;
+  font-size:10px;
+  line-height:1.5
+}
+
+.relation-direction-feedback[data-state="good"] {
+  border-color:rgba(94,234,212,.16);
+  background:rgba(20,184,166,.045)
+}
+
+.relation-direction-feedback[data-state="good"]>i {
+  background:#5eead4;
+  box-shadow:0 0 14px rgba(94,234,212,.45)
+}
+
+.relation-direction-feedback[data-state="review"] {
+  border-color:rgba(251,191,36,.17);
+  background:rgba(245,158,11,.045)
+}
+
+.relation-direction-feedback[data-state="review"]>i {
+  background:#fbbf24;
+  box-shadow:0 0 14px rgba(251,191,36,.42)
+}
+
+.relation-suggestions {
+  margin-top:18px;
+  padding:18px;
+  border:1px solid rgba(96,165,250,.15);
+  border-radius:12px;
+  background:linear-gradient(135deg,rgba(59,130,246,.06),rgba(124,58,237,.035))
+}
+
+.relation-suggestions header span {
+  color:#8b7da0;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase
+}
+
+.relation-suggestions header h2 {
+  margin:5px 0 4px;
+  color:#e2ddec;
+  font-size:17px
+}
+
+.relation-suggestions header p {
+  margin:0 0 14px;
+  color:#777083;
+  font-size:11px
+}
+
+.relation-suggestions>div {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px
+}
+
+.relation-suggestions a {
+  display:grid;
+  gap:4px;
+  padding:12px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:9px;
+  background:rgba(5,4,10,.42);
+  text-decoration:none;
+  transition:.2s ease
+}
+
+.relation-suggestions a:hover {
+  border-color:rgba(139,92,246,.28);
+  transform:translateY(-1px)
+}
+
+.relation-suggestions b {
+  color:#d7d1e1;
+  font-size:11px
+}
+
+.relation-suggestions b i {
+  color:#8b5cf6;
+  font-style:normal
+}
+
+.relation-suggestions small {
+  color:#756d80;
+  font-size:9px
+}
+
+.relation-suggestions em {
+  margin-top:4px;
+  color:#9f8ee2;
+  font:8px "JetBrains Mono",monospace;
+  font-style:normal;
+  letter-spacing:.06em;
+  text-transform:uppercase
+}
+
 @media(max-width:900px) {
   .entity-composer-grid {
     grid-template-columns:1fr
@@ -20414,6 +20700,15 @@ hr {
   }
   .entity-composer-form,.entity-preview-card {
     padding:18px
+  }
+  .relation-direction-picker>div {
+    grid-template-columns:1fr
+  }
+  .relation-inverse-field {
+    grid-template-columns:1fr
+  }
+  .relation-suggestions>div {
+    grid-template-columns:1fr
   }
   .entity-composer-form .form-card-actions {
     align-items:stretch;

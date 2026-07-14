@@ -145,12 +145,235 @@
   color:var(--zform-muted)
 }
 
+.zform-contact .zcontact-hero {
+  align-items:center;
+  gap:34px;
+  margin-bottom:22px;
+  padding:58px 48px;
+  border-color:rgba(139,92,246,.18);
+  background:radial-gradient(circle at 88% 15%,rgba(56,189,248,.08),transparent 30%),radial-gradient(circle at 65% 0%,rgba(139,92,246,.14),transparent 38%),rgba(10,9,16,.72);
+  box-shadow:0 28px 80px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.025)
+}
+
+.zform-contact .zcontact-hero h1 {
+  margin-top:9px
+}
+
+.zcontact-hero-meta {
+  display:grid;
+  justify-items:end;
+  gap:15px
+}
+
+.zcontact-hero-meta>span {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#767080;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.08em;
+  text-transform:uppercase
+}
+
+.zcontact-hero-meta>span i {
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#5eead4;
+  box-shadow:0 0 12px rgba(94,234,212,.5)
+}
+
+.zform-contact .zv2-form-layout {
+  gap:22px;
+  grid-template-columns:minmax(0,1fr) 330px
+}
+
+.zform-contact .zv2-form-card {
+  padding:32px
+}
+
+.zcontact-form-head {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 140px;
+  align-items:end;
+  gap:24px;
+  margin-bottom:28px;
+  padding-bottom:23px;
+  border-bottom:1px solid rgba(255,255,255,.06)
+}
+
+.zcontact-form-head>div>span,.zcontact-context-list>span,.zcontact-context footer>span {
+  color:#756d82;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.11em;
+  text-transform:uppercase
+}
+
+.zcontact-form-head h2 {
+  margin:6px 0 5px;
+  color:#e8e4ee;
+  font-family:"Instrument Serif",serif;
+  font-size:30px;
+  font-weight:400
+}
+
+.zcontact-form-head p {
+  margin:0;
+  max-width:540px;
+  color:#817988;
+  font-size:11px;
+  line-height:1.65
+}
+
+.zcontact-progress {
+  display:grid;
+  gap:6px
+}
+
+.zcontact-progress b {
+  color:#c4b5fd;
+  font:500 17px "JetBrains Mono",monospace;
+  text-align:right
+}
+
+.zcontact-progress i {
+  display:block;
+  height:4px;
+  overflow:hidden;
+  border-radius:99px;
+  background:rgba(255,255,255,.07)
+}
+
+.zcontact-progress em {
+  display:block;
+  width:0;
+  height:100%;
+  border-radius:inherit;
+  background:linear-gradient(90deg,#8b5cf6,#38bdf8);
+  transition:width .25s ease
+}
+
+.zcontact-progress small {
+  color:#5f5868;
+  font:7px "JetBrains Mono",monospace;
+  letter-spacing:.08em;
+  text-align:right;
+  text-transform:uppercase
+}
+
+.zform-contact .zcontact-context {
+  padding:25px;
+  border:1px solid rgba(139,92,246,.14);
+  border-radius:16px;
+  background:linear-gradient(155deg,rgba(17,15,25,.78),rgba(7,7,12,.72));
+  box-shadow:0 24px 65px rgba(0,0,0,.22)
+}
+
+.zcontact-context-status {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding-bottom:18px;
+  border-bottom:1px solid rgba(255,255,255,.06)
+}
+
+.zcontact-context-status>i {
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#8b5cf6;
+  box-shadow:0 0 16px rgba(139,92,246,.55)
+}
+
+.zcontact-context-status>span {
+  display:grid;
+  gap:3px;
+  color:#766e82;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.09em;
+  text-transform:uppercase
+}
+
+.zcontact-context-status small {
+  color:#b7a8e8;
+  font-size:8px
+}
+
+.zform-page .zcontact-context h2 {
+  margin:24px 0 9px;
+  font-size:31px;
+  line-height:1.05
+}
+
+.zform-page .zcontact-context>p {
+  margin:0;
+  font-size:11px;
+  line-height:1.7
+}
+
+.zcontact-context-list {
+  margin-top:22px;
+  padding:17px;
+  border:1px solid rgba(255,255,255,.055);
+  border-radius:10px;
+  background:rgba(5,5,9,.38)
+}
+
+.zcontact-context-list ul {
+  display:grid;
+  gap:9px;
+  margin:13px 0 0;
+  padding:0;
+  list-style:none
+}
+
+.zcontact-context-list li {
+  position:relative;
+  padding-left:15px;
+  color:#8d8597;
+  font-size:10px
+}
+
+.zcontact-context-list li::before {
+  position:absolute;
+  left:0;
+  color:#8b5cf6;
+  content:"→"
+}
+
+.zcontact-context footer {
+  margin-top:23px;
+  padding-top:18px;
+  border-top:1px solid rgba(255,255,255,.06)
+}
+
+.zform-page .zcontact-context footer p {
+  margin:8px 0 11px;
+  color:#686170;
+  font-size:9px;
+  line-height:1.6
+}
+
+.zcontact-context footer a {
+  color:#9f8ee2;
+  font:8px "JetBrains Mono",monospace;
+  letter-spacing:.05em;
+  text-decoration:none;
+  text-transform:uppercase
+}
+
 @media(max-width:850px) {
   .zform-page .zv2-hero,.zform-page .zv2-form-layout {
     grid-template-columns:1fr
   }
   .zform-page .zv2-side-card {
     position:static
+  }
+  .zform-contact .zcontact-hero {
+    align-items:start
+  }
+  .zcontact-hero-meta {
+    justify-items:start
   }
 }
 
@@ -162,8 +385,31 @@
   .zform-page .zv2-hero {
     padding:78px 0 52px
   }
+  .zform-contact .zcontact-hero {
+    gap:24px;
+    margin-top:14px;
+    padding:30px 20px
+  }
+  .zcontact-hero-meta {
+    width:100%
+  }
+  .zcontact-hero-meta .zv2-btn-secondary {
+    justify-content:center;
+    box-sizing:border-box;
+    width:100%
+  }
   .zform-page .zv2-form-card {
     padding:22px 18px
+  }
+  .zcontact-form-head {
+    grid-template-columns:1fr;
+    gap:16px
+  }
+  .zcontact-progress b,.zcontact-progress small {
+    text-align:left
+  }
+  .zform-contact .zcontact-context {
+    padding:22px 19px
   }
   .zform-page .zv2-form-grid {
     grid-template-columns:1fr

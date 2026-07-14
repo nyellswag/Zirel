@@ -1,0 +1,19 @@
+{% set active_relation_type = relation.relation_type if relation is defined else '' %}
+{% set active_direction_mode = relation.direction_mode if relation is defined else 'one_way' %}
+{% set active_inverse_type = relation.inverse_relation_type if relation is defined else '' %}
+<div class="relation-field relation-builder-type relation-type-prototype" data-relation-type-picker>
+  <label for="relation_type_display" class="form-label">Relation type</label>
+  <div class="relation-type-combobox">
+    <input id="relation_type_display" class="form-control relation-watch" type="text" autocomplete="off" required
+      value="{{ active_relation_type|replace('_', ' ')|title }}" placeholder="Search or create a type" aria-autocomplete="list" aria-expanded="false">
+    <input id="relation_type" name="relation_type" type="hidden" value="{{ active_relation_type }}">
+    <div class="relation-type-menu" role="listbox" hidden>
+      {% for option in relation_type_options %}
+        <button type="button" role="option" data-value="{{ option.value }}" data-mode="{{ option.mode }}" data-inverse="{{ option.inverse }}">{{ option.label }}{% if option.mode == 'mutual' %}<small>Mutual</small>{% elif option.mode == 'inverse' %}<small>{{ option.inverse_label }}</small>{% endif %}</button>
+      {% endfor %}
+      <button class="relation-type-create" type="button" data-create hidden></button>
+      <p data-no-type hidden>No matching types.</p>
+    </div>
+  </div>
+  <div class="relation-helper" id="relation-helper">Search the shared catalog or type a new relation and press Enter.</div>
+</div>
